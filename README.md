@@ -2,7 +2,10 @@
 
 A modular monolith for placement preparation across DSA, aptitude and CS fundamentals.
 This repository currently implements the **local scaffold milestone only**.
-The page is a foundation preview; accounts, persistence and study features are not implemented.
+The homepage follows the reviewed Stitch landing direction, with responsive sections,
+native FAQ disclosures and explicitly illustrative plan/progress examples. Accounts,
+persistence and study features are not implemented. Account CTAs lead to an availability
+notice; the sample-plan links work without a backend.
 
 ## Run locally
 
@@ -23,6 +26,11 @@ HTTP(S) origin without credentials, a path, query or fragment. The default is
 `http://localhost:3000`. It is used for metadata, not an authentication trust policy.
 
 ## Commands
+
+Development and production builds explicitly use Next.js's supported Webpack
+bundler. Turbopack's PostCSS worker could not connect in the current Windows
+sandbox; Webpack successfully compiles the same application without changing
+dependencies or weakening sandbox protections.
 
 | Command                | Purpose                                                 |
 | ---------------------- | ------------------------------------------------------- |
@@ -64,7 +72,7 @@ and service release gates remain outstanding. Free-tier availability is not a
 guarantee of zero billing.
 
 The visual foundation uses warm ivory, forest green, charcoal and system typography.
-Detailed Stitch screens and a component library are deferred.
+The landing page adapts the reviewed Stitch screens. Other screens and a component library are deferred.
 
 See [implementation status](docs/IMPLEMENTATION_STATUS.md), [working instructions](AGENTS.md)
 and the four design documents referenced there for scope, architecture and next steps.

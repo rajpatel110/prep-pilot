@@ -4,6 +4,48 @@ Updated: 23 October 2026 (Asia/Kolkata).
 
 ## Scope
 
+Mobile navigation fix: extracted a small Client Component while keeping the
+homepage server-rendered. Selecting a navigation link closes the disclosure;
+Escape closes it and returns focus to the Menu summary. Production-browser
+checks at 390px verified Enter activation, Escape from a menu link with focus
+restoration, and Subjects navigation with the menu collapsed. Format check,
+lint, TypeScript and production build passed. Preview server stopped afterward.
+
+Build resolution: `dev` and `build` now explicitly select the supported Webpack
+bundler, avoiding the sandbox-specific Turbopack PostCSS worker connection failure.
+The standard format check, lint, typecheck and `npm run build` passed. The build
+needed explicit write permission to the generated `.next` directory after an EPERM
+error; no permissions were weakened in application configuration. Development
+preview returned HTTP 200. Browser checks confirmed 390px and 320px hero reflow
+and mobile menu open/close with Enter. Prior production HTTP and FAQ checks also
+passed. This is targeted verification, not a complete accessibility audit.
+The owned development server was stopped after verification.
+
+Homepage verification follow-up: format check, lint and TypeScript passed again.
+The diagnostic `next build --webpack` production build passed, including static
+homepage generation. Production HTTP checks returned 200 for `/` and `/api/health`,
+with the expected health JSON. Browser inspection confirmed the homepage renders
+and the automatic-plan-change FAQ expands to its answer. Full responsive and
+keyboard acceptance remains outstanding. The standard Turbopack build still fails
+connecting to its spawned CSS worker; no successful default build is claimed.
+The production preview server was stopped after checks.
+
+Homepage follow-up: approved local implementation of the reviewed Stitch landing
+direction. Includes an ivory/forest responsive homepage, sample plan, workflow,
+subjects, illustrative progress and adjustment examples, native FAQ disclosures,
+mobile navigation and availability messaging instead of unavailable signup routes.
+No authentication, persistence, provider integration or deployment is included.
+Existing design documents are unchanged.
+
+Homepage validation: format check, lint and TypeScript passed. Git diff whitespace
+check passed. The default production build failed when Turbopack could not connect
+to its spawned CSS worker. A diagnostic Webpack build failed with EPERM creating
+.next/server/app/_not-found. Neither build is claimed successful. The local dev
+server reported ready, but browser and HTTP requests could not reach it in this
+environment; desktop/mobile rendering and keyboard acceptance remain unverified.
+The preview server was stopped. No dependencies were installed and no commit,
+push or deployment was performed.
+
 Approved: a local, credential-free scaffold. No commit, push or deployment is
 authorised for this milestone. The four existing design documents remain unchanged.
 
