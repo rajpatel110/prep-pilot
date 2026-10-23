@@ -24,7 +24,8 @@ is blocked; no execution-policy change is needed. Do not initialise a new reposi
 The scaffold runs with **no environment file and no external-service credentials**.
 Optionally copy `.env.example` to `.env.local` to change `APP_URL`, which must be an
 HTTP(S) origin without credentials, a path, query or fragment. The default is
-`http://localhost:3000`. It is used for metadata, not an authentication trust policy.
+`http://localhost:3000`. It supplies metadata and, when authentication is enabled,
+the exact trusted Origin for account/application writes.
 
 ## Commands
 
@@ -34,8 +35,18 @@ Use a development Atlas replica set and an ignored `.env.local` with `APP_URL`,
 `MONGODB_URI` and `MONGODB_DB_NAME`. Run `npm run auth:setup` to add independent,
 random authentication, CSRF and rate-limit secrets without printing them, and to
 enable test-mode auth. This command preserves existing nonempty credentials.
-Run `npm run db:setup` to create/verify unique auth/profile indexes and rate-bucket
-expiry before enabling signup. It does not delete records. Restart the server.
+Before enabling signup, explicitly select a development database and run:
+
+```sh
+npm run db:setup -- --database <development-db-name> --environment development
+```
+
+Use your actual development database name, not the literal placeholder. The command
+requires `MONGODB_URI` and both selection flags; it never infers a target from the
+URI or `MONGODB_DB_NAME`. Production mode and system databases are rejected. It
+creates/verifies auth/profile, rate-bucket, catalog and audit indexes using the
+versioned migration described below. It does not delete records or drop indexes.
+Restart the server after setup. Applications never run index synchronisation.
 Use the exact configured origin in your browser (normally `http://localhost:3000`);
 switching between localhost and 127.0.0.1 is a different origin and is rejected.
 
@@ -75,11 +86,18 @@ mutations retain Better Auth origin checks plus the route wrapper's checks.
 
 For a restricted admin, first register and sign in once, then obtain that exact
 existing auth user ID from your own Atlas console or authenticated `/api/v1/me`.
-Run `npm run admin:provision -- <user-id>` locally. This updates an active profile
+Run `npm run admin:provision -- <user-id> --database <development-db-name> --environment development`
+locally. `EMAIL_MODE` must explicitly be `test` or `live`. This updates an active profile
 and writes an audit event transactionally. Live mode also requires verified email.
-There is no public promotion endpoint or role selector.
+Already-admin profiles remain unchanged without duplicate audit events. A failed
+audit insert rolls back the promotion and revision. There is no public promotion
+endpoint or role selector. Never exercise this command against a real account as
+part of a test; the integration suite uses disposable identities only.
 
-`npm test` exercises pure routing, validation and CSRF rules.
+`npm test` exercises routing, strict content validation, direct permission guards,
+CSRF classification and safe error envelopes without a database. The React-server
+condition lets Node import the same server-only modules used by the application;
+it does not remove their client-import protection.
 `npm run test:integration` requires a successful build and local MongoDB settings;
 it starts a server on port 3101, creates a uniquely named `prep_pilot_auth_test_*`
 database, tests real account/session/role flows, then drops **only that test
@@ -90,6 +108,71 @@ If generated production output is unavailable in a restricted local environment,
 `node --env-file=.env.local --import tsx tests/auth-integration.ts --dev` runs the
 same isolated checks against the development server. This does not replace a
 successful production build for release acceptance.
+
+## Catalog persistence foundation (Step 1)
+
+This slice provides models and validation only, not content CRUD, forms, publishing,
+student discovery or file integration. `contentItems` has strict classification,
+provenance, company associations, draft/published/archived enum values, trusted
+author fields and safe-integer revisions starting at 1. The starter subject/topic
+allowlist lives in `src/config/catalog.ts`; review these IDs before curation. It is
+not the complete scheduling template or prerequisite graph. Draft text may be
+incomplete. Markdown validation conservatively rejects HTML and unsafe link schemes;
+a future rendering/preview slice still needs a sanitised Markdown renderer.
+
+Attachment compatibility is retained through `assetIds` (domain ObjectIds), but
+**every nonempty attachment array is rejected** at the input and document layers.
+No asset is assumed ready and no R2 capability is enabled. Lifecycle transitions,
+publication requirements, atomic revision increments and content/audit orchestration
+belong to later service milestones; raw query updates are not an approved write API.
+Future services must validate complete candidate documents and use revision guards;
+Mongoose update validators alone do not validate `$inc` or cross-field invariants.
+
+`catalogState` uses `_id="catalog"`, initial `revision=0` and `commitSerial=0`.
+Setup inserts it only when absent during initial migration; reruns preserve existing
+counters/timestamps and content. An applied migration with a missing singleton fails
+rather than resetting it. Invalid existing catalog data, duplicate unique keys and
+incompatible indexes fail for operator review; nothing is silently repaired/deleted.
+Resolve conflicts explicitly after reviewing/backing up the selected database.
+
+`scripts/migrations/001-foundation.ts` records the versioned manifest and checksum.
+Do not edit an applied migration or its index definitions: add a new versioned
+migration for future persistence changes. `schemaMigrations` records running,
+applied and failed attempts. A database-wide fenced five-minute lease prevents
+concurrent runners; transactional fencing protects migration state and singleton
+insertion. Index operations have a shorter bounded execution time and are
+restart-safe. A crashed/failed run can resume after the lock expires; checksum
+mismatches are rejected. Successful reruns verify required indexes again. Extra
+unrelated indexes are retained. No `syncIndexes`, index drops or startup migration.
+
+Required named indexes are declared in `scripts/database-indexes.ts` and
+`src/modules/catalog/indexes.ts`: unique auth/profile identities, rate expiry,
+unique content slug, partial-unique string seedKey, status/ID, classification,
+company, asset reference, title/topic/tags text search and both audit history indexes.
+Mongoose owns domain models. Administration owns the append-only audit insertion
+service, which requires the caller's domain transaction; provisioning goes through
+the identity service using the same Mongoose connection/session.
+Historical audit events remain untouched; future readers must tolerate absent
+prior/new revisions on legacy provisioning events rather than rewriting history.
+
+```sh
+npm run test:catalog
+```
+
+This requires development replica-set credentials in `.env.local`. It explicitly
+selects randomly named `prep_pilot_step1_test_*` databases, invokes the actual setup
+and provisioning commands, tests native service guards in both email modes, unique
+indexes, migration preservation/recovery/conflicts and real audit-rejection rollback,
+then drops only its guarded disposable targets. It does not migrate the configured
+development database or promote a real account. It needs permission to create/drop
+these test databases and change a validator in a disposable collection. Configuration
+or replica-set access failures are reported, not treated as passing tests.
+
+CSRF failures use `CSRF_INVALID`; only a correctly signed, session-bound expired
+token with the correct Origin receives `CSRF_TOKEN_EXPIRED`. Application errors may
+include a safe `error.fields` map supplied by trusted server code; raw Zod/Mongo/provider
+errors are not exposed. Request IDs and existing no-field envelopes are retained.
+Live verification and password recovery remain **incomplete** in every configuration.
 
 Development and production builds explicitly use Next.js's supported Webpack
 bundler. Turbopack's PostCSS worker could not connect in the current Windows

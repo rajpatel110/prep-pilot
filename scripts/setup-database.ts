@@ -1,27 +1,28 @@
 import { MongoClient } from "mongodb";
-import { provisionIndexes } from "./database-indexes";
-
-const client = new MongoClient(process.env.MONGODB_URI!, {
-  maxPoolSize: 1,
-  serverSelectionTimeoutMS: 10000,
-});
+import { databaseTarget } from "./database-target";
+import { migrateDatabase, MigrationError } from "./database-migrations";
 async function main() {
+  let client: MongoClient | undefined;
   try {
-    if (!process.env.MONGODB_URI || !process.env.MONGODB_DB_NAME)
-      throw new Error("Missing configuration");
+    const target = databaseTarget(process.argv.slice(2), process.env);
+    client = new MongoClient(target.uri, {
+      maxPoolSize: 1,
+      serverSelectionTimeoutMS: 10000,
+    });
     await client.connect();
-    const db = client.db(process.env.MONGODB_DB_NAME);
-    await provisionIndexes(db);
+    await migrateDatabase(client.db(target.database));
     console.log(
-      "Authentication foundation indexes verified. No records deleted.",
+      `Migration 001 verified in explicitly selected ${target.environment} database ${target.database}. Records and singleton state preserved.`,
     );
-  } catch {
+  } catch (error) {
     console.error(
-      "Database setup failed. Check configuration, access and existing index compatibility.",
+      error instanceof MigrationError
+        ? `Database setup failed: ${error.code}. No records or indexes were deleted.`
+        : "Database setup failed. Require MONGODB_URI, --database <name> and --environment development|test; check access and data/index compatibility. No records or indexes were deleted.",
     );
     process.exitCode = 1;
   } finally {
-    await client.close();
+    await client?.close();
   }
 }
 void main();

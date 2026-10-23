@@ -1,48 +1,9 @@
 import "server-only";
-import { Schema, type InferSchemaType, type Model } from "mongoose";
 import { getDomainConnection } from "@/shared/server/db";
-
-const profileSchema = new Schema(
-  {
-    userId: { type: String, required: true, immutable: true },
-    role: {
-      type: String,
-      enum: ["student", "admin"],
-      default: "student",
-      required: true,
-    },
-    lifecycle: {
-      type: String,
-      enum: ["active", "deleting"],
-      default: "active",
-      required: true,
-    },
-    preferences: { type: Schema.Types.Mixed, default: null },
-    timezone: { type: String, default: "Asia/Kolkata" },
-    activePlanId: { type: Schema.Types.ObjectId, default: null },
-    planVersion: { type: Number, default: 0 },
-    stateRevision: { type: Number, default: 0 },
-    attemptSequence: { type: Number, default: 0 },
-    schemaVersion: { type: Number, default: 1 },
-  },
-  {
-    collection: "profiles",
-    timestamps: true,
-    strict: "throw",
-    autoIndex: false,
-  },
-);
-profileSchema.index(
-  { userId: 1 },
-  { unique: true, name: "profiles_userId_unique" },
-);
+import { profileModel } from "./model";
 
 export async function profiles() {
-  const connection = await getDomainConnection();
-  return (connection.models.Profile ??
-    connection.model("Profile", profileSchema)) as Model<
-    InferSchemaType<typeof profileSchema>
-  >;
+  return profileModel(await getDomainConnection());
 }
 
 export async function ensureProfile(userId: string) {

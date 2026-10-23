@@ -1,66 +1,44 @@
-import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 import { randomUUID } from "node:crypto";
+import { databaseTarget } from "./database-target";
+import { provisionAdministrator } from "../src/modules/identity/provision-admin";
 
-const userId = process.argv[2] ?? "";
-if (!userId)
-  throw new Error("Usage: npm run admin:provision -- <existing-auth-user-id>");
-const client = new MongoClient(process.env.MONGODB_URI!, {
-  maxPoolSize: 1,
-  serverSelectionTimeoutMS: 10000,
-});
 async function main() {
+  let connection: mongoose.Connection | undefined;
   try {
-    await client.connect();
-    const db = client.db(process.env.MONGODB_DB_NAME);
-    const user = await db.collection("user").findOne({
-      $or: [
-        { id: userId },
-        ...(/^[a-f0-9]{24}$/.test(userId)
-          ? [{ _id: new (await import("mongodb")).ObjectId(userId) }]
-          : []),
-      ],
-    });
-    if (!user || (process.env.EMAIL_MODE === "live" && !user.emailVerified))
-      throw new Error("No eligible existing identity");
-    await client.withSession(async (session) =>
-      session.withTransaction(async () => {
-        const now = new Date();
-        const result = await db.collection("profiles").updateOne(
-          { userId, lifecycle: "active" },
-          {
-            $set: { role: "admin", updatedAt: now },
-            $inc: { stateRevision: 1 },
-          },
-          { session },
-        );
-        if (result.matchedCount !== 1)
-          throw new Error("Sign in once to create an active profile first");
-        await db.collection("adminAudit").insertOne(
-          {
-            actorUserId: "operator",
-            action: "provision_admin",
-            entityType: "profile",
-            entityId: userId,
-            changedFields: ["role"],
-            requestId: randomUUID(),
-            createdAt: now,
-            updatedAt: now,
-            schemaVersion: 1,
-          },
-          { session },
-        );
-      }),
+    const userId = process.argv[2] ?? "";
+    if (!userId || userId.startsWith("--"))
+      throw new Error("An existing identity is required.");
+    const target = databaseTarget(process.argv.slice(3), process.env);
+    if (process.env.EMAIL_MODE !== "test" && process.env.EMAIL_MODE !== "live")
+      throw new Error("EMAIL_MODE is required.");
+    connection = await mongoose
+      .createConnection(target.uri, {
+        dbName: target.database,
+        autoIndex: false,
+        autoCreate: false,
+        maxPoolSize: 1,
+        serverSelectionTimeoutMS: 10000,
+      })
+      .asPromise();
+    const result = await provisionAdministrator(
+      connection,
+      userId,
+      process.env.EMAIL_MODE,
+      randomUUID(),
     );
     console.log(
-      "Existing profile promoted and audited. No public role mutation is exposed.",
+      result === "unchanged"
+        ? "Existing administrator unchanged; no duplicate audit event."
+        : "Existing profile promoted and audited. No public role mutation is exposed.",
     );
   } catch {
     console.error(
-      "Admin provisioning failed. Confirm the exact existing user ID and active profile; live mode requires verification.",
+      "Admin provisioning failed. Require an exact existing user ID, MONGODB_URI, EMAIL_MODE, --database <name> and --environment development|test. An active profile is required; live mode requires verification. No partial promotion is committed.",
     );
     process.exitCode = 1;
   } finally {
-    await client.close();
+    await connection?.close();
   }
 }
 void main();

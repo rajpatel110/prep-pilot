@@ -6,6 +6,7 @@ export class HttpError extends Error {
     public status: number,
     public code: string,
     message: string,
+    public fields?: Readonly<Record<string, readonly string[]>>,
   ) {
     super(message);
   }
@@ -29,6 +30,7 @@ export function failure(error: unknown) {
         message: known
           ? error.message
           : "The service is temporarily unavailable. Please try again.",
+        ...(known && error.fields ? { fields: error.fields } : {}),
       },
       requestId,
     },

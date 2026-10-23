@@ -2,6 +2,185 @@
 
 Updated: 23 October 2026 (Asia/Kolkata).
 
+## Build troubleshooting follow-up: clean build and production regression pass
+
+Production-build acceptance is now satisfied by the user-supplied VS Code clean
+build output and the subsequent agent-run production-server regression. The exact
+underlying cause of the earlier Windows EPERM remains unproven. No Step 2 work, commit, push, deployment,
+dependency upgrade, application/configuration change or permission/Windows-security
+weakening was performed during this troubleshooting follow-up.
+
+- Inspected the working tree and preserved all Step 1 edits/untracked files plus
+  the pre-existing generated `next-env.d.ts` diff. The actual build script is
+  `next build --webpack`, Next.js 16.4.2, with the default `.next` output directory;
+  next.config.ts only validates server configuration and disables poweredByHeader.
+- System Node is 22.20.0; the project requires Node 24. The reproduced build used
+  the existing local Node 24.22.1 runtime and npm 10.9.3, so this reproduction was
+  not running on the wrong major version. No runtime/dependency installation occurred.
+- During the earlier Codex attempt, narrowly scoped `.next` write approval did not
+  prevent the build from failing during
+  compilation with exactly: `EPERM: operation not permitted, mkdir
+'C:\PROJECTS\prep-pilot\.next\server\app\dashboard'`.
+- `.next` is an ordinary directory, not a reparse point. Inspected root/server/app
+  ACLs show inherited Modify permissions for the Codex sandbox identities and no
+  explicit deny in those inspected ACLs. A Node mkdir/write/removal probe in the
+  same `.next/server/app` parent succeeded. This argues against blanket write denial,
+  but does not establish the cause of the build-time failure or rule out a transient
+  Windows lock, security-policy interaction or a build-time filesystem race.
+- No Node processes were visible through Get-Process and neither Next production
+  nor development lock file existed. Full process command-line inspection was
+  unavailable: CIM access was denied, and tasklist failed with an OS identity error.
+  No processes were stopped. These observations do not positively exclude every
+  external process/lock; concurrency and Windows file locking remain unconfirmed.
+- Cleanup was restricted to a guarded, absolute `.next` target, but Codex rejected
+  the entire cleanup/build command before execution with:
+  `approval required by policy, but AskForApproval::Granular.sandbox_approval is false`.
+  Therefore no Codex clean build was run and no Codex output deletion occurred. The policy block
+  on cleanup is confirmed; it is not proof that the original mkdir error has the
+  same cause. Application/build configuration defects are not established either.
+
+The user subsequently ran the following in the VS Code **PowerShell** terminal in
+`C:\PROJECTS\prep-pilot` and supplied successful production-build output:
+
+```powershell
+Set-Location -LiteralPath 'C:\PROJECTS\prep-pilot'
+$env:PATH = (Join-Path $PWD '.tools\node_modules\node\bin') + ';' + $env:PATH
+node --version
+npm.cmd --version
+if (Test-Path -LiteralPath 'C:\PROJECTS\prep-pilot\.next') {
+  Remove-Item -LiteralPath 'C:\PROJECTS\prep-pilot\.next' -Recurse -Force -ErrorAction Stop
+}
+npm.cmd run build
+```
+
+User-supplied result: Node 24.22.1 / npm 10.9.3; Next.js 16.4.2 compiled in 11.7s,
+TypeScript finished successfully, all four static pages generated, and build traces
+and page optimisation completed. No cleanup error was shown. The agent did not run
+or independently reproduce that clean build; this is explicitly user-provided build
+evidence, not an agent-run build or a deployment. It demonstrates that the same
+application/configuration can build in VS Code after generated-output cleanup; it
+does not isolate whether stale output, a transient lock or the Codex environment
+caused the original EPERM.
+
+Agent-run verification after receiving that output: Node 24.22.1 invoked
+`node --env-file=.env.local --import tsx tests/auth-integration.ts` without `--dev`,
+so the suite used `next start` against the production artifact. It exited 0 and
+passed homepage/health, signup/login, duplicate/input/Origin checks, persistent,
+revoked and expired sessions, current role/lifecycle guards, profile concurrency,
+CSRF codes/session binding, disabled email paths and durable rate limits. Only a
+disposable `prep_pilot_auth_test_*` database was used; it was dropped and the owned
+test server stopped. Prior Step 1 unit/catalog integration/lint/type-check results
+remain as recorded below; they were not all rerun during this build follow-up.
+
+Git readiness was checked without writing Git state: branch `dev`, upstream
+`origin/dev`, intended remote `https://github.com/rajpatel110/prep-pilot.git`.
+A fresh read-only `git ls-remote --heads origin dev` succeeded and returned
+`b5525f80efd213597d6d134f809b515e8dbb4402`, matching local HEAD. Step 1 changes
+remain uncommitted, with no new local commit to push. No push was attempted during
+Step 1 or this follow-up, consistent with the explicit prohibition. An exact error
+from an older push attempt is not available in the inspected evidence; reflogs do
+not prove that a push was attempted. Read access succeeding does not verify write
+permission, and no push/dry-run push was used to test it. Build acceptance is now
+met. Step 1 is ready for a scoped, reviewed commit when explicitly authorised;
+exclude the unrelated pre-existing generated next-env diff and real environment
+files. Commit/push approval has not been granted, and neither action was performed.
+
+## Step 1: permission/security and catalog persistence foundation
+
+This section is the current milestone result; older verification notes below are
+historical and do not establish a passing production build for this source state.
+Only Step 1 is implemented. No content CRUD endpoints, forms, publishing workflows,
+student content pages, R2 integration, commit, push or deployment are included.
+Homepage, authentication UI and the existing design system are unchanged.
+
+### Completed
+
+- Extracted the existing service guards into a directly testable implementation,
+  retaining canonical uncached session lookup and current profile lookup on every
+  call. Anonymous/student/admin/downgraded/deleting actors, live unverified actors
+  and verified permitted actors are covered by direct unit and real-session service
+  tests. Browser-supplied identity/role headers do not grant access.
+- CSRF now returns `CSRF_INVALID` for missing/invalid protection and rejected
+  Origin, and `CSRF_TOKEN_EXPIRED` only after verifying the signature and session
+  binding. Tampered expired tokens remain invalid. Existing auth regression checks
+  also exercise these application response codes and request IDs over HTTP.
+- `HttpError` supports trusted safe field-level string-array messages under
+  `error.fields`. Existing no-field responses, status codes, no-store headers,
+  request-ID matching, rate-limit headers and unknown-error redaction are retained.
+- Added strict Zod draft/document schemas, explicit Mongoose `contentItems` and
+  `catalogState` models, bounded provenance/company fields, safe-integer revision
+  constraints, configured subject/topic IDs and conservative Markdown validation.
+  Unknown/server-owned input fields and every nonempty attachment array are rejected.
+  Draft content bodies can remain incomplete; no publication service is implemented.
+- Administration owns the append-only audit insertion interface. It requires the
+  caller's domain transaction. Restricted provisioning now uses the identity-owned
+  profile model and the same Mongoose connection/session for promotion plus audit,
+  with prior/new revisions, current active-state checks and idempotent admin handling.
+- Added explicit development/test database selection and versioned migration 001,
+  immutable checksum verification, a fenced runner lease, restart-safe index creation
+  and verification, duplicate/invalid-record preflight and singleton `$setOnInsert`.
+  Existing content, singleton counters/timestamps and unrelated indexes are retained.
+  An applied migration with a missing singleton fails rather than resetting it.
+  Conflicts fail for operator review; no automatic index synchronisation or deletion.
+- README documents explicit setup/provisioning flags, ownership, indexes, migration
+  recovery, isolated tests and the deferred feature boundaries. Starter topic IDs
+  are configuration defaults to review before curation, not a completed planner
+  template or an assertion about reviewed/available content.
+
+### Verification and environment
+
+- Node 24.22.1 / npm 10.9.3: all 17 unit tests, formatting, zero-warning ESLint and
+  `npm run typecheck` passed. No dependencies were installed.
+- The catalog integration suite passed against randomly selected disposable
+  `prep_pilot_step1_test_*` Atlas databases using development credentials. It ran
+  the actual setup and provisioning commands; proved unique slug/partial seed
+  indexes, preservation on rerun, checksum/lock/restart/conflict handling, and
+  real test/live canonical guards. Audit rejection rolled back the complete profile
+  change, including role/revision/timestamps. Successful promotion was audited once.
+  Unknown identities, deleting profiles and live unverified identities were denied.
+  Only disposable test identities were promoted; disposable databases were removed.
+- Existing authentication regressions passed against an isolated development server
+  and disposable `prep_pilot_auth_test_*` database: homepage/health, signup/login,
+  duplicates, persistence, revocation/expiration, current role/lifecycle guards,
+  profile concurrency, CSRF, disabled email paths and durable rate limits. The owned
+  test server was stopped and its database removed.
+- Production `npm run build` was attempted three times, including after explicit
+  `.next` write permission and with the development test server stopped. All were
+  blocked by Windows `EPERM` creating generated `.next/server/app` directories
+  (dashboard, verify-email, api/v1/security). Those historical failures are now
+  superseded for acceptance by the user-supplied clean VS Code production build
+  and agent-run production-server regression detailed above. Application protections
+  and dependency/configuration settings were not weakened to bypass the sandbox.
+- The pre-existing `next-env.d.ts` diff changes generated imports from
+  `.next/dev/types` to `.next/types`. Next's development and production generators
+  select different output paths; this is not an application behaviour change.
+  The file was not manually edited or staged. Any such generated diff is excluded
+  from the Step 1 source change scope; no unrelated generated files are added.
+
+No setup was performed against the configured long-lived development database.
+No production database, real account or credentials were changed. Operators must
+select their actual development target explicitly and run the documented migration
+before enabling future catalog writes. Secrets remain in ignored local settings
+and are never included in test output or documentation.
+
+### Limitations and next step
+
+Live verification and password recovery remain **incomplete**. Test/live capability
+flags stay false for these flows, and wrappers continue returning `EMAIL_DISABLED`;
+changing email mode does not make unimplemented flows operational. R2 and attachment
+activation, publication checks/transitions, content services/DTOs/UI and reviewed
+seed content are deferred. A future Markdown preview needs a sanitising renderer.
+Raw model/query updates are not an approved content mutation interface: Step 2 must
+validate full candidate documents and enforce revisions transactionally, not rely
+on update validators for `$inc` or multi-field invariants.
+
+The Step 2 foundation is implemented and its targeted security/persistence checks
+pass. The clean production build and production-server authentication regression
+also pass, with evidence ownership distinguished above. Before starting transactional
+draft creation/editing, obtain explicit Step 2 approval. Step 2 should add authorised services with catalog/profile lock order,
+content/catalog revision guards, atomic content/audit writes, strict field validation
+and stale-edit/duplicate-slug/rollback tests. Do not start forms or publishing yet.
+
 ## Scope
 
 Pre-commit verification: formatting, lint, TypeScript and all six unit tests pass.

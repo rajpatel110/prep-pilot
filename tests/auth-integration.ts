@@ -3,6 +3,7 @@ import { spawn } from "node:child_process";
 import { randomBytes, randomUUID } from "node:crypto";
 import { MongoClient, ObjectId } from "mongodb";
 import { provisionIndexes } from "../scripts/database-indexes";
+import { issueCsrf } from "../src/modules/identity/csrf-token";
 
 async function main() {
   const dbName = `prep_pilot_auth_test_${randomBytes(6).toString("hex")}`;
@@ -67,6 +68,14 @@ async function main() {
       if (attempt === 59) throw new Error("Test server did not start");
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
+    const homepage = await fetch(`${origin}/`);
+    assert.equal(homepage.status, 200);
+    assert.ok((await homepage.text()).includes("PrepPilot"));
+    const health = await fetch(`${origin}/api/health`);
+    assert.equal(health.status, 200);
+    assert.deepEqual(await health.json(), { data: { status: "ok" } });
+    assert.equal(health.headers.get("cache-control"), "no-store");
+    assert.ok(health.headers.get("x-request-id"));
     assert.equal((await request("/api/v1/me")).status, 401);
     assert.equal((await request("/admin")).status, 307);
     assert.equal(
@@ -118,10 +127,45 @@ async function main() {
     assert.equal(await db.collection("profiles").countDocuments({ userId }), 1);
     const csrf = await (await request("/api/v1/security/csrf")).json();
     assert.ok(csrf.data.token);
-    assert.equal(
-      (await request("/api/v1/identity/verification/request", {})).status,
-      403,
+    const missingCsrf = await request(
+      "/api/v1/identity/verification/request",
+      {},
     );
+    assert.equal(missingCsrf.status, 403);
+    const missingError = await missingCsrf.json();
+    assert.equal(missingError.error.code, "CSRF_INVALID");
+    assert.equal(
+      missingError.requestId,
+      missingCsrf.headers.get("x-request-id"),
+    );
+    const sessionRecord = await db
+      .collection("session")
+      .findOne({ userId: new ObjectId(userId) });
+    assert.ok(sessionRecord);
+    const expiredCsrf = issueCsrf(
+      sessionRecord._id.toString(),
+      process.env.CSRF_SECRET!,
+      Date.now() - 1800001,
+    ).token;
+    for (const [token, code] of [
+      [expiredCsrf, "CSRF_TOKEN_EXPIRED"],
+      [`${expiredCsrf}x`, "CSRF_INVALID"],
+    ]) {
+      const response = await request(
+        "/api/v1/identity/verification/request",
+        {},
+        { "x-csrf-token": token! },
+      );
+      assert.equal(response.status, 403);
+      assert.equal((await response.json()).error.code, code);
+    }
+    const crossOrigin = await request(
+      "/api/v1/identity/verification/request",
+      {},
+      { "x-csrf-token": csrf.data.token, origin: "https://untrusted.example" },
+    );
+    assert.equal(crossOrigin.status, 403);
+    assert.equal((await crossOrigin.json()).error.code, "CSRF_INVALID");
     assert.equal(
       (
         await request(
@@ -133,6 +177,11 @@ async function main() {
       503,
     );
     assert.equal((await request("/api/auth/verify-email")).status, 404);
+    const recovery = await request("/api/v1/identity/password-reset/request", {
+      email,
+    });
+    assert.equal(recovery.status, 503);
+    assert.equal((await recovery.json()).error.code, "EMAIL_DISABLED");
     await db
       .collection("profiles")
       .updateOne({ userId }, { $set: { role: "admin" } });
@@ -153,6 +202,13 @@ async function main() {
       "/onboarding",
       "Role downgrade applies immediately",
     );
+    await db
+      .collection("profiles")
+      .updateOne({ userId }, { $set: { lifecycle: "deleting" } });
+    assert.equal((await request("/api/v1/me")).status, 403);
+    await db
+      .collection("profiles")
+      .updateOne({ userId }, { $set: { lifecycle: "active" } });
     assert.equal((await request("/api/auth/sign-out", {})).status, 200);
     cookie = sessionCookie;
     assert.equal(
@@ -225,6 +281,7 @@ async function main() {
         setTimeout(resolve, 5000);
       }
     });
+    assert.ok(/^prep_pilot_auth_test_[a-f0-9]{12}$/.test(dbName));
     await db.dropDatabase();
     await client.close();
   }
