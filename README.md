@@ -1,11 +1,12 @@
 # PrepPilot
 
 A modular monolith for placement preparation across DSA, aptitude and CS fundamentals.
-This repository implements the local scaffold, homepage and authentication foundation.
+This repository implements the local scaffold, homepage, authentication foundation
+and transactional admin draft creation/editing API.
 The homepage follows the reviewed Stitch landing direction, with responsive sections,
 native FAQ disclosures and explicitly illustrative plan/progress examples. Accounts,
 persistent database sessions and protected account destinations are implemented.
-Study plans, content management and practice features remain future milestones.
+Content-library/editor UI, publishing, study plans and practice remain future milestones.
 The sample-plan links show illustrative data only.
 
 ## Run locally
@@ -111,8 +112,8 @@ successful production build for release acceptance.
 
 ## Catalog persistence foundation (Step 1)
 
-This slice provides models and validation only, not content CRUD, forms, publishing,
-student discovery or file integration. `contentItems` has strict classification,
+Step 1 provides models and validation; Step 2 adds only the draft mutations documented
+below, not forms, publishing, student discovery or file integration. `contentItems` has strict classification,
 provenance, company associations, draft/published/archived enum values, trusted
 author fields and safe-integer revisions starting at 1. The starter subject/topic
 allowlist lives in `src/config/catalog.ts`; review these IDs before curation. It is
@@ -122,10 +123,10 @@ a future rendering/preview slice still needs a sanitised Markdown renderer.
 
 Attachment compatibility is retained through `assetIds` (domain ObjectIds), but
 **every nonempty attachment array is rejected** at the input and document layers.
-No asset is assumed ready and no R2 capability is enabled. Lifecycle transitions,
-publication requirements, atomic revision increments and content/audit orchestration
-belong to later service milestones; raw query updates are not an approved write API.
-Future services must validate complete candidate documents and use revision guards;
+No asset is assumed ready and no R2 capability is enabled. Lifecycle transitions and
+publication requirements belong to later service milestones. Step 2 implements atomic
+draft revisions and content/audit orchestration; raw query updates are not an approved write API.
+Mutation services validate complete candidate documents and use revision guards;
 Mongoose update validators alone do not validate `$inc` or cross-field invariants.
 
 `catalogState` uses `_id="catalog"`, initial `revision=0` and `commitSerial=0`.
@@ -173,6 +174,124 @@ token with the correct Origin receives `CSRF_TOKEN_EXPIRED`. Application errors 
 include a safe `error.fields` map supplied by trusted server code; raw Zod/Mongo/provider
 errors are not exposed. Request IDs and existing no-field envelopes are retained.
 Live verification and password recovery remain **incomplete** in every configuration.
+
+## Transactional admin drafts (Step 2)
+
+- `POST /api/v1/admin/content` accepts strict DraftInput, returns `201` with an
+  allowlisted AdminContentDTO, `status=draft`, `revision=1` and a detail Location.
+- `PATCH /api/v1/admin/content/:id` requires a positive safe-integer
+  `expectedRevision`. It preserves omitted fields, replaces supplied arrays and
+  removes optional prompt/body/explanation/externalUrl fields when null is supplied.
+  `reviewedAt:null` remains stored null. Required classification fields cannot be null.
+- Both routes require canonical admin cookies, live-mode verification when applicable,
+  exact Origin, a session-bound CSRF token and JSON within 64 KiB. Services also
+  enforce current admin access independently of the HTTP caller. Browser-supplied
+  role, author, revision, lifecycle and audit fields are rejected, not ignored.
+- Complete candidate validation checks subject/topic consistency after merging a
+  partial edit. Field errors use `422 VALIDATION_ERROR` with safe `error.fields`.
+  Unknown keys/values are not reflected into error messages. Malformed IDs return
+  422, missing records 404 RESOURCE_NOT_FOUND, stale revisions 409 CONTENT_CONFLICT
+  and unique-index slug collisions 409 SLUG_TAKEN.
+- Editing **only drafts** is supported. Published/archived items return
+  `409 INVALID_CONTENT_STATE`; there is no lifecycle transition endpoint. Previously
+  published drafts retain their slug: changing it returns 422 field feedback.
+  Future reopen handling must preserve publication history timestamps.
+- Every accepted create/edit advances catalog.revision and the admin profile's
+  stateRevision once, writes content at revision 1 or expectedRevision+1, and appends
+  one audit event in the same Mongoose transaction. The profile revision is an
+  authorisation fence against role/lifecycle changes, not a change to student plans.
+  Lock order is catalogState, profile, content, audit; commitSerial is unchanged.
+  The transaction uses primary/snapshot/majority, a 15-second overall deadline and
+  bounded commit time. Retried aborted callbacks revalidate state; stale client
+  revisions never auto-merge. Audit requestId equals the response X-Request-Id.
+- Failure rolls back catalog/content/audit and the profile revision fence. Existing
+  authentication's profile updatedAt touch is separate bookkeeping and is unchanged.
+  Atomicity tests compare all content/catalog/audit fields and profile state except
+  that existing auth timestamp. No-op/same-value accepted patches still advance
+  revisions and audit once; PATCH/create are not generic idempotent operations.
+- Migration 001 must already be applied and the real unique slug index present.
+  Missing setup fails closed with 503 DEPENDENCY_UNAVAILABLE; requests never seed
+  singleton state, create indexes or run migrations automatically. Use the existing
+  explicitly targeted setup command. No migration beyond Step 1's version 001 is
+  added; this task does not apply setup to a long-lived database.
+- Only empty assetIds are accepted; responses contain empty assetIds/attachments
+  and attachmentCount=0. No file metadata or ready-state assets are invented.
+
+```sh
+npm run test:admin-content
+```
+
+Run this only after a successful current production build. It starts its own server
+on port 3103 and uses guarded, randomly named `prep_pilot_s2_test_*` databases; all
+identities/roles/content/state fixtures and validator failures are disposable.
+It exercises HTTP contracts, real cookies/CSRF, services, MongoDB races/uniqueness,
+audit rollback and exact counter changes, then removes its database and server.
+For development-only verification use `npm run test:admin-content -- --dev`; this
+does not prove production-build acceptance. Do not run two Next dev suites at once.
+
+The Location points to the documented detail resource; its GET route, library reads,
+search/pagination and UI are deferred to Step 3. Creation has no blind retry guarantee;
+unknown commit outcomes return safe dependency errors and must be reconciled, not
+automatically resubmitted. Until guarded reads exist, reconcile uncertain saves by
+operator inspection rather than claiming an API-based recovery UI is implemented.
+
+## Repeatable local build and integration sequence
+
+Use Node 24 and npm 10.9.3 in one normal VS Code PowerShell terminal. During active
+iteration, run only the relevant development suites and run them sequentially;
+wait for the terminal command to finish, not just its printed PASS line. Do not
+run an interactive PrepPilot dev server alongside a `--dev` suite: all use
+`.next/dev`, regardless of their different ports.
+
+For final verification:
+
+1. Finish the relevant dev suites and stop only your positively identified PrepPilot
+   `dev`, `start` or test terminals with Ctrl+C. Never kill all Node processes.
+   Check known ports 3000 (interactive), 3101 (auth tests) and 3103 (draft tests).
+   Absence of a Next lock file alone is not a process/handle check.
+2. Run any needed unit/lint/format/type checks before preparing the final build;
+   `typecheck` generates Next route types. Already passing checks need not be
+   repeated when only verification documentation changes.
+3. If a clean build is needed, remove only the confirmed generated `.next` directory
+   from the project root and build using the same normal Windows terminal identity.
+4. After a successful current build, run production draft and authentication suites
+   sequentially, without `--dev`. Do not interleave another dev server, type
+   generation, output cleanup or build. On failure, stop and diagnose the actual
+   error rather than repeatedly rerunning the same failed command.
+5. Wait for each command to return, and verify its owned test port no longer responds.
+   Harness cleanup currently has a bounded wait, not a full Windows process-tree
+   audit. If a port remains occupied, identify the project process/terminal before
+   stopping it; do not assume it is safe to terminate an arbitrary process.
+
+Example final sequence, **only when a fresh clean build is actually needed**:
+
+```powershell
+Set-Location -LiteralPath 'C:\PROJECTS\prep-pilot'
+$env:PATH = (Join-Path $PWD '.tools\node_modules\node\bin') + ';' + $env:PATH
+node --version
+npm.cmd --version
+if (Test-Path -LiteralPath '.next') {
+  Remove-Item -LiteralPath '.next' -Recurse -Force -ErrorAction Stop
+}
+npm.cmd run build
+if ($LASTEXITCODE -ne 0) { throw 'Build failed; stop and inspect the exact error.' }
+npm.cmd run test:admin-content
+if ($LASTEXITCODE -ne 0) { throw 'Draft regression failed; stop and inspect.' }
+npm.cmd run test:integration
+if ($LASTEXITCODE -ne 0) { throw 'Authentication regression failed; inspect.' }
+```
+
+These are local build/test operations, not deployment. Keep credentials in ignored
+settings; do not paste environment contents. A successful manual build is recorded
+as user-run evidence, separately from agent-run regressions.
+
+Next 16.4.2 places dev output under `.next/dev` and production output under `.next`;
+its normal build cleanup preserves the dev subtree. Nevertheless they share the
+parent and generated `next-env.d.ts`, and manually deleting `.next` removes both.
+The production suites consume the existing artifact; they do not compile a new one.
+Observed creator/owner differences and inherited ACLs do not by themselves diagnose
+the recurring Windows EPERM. Do not change `distDir`, broadly alter ACLs, disable
+Windows protections or upgrade dependencies without evidence supporting that fix.
 
 Development and production builds explicitly use Next.js's supported Webpack
 bundler. Turbopack's PostCSS worker could not connect in the current Windows

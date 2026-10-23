@@ -10,6 +10,7 @@
     "test": "node --conditions=react-server --import tsx --test tests/*.test.ts",
     "test:integration": "node --env-file=.env.local --import tsx tests/auth-integration.ts",
     "test:catalog": "node --conditions=react-server --env-file=.env.local --import tsx tests/catalog-integration.ts",
+    "test:admin-content": "node --conditions=react-server --env-file=.env.local --import tsx tests/integration/admin-content.ts",
     "auth:setup": "tsx scripts/setup-local-auth.ts",
     "db:setup": "node --env-file=.env.local --import tsx scripts/setup-database.ts",
     "admin:provision": "node --conditions=react-server --env-file=.env.local --import tsx scripts/provision-admin.ts",

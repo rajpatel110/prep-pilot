@@ -113,6 +113,19 @@ export const draftInputSchema = z
     message: "Choose a configured topic for this subject.",
   });
 
+export const draftPatchSchema = z.strictObject({
+  ...z.strictObject(editable).partial().shape,
+  tags: tags.optional(),
+  companies: companies.optional(),
+  assetIds: assets.optional(),
+  reviewedAt: instant.nullable().optional(),
+  prompt: markdown.nullable().optional(),
+  body: markdown.nullable().optional(),
+  explanation: markdown.nullable().optional(),
+  externalUrl: externalUrl.nullable().optional(),
+  expectedRevision: contentRevision,
+});
+
 export const storedContentSchema = z
   .strictObject({
     ...editable,

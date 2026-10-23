@@ -2,6 +2,193 @@
 
 Updated: 23 October 2026 (Asia/Kolkata).
 
+## Step 2: transactional admin draft creation and editing
+
+Step 2 is verified for the approved scope: the user supplied a successful current
+clean production build including both draft routes, and the agent subsequently ran
+both production regression suites successfully against that artifact. The original
+EPERM cause remains unproven; passing after changing both output state and execution
+context does not isolate its cause. All sections after this one are historical
+evidence for prior milestones, not separate current Step 2 build claims.
+No commit, push, deployment or Step 3 work was performed. Existing homepage/auth UI,
+auth behaviour, configuration, dependencies and original design documents remain
+unchanged. The pre-existing generated next-env imports are managed by Next's tools,
+not manually edited as part of this feature.
+
+### Production follow-up and output-directory evidence
+
+- User-run verification in normal VS Code PowerShell: removed only generated
+  `.next`, then ran `npm.cmd run build`. Supplied output reports Next.js 16.4.2,
+  successful compilation in 6.3s, TypeScript in 3.8s, static generation 5/5 and
+  completed traces/optimisation in 7.0s. Both `/api/v1/admin/content` and its `[id]`
+  route appear in the route table. No cleanup/build error was shown. This build was
+  performed by the user, not the agent. The new paste does not report Node/npm
+  versions; do not infer a fresh version check from earlier terminal setup.
+- Agent-run verification with the existing Node 24.22.1 runtime, sequentially and
+  without `--dev`: `tests/integration/admin-content.ts`, then
+  `tests/auth-integration.ts`, each using `--env-file=.env.local --import tsx`
+  (the admin suite also uses `--conditions=react-server`). Both exited 0. The first
+  passed production draft/DTO/validation/permission/CSRF, concurrency, clearing,
+  state/slug, counter and audit-rollback cases; the second passed production
+  homepage/health and authentication/session/role/CSRF/email-disabled/rate cases.
+  Only their guarded disposable databases were used and dropped.
+- The production build was not rerun by the agent; unrelated passing unit/catalog/
+  lint/type checks were not rerun without reason. Those earlier Step 2 results
+  remain recorded below. Only documentation changed during this follow-up.
+- Actual installed Next source confirms default `distDirRoot=.next`, with development
+  phase output changed to `.next/dev`. Interactive `npm run dev` and both `--dev`
+  integration suites share that same dev directory; their different ports do not
+  isolate their output. Production `next build` writes `.next`, while both normal
+  integration suites use `next start` to consume that same production artifact.
+- Development and production are not one identical leaf output directory. The
+  installed build cleanup explicitly preserves `dev`, `cache`, `diagnostics`,
+  `lock` and `trace`. They still share the `.next` parent and generated root
+  `next-env.d.ts`; deleting all of `.next` removes the dev subtree too. Type generation
+  also writes generated route metadata. This supports sequential verification,
+  not a claim that dev/build overlap caused the observed EPERM.
+- Before and after these production suites: no visible Node processes, no Next
+  dev/build lock files, and no reachable health server on 3000/3101/3103. Afterward
+  `.next/BUILD_ID` remained present and `.next/dev` absent, consistent with consuming
+  rather than rebuilding the production artifact. Full command-line/process-tree
+  inspection via CIM was denied in this sandbox. No residual project server was
+  observed, but these checks do not identify every possible Windows file-handle
+  holder, nor does a missing lock file by itself prove a server is absent.
+- The current user-cleaned `.next`, server/app directories (including admin) and
+  types directory are owned by the normal Windows user. Their inspected ACLs are
+  inherited, include Modify for Codex sandbox identities, and show no explicit deny.
+  Earlier observations included a sandbox-owned output root with similar inherited
+  Modify grants. Owner identity can differ across creators; that alone does not
+  establish different effective access or an EPERM cause. No ACL/security settings
+  were changed and no controlled cross-identity permission experiment was performed.
+- Source inspection identifies a cleanup-observability limitation: the harnesses
+  signal their owned child and wait for exit or a five-second timeout; timeout
+  resolution does not itself assert that the process tree or port is gone. Next's
+  dev CLI has its own child/shutdown handling. No leftover was observed here, so
+  neither an orphan process nor a cleanup defect causing EPERM is established.
+  Do not treat the printed PASS line before finally/cleanup as process completion;
+  wait for terminal return and check the known ports. No speculative test-harness,
+  configuration, dependency or filesystem-permission correction was made.
+
+Repeatable sequence is now documented in README: finish relevant dev suites one at
+a time, stop only positively identified project servers, run needed quality/type
+checks before final output preparation, clean only `.next` and build in one normal
+Node-24 VS Code terminal, then run the two production suites sequentially without
+interleaving dev/type-generation/build commands. The current successful artifact
+does not need another unchanged rebuild. No Step 3 work, commit, push or deployment.
+
+### Implemented operations and files
+
+- `POST /api/v1/admin/content`: strict DraftInput, server-owned draft status,
+  revision 1 and trusted authorship, incomplete learning bodies permitted, explicit
+  AdminContentDTO, 201 and a detail Location. No client role/owner/status/revision/
+  audit values are accepted. Real unique-index collisions return 409 SLUG_TAKEN.
+- `PATCH /api/v1/admin/content/:id`: required expectedRevision, allowlisted partial
+  fields, omission preservation, complete merged-candidate validation, array
+  replacement, optional text/URL removal via null and reviewedAt:null clearing.
+  Malformed IDs return 422, absent records 404 RESOURCE_NOT_FOUND and stale saves
+  409 CONTENT_CONFLICT. Successful edits increment the content revision exactly once.
+- Both routes use canonical admin cookies and the existing live verification gate,
+  exact Origin/session-bound CSRF and 64 KiB JSON handling. The public catalog
+  mutation services independently enforce admin access for non-HTTP callers.
+  Thin Node Route Handlers live under `src/app/api/v1/admin/content/`.
+- `src/modules/catalog/service.ts` implements both use cases. `repository.ts`
+  checks existing migration/index readiness without automatic setup and owns the
+  catalog guard. `schemas.ts`, `validation.ts`, `dto.ts` and `errors.ts` provide
+  strict PATCH validation, safe field feedback, allowlisted DTOs and finite error
+  translation. Unknown request keys/values, raw Mongo/Zod errors and secrets are
+  not reflected into error messages. Unknown commit outcomes are dependency errors
+  requiring reconciliation, not falsely reported as definite stale-write failures.
+- Domain writes share one Mongoose connection/session: catalogState first, the
+  identity-owned admin profile fence next, then content and administration-owned
+  append-only audit. Catalog revision, content revision and the profile stateRevision
+  fence advance once per accepted mutation; commitSerial is unchanged. Transactions
+  use primary/snapshot/majority, a 15-second overall deadline and bounded commit
+  time. Aborted callbacks may retry but recheck canonical profile role/lifecycle and
+  content revision/state. No parallel callback writes or external provider calls.
+- `src/modules/identity/mutation-guard.ts` owns the profile fence, rechecking current
+  active/admin state under the same transaction; catalog does not write identity's
+  collection directly. Downgrades/deletion cannot be authorised solely by a stale
+  resolved actor. Audit uses the existing administration service and records trusted
+  actor, prior/new content revisions, changed field names and the same request ID
+  returned in X-Request-Id. Shared HTTP helpers retain old defaults while supporting
+  an explicit server-generated request ID and Location for these mutations.
+- Existing migration 001, schemas/collections/indexes and connection infrastructure
+  are reused. Requests fail closed with 503 DEPENDENCY_UNAVAILABLE if migration,
+  singleton or uniqueness prerequisites are missing; they do not seed state, create
+  indexes or synchronise migrations on startup. README covers setup and restrictions.
+
+### Verification: actual outcomes
+
+- Node 24.22.1 / npm 10.9.3: all 22 unit tests passed, including PATCH omission and
+  privilege rejection, safe field errors, DTO omission/null/date contracts, request-ID
+  propagation and duplicate/concurrency/uncertain-commit error classification.
+- `tests/integration/admin-content.ts --dev` passed against a dedicated Next dev
+  server on port 3103 and random `prep_pilot_s2_test_*` Atlas databases. It proves
+  permitted admin create/edit and denied anonymous/student calls, direct-service
+  permission enforcement, POST/PATCH CSRF rejection and signed expiry distinction,
+  strict inputs, transport limits, required setup, duplicate/missing/malformed/stale
+  cases, partial subject/topic validation, null removal, array replacement, unsupported
+  statuses, historical slug protection, safe DTOs/headers, real unique-key and edit
+  races, transactional profile-role/lifecycle fencing and counter overflow protection.
+  Actual MongoDB audit-validator rejection rolls back both create and edit, preserving
+  content/catalog/audit and profile revision state. Successful mutations advance
+  revisions once and produce one audit event with the response request ID.
+- The first integration attempt identified that existing authentication's Profile
+  upsert updates profile.updatedAt even when merely resolving an actor. Auth code was
+  intentionally left unchanged. Atomicity snapshots compare every content/catalog/
+  audit field and all profile fields except that existing auth-bookkeeping timestamp;
+  no assertion excludes content timestamps or revision/role/lifecycle checks.
+- Existing authentication regressions passed in development mode against a separate
+  owned server and disposable `prep_pilot_auth_test_*` database, including homepage/
+  health, signup/login, session persistence/revocation/expiry, role/lifecycle isolation,
+  CSRF, disabled email flows and durable rate limits.
+- Existing `npm run test:catalog` integration passed again, including migration
+  repeatability/checksum/lease/conflict preservation, canonical test/live guards and
+  disposable admin-provisioning/audit rollback. Migration 001 was not replaced or
+  changed. No real account was promoted and no long-lived database was migrated.
+- ESLint with zero warnings and `npm run typecheck` passed. Formatting and Git diff
+  whitespace checks passed for the changed implementation. No dependencies installed.
+- At implementation time, production `npm run build` was attempted once after type checking, with the owned
+  dev suite stopped. It failed during generated output creation with exactly
+  `EPERM: operation not permitted, mkdir 'C:\PROJECTS\prep-pilot\.next\server\app\admin'`.
+  No unchanged failing build command was repeated. This filesystem error does not
+  establish the underlying Windows lock/ACL/sandbox cause. This historical acceptance
+  blocker is now superseded by the current user-run clean build and agent-run
+  production integrations recorded in the follow-up above.
+
+All database setup, role/state fixtures, synthetic lifecycle records and audit
+failure injection were restricted to guarded disposable database names; successful
+suites stopped their owned servers and dropped their test databases. Environment
+files/credentials were not changed or printed. Git pushing was not investigated or
+attempted. Scope has no visual UI changes; no new browser visual acceptance is claimed.
+
+### Temporary restrictions and next step
+
+Only drafts are editable; published/archived records return 409 INVALID_CONTENT_STATE
+until lifecycle handling exists. Previously published drafts retain immutable slugs
+through publication-history timestamps; future reopen logic must retain those fields.
+Accepted same-value/metadata-only patches still advance revisions and audit once.
+There is no blind creation/PATCH retry guarantee; reconcile uncertain outcomes.
+
+Only empty assetIds are accepted. DTOs contain empty assetIds/attachments and zero
+attachmentCount, never invented ready assets, signed URLs or upload capabilities.
+Live verification and password recovery remain incomplete/disabled in all configuration
+modes; their flags and native-route protections are unchanged. No R2 or email work.
+
+The Location identifies the future detail resource; GET/list/search/pagination,
+content-library/editor UI, student content, preview, publishing/archive/reopen and
+reviewed seeds are not implemented by Step 2. Guarded reads are needed for normal
+API-based recovery after an uncertain save; no recovery UI is claimed yet.
+
+Step 2's approved scope is now fully verified by the combined functional checks,
+user-run current clean production build and agent-run production integrations.
+Step 3's service/DTO foundation is ready, but Step 3 requires separate explicit
+approval and should implement guarded content
+reads and the content-library UI only; it was not started here. Before using the
+new endpoints on a long-lived development database, explicitly select that database
+and apply existing migration 001 through the documented setup command if not already
+applied. This task only performed setup in disposable test databases.
+
 ## Build troubleshooting follow-up: clean build and production regression pass
 
 Production-build acceptance is now satisfied by the user-supplied VS Code clean

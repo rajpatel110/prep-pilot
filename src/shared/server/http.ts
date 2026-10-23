@@ -11,17 +11,24 @@ export class HttpError extends Error {
     super(message);
   }
 }
-export function json(data: unknown, status = 200) {
+export function json(
+  data: unknown,
+  status = 200,
+  options: { requestId?: string; location?: string } = {},
+) {
   return Response.json(
     { data },
     {
       status,
-      headers: { "Cache-Control": "no-store", "X-Request-Id": randomUUID() },
+      headers: {
+        "Cache-Control": "no-store",
+        "X-Request-Id": options.requestId ?? randomUUID(),
+        ...(options.location ? { Location: options.location } : {}),
+      },
     },
   );
 }
-export function failure(error: unknown) {
-  const requestId = randomUUID();
+export function failure(error: unknown, requestId = randomUUID()) {
   const known = error instanceof HttpError;
   return Response.json(
     {
