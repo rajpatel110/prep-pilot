@@ -1,10 +1,32 @@
 import { randomUUID } from "node:crypto";
+import { getAdminContent } from "@/modules/catalog/reads";
 import { requireAdmin } from "@/modules/identity/service";
 import { editDraft } from "@/modules/catalog/service";
 import { requireCsrf } from "@/shared/server/csrf";
 import { failure, json, readJson, HttpError } from "@/shared/server/http";
 
 export const runtime = "nodejs";
+
+export async function GET(
+  request: Request,
+  context: { params: Promise<{ id: string }> },
+) {
+  const requestId = randomUUID();
+  try {
+    const { id } = await context.params;
+    return json(
+      await getAdminContent(
+        request.headers,
+        id,
+        new URL(request.url).searchParams,
+      ),
+      200,
+      { requestId },
+    );
+  } catch (error) {
+    return failure(error, requestId);
+  }
+}
 
 export async function PATCH(
   request: Request,

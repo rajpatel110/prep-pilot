@@ -1,10 +1,29 @@
 import { randomUUID } from "node:crypto";
+import { listAdminContent } from "@/modules/catalog/reads";
 import { requireAdmin } from "@/modules/identity/service";
 import { createDraft } from "@/modules/catalog/service";
 import { requireCsrf } from "@/shared/server/csrf";
 import { failure, json, readJson, HttpError } from "@/shared/server/http";
 
 export const runtime = "nodejs";
+
+export async function GET(request: Request) {
+  const requestId = randomUUID();
+  try {
+    const result = await listAdminContent(
+      request.headers,
+      new URL(request.url).searchParams,
+    );
+    return Response.json(result, {
+      headers: {
+        "Cache-Control": "private, no-store",
+        "X-Request-Id": requestId,
+      },
+    });
+  } catch (error) {
+    return failure(error, requestId);
+  }
+}
 
 export async function POST(request: Request) {
   const requestId = randomUUID();

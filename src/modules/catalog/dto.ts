@@ -2,7 +2,9 @@ import "server-only";
 import type { z } from "zod";
 import type { storedContentSchema } from "./schemas";
 
-export function adminContentDto(content: z.output<typeof storedContentSchema>) {
+export function adminContentSummaryDto(
+  content: z.output<typeof storedContentSchema>,
+) {
   return {
     id: content._id,
     slug: content.slug,
@@ -25,6 +27,12 @@ export function adminContentDto(content: z.output<typeof storedContentSchema>) {
     createdAt: content.createdAt.toISOString(),
     updatedAt: content.updatedAt.toISOString(),
     attachmentCount: 0,
+  };
+}
+
+export function adminContentDto(content: z.output<typeof storedContentSchema>) {
+  return {
+    ...adminContentSummaryDto(content),
     prompt: content.prompt ?? null,
     body: content.body ?? null,
     explanation: content.explanation ?? null,
@@ -37,3 +45,6 @@ export function adminContentDto(content: z.output<typeof storedContentSchema>) {
     attachments: [],
   };
 }
+
+export type AdminContentSummary = ReturnType<typeof adminContentSummaryDto>;
+export type AdminContentDetail = ReturnType<typeof adminContentDto>;

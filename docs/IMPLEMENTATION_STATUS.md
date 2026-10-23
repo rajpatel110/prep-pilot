@@ -2,6 +2,128 @@
 
 Updated: 23 October 2026 (Asia/Kolkata).
 
+## Step 3: guarded admin reads and Content Library
+
+Step 3 is verified for its approved scope: a user-run clean production build and
+agent-run production draft/read and authentication regressions have passed.
+This is current Step 3 evidence, not inferred from the prior Step 2 build.
+Step 2's committed feature work is preserved.
+The sections below this Step 3 checkpoint describe historical verification.
+The user authorised committing and pushing Step 3 after successful verification.
+No Step 4 work or deployment is performed here.
+
+### Implemented scope
+
+- `GET /api/v1/admin/content` and `GET /api/v1/admin/content/:id` enforce current
+  canonical admin access in services, not just routes or UI. Explicit summary and
+  detail DTOs omit internal authorship/schema fields, answers in lists, storage
+  keys and signed URLs. Responses are no-store and carry request IDs. Unknown or
+  repeated parameters, invalid IDs and invalid classifications return safe 422
+  field feedback; missing details return 404.
+- Allowlisted status/subject/topic/company/difficulty and trimmed 1–100 character
+  keyword filters combine with AND; company includes empty-company foundations.
+  Search uses the existing title/topic/tags MongoDB text index with quoted word
+  terms, not regex or client search operators. Punctuation-only searches return
+  no results. Limit defaults to 20 and caps at 50; all results sort by ID ascending.
+  Repository reads are lean, bounded to limit+1 and have a five-second query cap.
+  No relevance ordering, arbitrary sorting or total counts were invented.
+- Purpose-separated HMAC cursors use the existing server auth secret. Signed
+  payloads bind a digest of endpoint, ordering, normalised filters, limit and
+  current actor, plus last ID and a 30-minute expiry. Signature checks precede
+  payload use; altered/expired/mismatched cursors return 400 INVALID_CURSOR.
+  Reads do not advance content, catalog, audit or study revisions. Existing identity
+  profile provisioning/updatedAt bookkeeping is unchanged.
+- `/admin/content` uses the existing Workspace/SignOut shell, server page guards,
+  warm ivory, forest green, charcoal and existing typography. The approved Stitch
+  Content Library HTML and screenshot were accessible and inspected. Its illustrative
+  metrics, mock totals, service claims, editor/lifecycle/file controls and unrelated
+  navigation were deliberately omitted. No design was modified in Stitch.
+- All/Draft/Published/Archived views, keyword search, configured filters and clear
+  filters persist in the URL. Navigation resets pagination; keyed server results
+  and aborted client requests prevent older pages replacing newer filters. Desktop
+  tables become mobile cards. Loading, honest empty/no-results and recoverable
+  error states are present; loaded-item counts are not catalog totals.
+- A native modal uses the guarded detail endpoint for saved metadata, text,
+  provenance and lifecycle inspection. Text is escaped plain text, not raw HTML
+  or a student preview. Keyboard activation, Escape and return focus are supported.
+  Attachments remain empty and explicitly unavailable.
+
+### Verification evidence
+
+- User-run clean build in normal VS Code PowerShell: removed generated `.next`,
+  selected the existing local Node runtime and ran `npm.cmd run build`. Supplied
+  Next.js 16.4.2 output reports compilation in 13.7s, TypeScript in 4.3s, static
+  generation 5/5 and completed traces/optimisation in 7.6s. The route table includes
+  `/admin/content` and both admin content API routes. This is user-run verification,
+  not an agent-run successful build; Node/npm versions were not printed in that paste.
+- Agent-run production follow-up used that artifact without rebuilding or starting
+  a development server. The full `tests/integration/admin-content.ts` suite passed,
+  followed sequentially by `tests/auth-integration.ts`; the command returned exit 0.
+  This includes transactional draft and audit-rollback regressions, guarded reads,
+  strict filters/DTOs, text-index execution plan, pagination/cursor scope/expiry,
+  empty-library server rendering, homepage and authentication/session checks.
+  Only guarded disposable test databases were used; no real account was promoted.
+- Agent-run pure tests: 25 passed (including three new query/cursor/search cases).
+  The three read tests were rerun successfully after adding explicit endpoint/order
+  mismatch assertions. Final full formatting, zero-warning lint, type checking and
+  Git whitespace checks passed after the development servers finished.
+- The expanded development draft/read suite completed successfully, including
+  permissions, strict filters, search, company inclusion, stable pagination,
+  cursor scope/expiry, DTO and read-only snapshot assertions plus all existing
+  draft mutation, concurrency, CSRF and audit-rollback regressions.
+  The first run exposed a test assumption about redirects: Next may stream a
+  redirect in an HTTP 200 response. The corrected assertion requires either 307 or
+  a streamed NEXT_REDIRECT marker and verifies no fixture content leaks.
+- A subsequent targeted `--dev --reads-only` run passed against the final read
+  implementation, including an executionStats check confirming the existing
+  content_search text index and true empty-library API/server rendering. It
+  deliberately skipped repeating successful draft writes, and also exercised
+  current downgraded/deleting actors and direct service denial checks.
+- The existing authentication integration suite then passed in development mode,
+  including homepage/health, signup/login, session persistence/revocation,
+  student/admin separation, profile concurrency, CSRF, disabled email capabilities
+  and durable rate limits. These are agent-run development results, not production
+  acceptance. Both harness commands returned exit 0; disposable databases were
+  dropped. After cleanup, known ports 3000/3101/3103 gave no HTTP response and no
+  Node process was visible to Get-Process. No competing server was started.
+- Agent browser checks against isolated fixtures: desktop at 1440px and mobile at
+  390px/320px; table/card switching, readable controls and no horizontal document
+  overflow; load-more 20→40 then filter reset to 20; saved filters after refresh;
+  rapid All/load-more/Draft/Archived navigation leaves only archived results;
+  no-results, invalid-cursor feedback and first-page recovery; plain-text detail,
+  Enter activation, Escape dismissal and return focus to the invoking title.
+  Browser viewport overrides were reset after review. This is manual browser
+  evidence, not an automated accessibility audit or a production browser claim.
+- One agent production build attempt, Node 24.22.1 / npm 10.9.3, using the existing
+  `next build --webpack`, failed with the exact error:
+  `EPERM: operation not permitted, mkdir 'C:\PROJECTS\prep-pilot\.next\server\app\onboarding'`.
+  No unchanged retry, dependency reinstall, speculative configuration/security fix
+  or competing build was attempted. The original Windows EPERM cause remains
+  unproven. The later successful user-run clean build supersedes that failed
+  artifact; changing both output state and execution context does not prove the
+  original cause. The production follow-up above verifies the successful artifact.
+- Next's dev/build/type-generation tools switch next-env imports between
+  `.next/dev/types` and `.next/types`. Final type generation naturally restored
+  this task's initial production-path imports; the pre-existing generated diff
+  remains separate from Step 3 and no generated directory is added to the patch.
+
+### Limits and next gate
+
+Only disposable, randomly named `prep_pilot_s2_test_*` databases are used by the
+integration fixture harness, with the existing migration tooling. No configured
+development database is migrated, seeded or promoted for this milestone; no new
+external account, service, credentials or dependencies are required. Optional
+`--browser` uses an intentionally public disposable login only in that isolated
+database and has bounded automatic cleanup. `--reads-only` permits targeted read
+regressions without repeating already passing draft mutation cases.
+
+Keep the existing POST/PATCH draft restrictions. Create/edit UI, student preview,
+publishing/archive/reopen, student catalogs, R2/uploads, analytics, full seeds,
+live email verification and password recovery remain incomplete. Follow README's
+sequential clean-build/production-suite procedure in normal VS Code PowerShell.
+The production verification gate is now satisfied. Step 4 is ready to begin only
+after separate implementation approval; it was not started in this milestone.
+
 ## Step 2: transactional admin draft creation and editing
 
 Step 2 is verified for the approved scope: the user supplied a successful current

@@ -229,11 +229,55 @@ audit rollback and exact counter changes, then removes its database and server.
 For development-only verification use `npm run test:admin-content -- --dev`; this
 does not prove production-build acceptance. Do not run two Next dev suites at once.
 
-The Location points to the documented detail resource; its GET route, library reads,
-search/pagination and UI are deferred to Step 3. Creation has no blind retry guarantee;
+The Location points to the documented detail resource; Step 3 now supplies its
+guarded GET route, library reads, search/pagination and read-only UI. Creation has no blind retry guarantee;
 unknown commit outcomes return safe dependency errors and must be reconciled, not
-automatically resubmitted. Until guarded reads exist, reconcile uncertain saves by
-operator inspection rather than claiming an API-based recovery UI is implemented.
+automatically resubmitted. Reconcile uncertain saves through guarded lists/details:
+search title/topic/tags or paginate, then compare the returned slug and saved fields.
+There is no undocumented slug filter or automatic creation retry.
+
+## Guarded Content Library (Step 3)
+
+`/admin/content` is a server-guarded, read-only admin library. Open Administration
+after signing in with an operator-provisioned admin, then select **Open content
+library**. No account is automatically promoted. Existing database setup and
+authentication are required; no new service or credential is needed.
+
+`GET /api/v1/admin/content` supports status, subject, configured topic, company,
+difficulty, q, cursor and limit (20 default, 50 maximum). Unknown/repeated scalar
+parameters are rejected. Company filters also include shared foundations. Search
+uses the existing MongoDB title/topic/tags text index: bounded, quoted keyword
+terms (MongoDB English text-index matching), not regex, client operators or
+relevance ordering. Punctuation-only searches return no results. IDs ascend for
+all lists, including search. No total count is returned.
+
+Thirty-minute HMAC cursors are purpose-separated using the existing server auth
+secret and bind the endpoint, ordering, normalised filters, limit and current user.
+Expired/tampered/mismatched cursors return `400 INVALID_CURSOR`; restart from page
+one. Pagination is not a frozen snapshot. Reads do not modify content, catalog,
+audit or study state; existing identity profile bookkeeping remains unchanged.
+Private responses are no-store. `GET /api/v1/admin/content/:id` returns the explicit
+admin detail DTO for any saved lifecycle state; no provider keys or signed URLs.
+
+Filters and selected status persist in the URL; load-more state resets on navigation.
+Desktop rows become mobile cards. Select a title for keyboard-accessible saved
+record inspection, not a student preview. Detail text is escaped plain text.
+No create/edit forms, lifecycle actions, uploads, analytics or student pages exist
+in this milestone. Empty databases display an honest empty state, not demo metrics.
+
+The existing `test:admin-content` suite now also verifies read permissions, filters,
+search, pagination and cursor binding with 55 disposable fixtures. Optional
+`npm run test:admin-content -- --browser` pauses the isolated production test server
+on port 3103 for browser review; its disposable login is `library-browser@example.com`
+with the deliberately public fixture password `Disposable-library-browser-only-481!`.
+Use these only on that isolated server, never as a real account. Press Enter in
+the test terminal to finish (automatic cleanup after ten minutes). No reusable
+fixture command writes to the configured development database.
+
+For focused read regressions during iteration use
+`npm run test:admin-content -- --dev --reads-only`; this still uses an isolated
+test database and never establishes production-build acceptance. The default
+suite retains the full transactional draft regression coverage.
 
 ## Repeatable local build and integration sequence
 
@@ -337,8 +381,8 @@ and service release gates remain outstanding. Free-tier availability is not a
 guarantee of zero billing.
 
 The visual foundation uses warm ivory, forest green, charcoal and system typography.
-Landing and authentication pages adapt the reviewed Stitch direction. Full study/admin
-screens and a component library are deferred.
+Landing, authentication and the read-only admin Content Library adapt the reviewed
+Stitch direction. Remaining study/admin workflows and a component library are deferred.
 
 See [implementation status](docs/IMPLEMENTATION_STATUS.md), [working instructions](AGENTS.md)
 and the four design documents referenced there for scope, architecture and next steps.

@@ -3,6 +3,57 @@ import type { Connection, ClientSession } from "mongoose";
 import { catalogModels } from "./model";
 import { catalogStateSchema } from "./schemas";
 import { HttpError } from "@/shared/server/http";
+import { Types } from "mongoose";
+import { storedContentSchema } from "./schemas";
+import { keywordSearch, type CatalogQuery } from "./read-query";
+
+export async function findCatalogPage(
+  connection: Connection,
+  query: CatalogQuery,
+  after: string | null,
+) {
+  const filter: Record<string, unknown> = {};
+  for (const field of ["status", "subject", "topic", "difficulty"] as const)
+    if (query[field]) filter[field] = query[field];
+  if (query.company)
+    filter.$or = [
+      { "companies.companyId": query.company },
+      { companies: { $size: 0 } },
+    ];
+  if (after) filter._id = { $gt: new Types.ObjectId(after) };
+  if (query.q) {
+    const keywords = keywordSearch(query.q);
+    if (keywords) filter.$text = { $search: keywords };
+    else filter._id = { $in: [] };
+  }
+  const documents = await catalogModels(connection)
+    .content.find(filter)
+    .sort({ _id: 1 })
+    .limit(query.limit + 1)
+    .maxTimeMS(5000)
+    .lean();
+  return documents.map((document) =>
+    storedContentSchema.parse({
+      ...document,
+      _id: document._id.toString(),
+      assetIds: document.assetIds.map(String),
+    }),
+  );
+}
+
+export async function findCatalogDetail(connection: Connection, id: string) {
+  const document = await catalogModels(connection)
+    .content.findById(id)
+    .maxTimeMS(5000)
+    .lean();
+  return document
+    ? storedContentSchema.parse({
+        ...document,
+        _id: document._id.toString(),
+        assetIds: document.assetIds.map(String),
+      })
+    : null;
+}
 
 export async function requireCatalogSetup(connection: Connection) {
   const migration = await connection

@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import Link from "next/link";
 import { requireAdmin } from "@/modules/identity/service";
 import { pageActor } from "@/modules/identity/page-access";
 import { Workspace } from "@/shared/ui/workspace";
@@ -10,9 +11,13 @@ export default async function AdminPage() {
   return (
     <Workspace name={actor.session.user.name} title="Administration">
       <p>
-        Administrator access confirmed. Content management and file operations
-        will arrive in a later milestone.
+        Administrator access confirmed. Inspect saved drafts, published material
+        and archived content in the library. Editing and file operations are not
+        yet available here.
       </p>
+      <Link className="button button-primary" href="/admin/content">
+        Open content library
+      </Link>
     </Workspace>
   );
 }
