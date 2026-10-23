@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+coverage/
+.tools/
+package-lock.json
+next-env.d.ts
+docs/PrepPilot_PRD_v2.md
+docs/PrepPilot_System_Design.md
+docs/PrepPilot_API_Design.md
+docs/PrepPilot_Database_Design.md
