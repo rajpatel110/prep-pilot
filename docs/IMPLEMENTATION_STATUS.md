@@ -4,6 +4,66 @@ Updated: 23 October 2026 (Asia/Kolkata).
 
 ## Scope
 
+Pre-commit verification: formatting, lint, TypeScript and all six unit tests pass.
+The user confirmed sign-in works from the VS Code terminal after the Codex-hosted
+server hit generated-file EPERM. HTTP checks of that server's login and health
+routes returned 200. No build was rerun alongside the user's active dev server.
+Prior production build and account integration evidence is recorded below; the
+latest warning-only rebuild remains subject to the documented sandbox limitation.
+Local credentials remain ignored and are excluded from the commit.
+
+Auth warning fix: profile provisioning uses Mongoose's returnDocument="after"
+instead of deprecated new=true. Root HTML declares smooth-scroll behaviour for
+Next.js route transitions. Observed signup/login requests succeeded; the initial
+signup included development compilation and database/authentication startup time.
+All six unit tests and the isolated development authentication suite passed after
+the warning fix. Production compilation and TypeScript passed, but prerendering
+again hit the sandbox's intermittent EPERM on generated _not-found output.
+
+Latest resolution: local auth setup now replaces AUTH_ENABLED=false with true,
+fills blank secrets (including quoted empties), preserves existing credentials
+and email mode, and is idempotent. Two regression tests cover copied-example
+Windows line endings and preservation. All six unit tests, formatting and lint
+pass. The production build and its TypeScript check now pass with the development
+server stopped; this supersedes the earlier final-build permission limitation.
+The production-server disposable-database authentication suite also passed after
+this build, including expired/revoked sessions and student/admin isolation.
+
+Final verification note: the latest source passed formatting, lint, TypeScript
+and all four unit tests. Isolated development-server integration also passed,
+including rejecting expired sessions before TTL cleanup. An earlier production
+build/integration run passed; final rebuild attempts were blocked by Windows EPERM
+on generated output directories, including a fresh temporary verification copy.
+The cleanup command was rejected by environment approval policy. No successful
+final production rebuild is claimed; rerun `npm run build` outside this sandbox
+before release. No application security settings were weakened to work around it.
+
+Authentication foundation (current): signup/login/logout, Better Auth 1.7.12 with
+its official MongoDB adapter, Mongoose profiles, bounded connections, unique
+indexes, persistent cookies, current role/lifecycle guards, HMAC CSRF bootstrap,
+durable account/shared rate buckets and protected placeholder destinations.
+Local secrets were generated only when absent; existing URI credentials preserved.
+The setup command verified indexes against the configured development database.
+Homepage account links now lead to working signup/login pages matching its palette.
+
+Unit checks pass for routing, input allowlists, enabled-config requirements and
+session-bound CSRF expiry/tampering. A disposable Atlas database integration run
+passed signup, duplicates, wrong credentials, persistence/revocation, role changes,
+student/admin isolation, concurrent profile provisioning, CSRF gates, disabled
+email paths and rate limits. The disposable database/server were cleaned up.
+Strict types, lint and the production build passed during implementation.
+Desktop and 390px login rendering, password visibility, pending submission and
+generic invalid-credential feedback were checked in the browser. Production
+dependency audit returned zero findings; existing development-only findings remain.
+
+This is a test-email-mode foundation, not completion of the entire identity PRD.
+Resend verification/recovery, delivery metadata and single-use token guards remain
+unimplemented; wrappers return EMAIL_DISABLED and native email routes are blocked.
+Live mode gates study access without disabling verification during outages.
+The local rate policy uses account/global buckets pending verified deployment-IP
+extraction; see README for explicit policies. Full onboarding/dashboard/content
+features are not included. Existing original design documents remain unchanged.
+
 Mobile navigation fix: extracted a small Client Component while keeping the
 homepage server-rendered. Selecting a navigation link closes the disclosure;
 Escape closes it and returns focus to the Menu summary. Production-browser

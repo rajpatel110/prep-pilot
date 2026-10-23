@@ -7,6 +7,11 @@
   },
   "packageManager": "npm@10.9.3",
   "scripts": {
+    "test": "tsx --test tests/*.test.ts",
+    "test:integration": "node --env-file=.env.local --import tsx tests/auth-integration.ts",
+    "auth:setup": "tsx scripts/setup-local-auth.ts",
+    "db:setup": "node --env-file=.env.local --import tsx scripts/setup-database.ts",
+    "admin:provision": "node --env-file=.env.local --import tsx scripts/provision-admin.ts",
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
@@ -16,6 +21,10 @@
     "format": "prettier . --write"
   },
   "dependencies": {
+    "@better-auth/mongo-adapter": "1.7.12",
+    "better-auth": "1.7.12",
+    "mongodb": "7.7.0",
+    "mongoose": "9.11.3",
     "next": "16.4.2",
     "react": "19.3.0",
     "react-dom": "19.3.0",
@@ -33,6 +42,7 @@
     "postcss": "8.5.31",
     "prettier": "3.9.10",
     "tailwindcss": "4.3.3",
+    "tsx": "4.23.15",
     "typescript": "5.9.3"
   }
 }

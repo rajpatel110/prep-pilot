@@ -33,7 +33,10 @@ export function MobileMenu() {
         <a href="#faq" onClick={closeMenu}>
           FAQ
         </a>
-        <a href="#availability" onClick={closeMenu}>
+        <a href="/login" onClick={closeMenu}>
+          Sign in
+        </a>
+        <a href="/signup" onClick={closeMenu}>
           Get started
         </a>
       </nav>

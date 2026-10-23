@@ -82,11 +82,9 @@ export default function Home() {
               <a href="#how-it-works">How it works</a>
               <a href="#subjects">Subjects</a>
               <a href="#faq">FAQ</a>
+              <a href="/login">Sign in</a>
             </nav>
-            <a
-              href="#availability"
-              className="button button-small desktop-action"
-            >
+            <a href="/signup" className="button button-small desktop-action">
               Get started ↗
             </a>
             <MobileMenu />
@@ -111,7 +109,7 @@ export default function Home() {
                   review suggested changes as you go.
                 </p>
                 <div className="actions">
-                  <a className="button" href="#availability">
+                  <a className="button" href="/signup">
                     Create my study plan <span aria-hidden="true">↗</span>
                   </a>
                   <a className="button button-secondary" href="#sample-plan">
@@ -119,7 +117,7 @@ export default function Home() {
                   </a>
                 </div>
                 <p className="small-note">
-                  Homepage preview · Accounts and saved plans are coming.
+                  Create an account, then explore your preparation workspace.
                 </p>
                 <p className="subject-line">DSA · Aptitude · CS fundamentals</p>
               </div>
@@ -324,11 +322,12 @@ export default function Home() {
                 manageable plan.
               </p>
               <p className="availability-note">
-                You’re viewing the homepage preview. Account creation and saved
-                study plans are not available yet.
+                Account access is available in demo mode. Saved study plans are
+                coming in a later milestone. Verification and recovery email are
+                unavailable.
               </p>
-              <a className="button" href="#sample-plan">
-                Explore the sample plan <span aria-hidden="true">↑</span>
+              <a className="button" href="/signup">
+                Create your account <span aria-hidden="true">↗</span>
               </a>
             </div>
           </PageContainer>
