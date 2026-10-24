@@ -6,6 +6,7 @@ import { MongoClient } from "mongodb";
 import { migrateDatabase } from "../../scripts/database-migrations";
 import { exercisePractice } from "./practice-cases";
 import { exercisePlanning } from "./planning-cases";
+import { exerciseProgress } from "./progress-cases";
 import {
   minimumDeadline,
   studyDate,
@@ -59,6 +60,8 @@ async function main() {
     });
     if (!direct) return fetch(request);
     const url = new URL(request.url);
+    if (url.pathname === "/api/v1/progress")
+      return (await import("../../src/app/api/v1/progress/route")).GET(request);
     const planningMatch =
       /^\/api\/v1\/(plan-previews|plans|dashboard)(?:\/([a-f0-9]{24}|current))?(?:\/(confirm))?$/.exec(
         url.pathname,
@@ -530,6 +533,16 @@ async function main() {
         studentId: student.userId,
         rateSecret: environment.RATE_LIMIT_SECRET,
         create,
+      });
+    }
+    if (planning || process.argv.includes("--progress")) {
+      stage = "progress integration";
+      await exerciseProgress({
+        db,
+        request,
+        studentCookie,
+        adminCookie,
+        studentId: student.userId,
       });
     }
     if (!practice && !planning)

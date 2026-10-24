@@ -1,5 +1,30 @@
 # PrepPilot API Design Document
 
+## Implementation extension: student progress
+
+`GET /api/v1/progress` requires a current student study actor and rejects query
+parameters. It is a read-only projection of the metrics already defined here and
+in the PRD, not an additional scoring system. Success is `{ data: ProgressDto }`,
+private/no-store, with X-Request-Id. Standard safe errors apply. No CSRF token is
+required for this non-mutating GET. Owner comes exclusively from the session.
+
+ProgressDto contains asOf (UTC ISO), studyDate (Kolkata date), timezone,
+stateRevision; lifetime submissions, practiceSubmissions, revisionSubmissions,
+distinctAttempted and currentlySolved; nullable activePlan (id, windowStart,
+windowEnd, completed, total, completionPercent or null for zero tasks,
+readingCompleted); historicalPlanVersions; revisions (due, unavailable); and topics
+(subject, topic, distinctAttempted, currentlySolved, neededHelp, failed,
+readingCompleted). Each question contributes only its latest saved outcome and
+classification. Resource counts refer only to completed active-plan tasks; older
+versions are excluded to prevent duplicated carried-forward completions.
+
+All summary reads share a primary snapshot. Exact owner-filtered attempt/revision
+aggregations have five-second query bounds and bounded grouped output; plans have
+at most 480 tasks. Existing owner/sequence, owner/due-date and owner/version indexes
+are reused. Failure is not represented as empty data. Recent history uses the
+existing independently paginated GET /attempts contract and may be read later than
+the summary; unavailable content retains its immutable reference, not hidden body.
+
 Version 1.0 | 23 October 2026 | Project owner Raj Patel
 
 REST API contracts for the PrepPilot placement preparation application. This document defines requests, responses, access checks, errors and retry behaviour for implementation with Next.js Route Handlers on Node.js and TypeScript.

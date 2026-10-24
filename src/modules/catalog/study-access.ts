@@ -138,6 +138,20 @@ export async function attemptableContent(
     contentRevision: content.revision,
   };
 }
+export function publishedAvailabilityLookup(localField: string) {
+  return {
+    $lookup: {
+      from: "contentItems",
+      let: { contentId: `$${localField}` },
+      pipeline: [
+        { $match: { $expr: { $eq: ["$_id", "$$contentId"] } } },
+        { $project: { _id: 0, status: 1 } },
+      ],
+      as: "availability",
+    },
+  };
+}
+
 export async function studyAvailability(
   connection: Connection,
   session: ClientSession,

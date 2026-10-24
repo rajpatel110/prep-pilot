@@ -6,11 +6,12 @@ export function studentReturn(value: unknown): string | null {
   )
     return null;
   try {
+    if (value === "/account?view=settings") return value;
     const url = new URL(value, "https://preppilot.invalid");
     if (
       url.origin !== "https://preppilot.invalid" ||
       !value.startsWith("/") ||
-      !/^(?:\/content(?:\/[a-f0-9]{24})?|\/revisions|\/attempts|\/dashboard|\/plans(?:\/[a-f0-9]{24})?|\/plan-previews\/[a-f0-9]{24})$/.test(
+      !/^(?:\/content(?:\/[a-f0-9]{24})?|\/revisions|\/attempts|\/dashboard|\/progress|\/plans(?:\/[a-f0-9]{24})?|\/plan-previews\/[a-f0-9]{24})$/.test(
         url.pathname,
       ) ||
       url.hash

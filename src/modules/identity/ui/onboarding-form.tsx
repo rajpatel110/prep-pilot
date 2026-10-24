@@ -14,6 +14,7 @@ import {
   ApiRequestError as CatalogRequestError,
 } from "@/shared/ui/api-client";
 import { UnsavedGuard } from "@/shared/ui/unsaved-guard";
+import { GeneratePlan } from "@/modules/planning/ui/workspace";
 
 const subjects = {
   dsa: "Data Structures & Algorithms",
@@ -37,9 +38,11 @@ type Values = {
 export function OnboardingForm({
   initial,
   returnTo,
+  settings = false,
 }: {
   initial: MeDto;
   returnTo: string;
+  settings?: boolean;
 }) {
   const router = useRouter();
   const [values, setValues] = useState<Values>(
@@ -58,6 +61,7 @@ export function OnboardingForm({
   const [busy, setBusy] = useState(false);
   const [blocked, setBlocked] = useState(false);
   const [remote, setRemote] = useState<MeDto | null>(null);
+  const [saved, setSaved] = useState<MeDto | null>(null);
   const submitting = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const dirty = JSON.stringify(values) !== baseline;
@@ -82,7 +86,7 @@ export function OnboardingForm({
   }
   async function save(event: React.FormEvent) {
     event.preventDefault();
-    if (step < 3) {
+    if (!settings && step < 3) {
       next();
       return;
     }
@@ -96,13 +100,24 @@ export function OnboardingForm({
     }
     submitting.current = true;
     setBusy(true);
+    setSaved(null);
     setMessage("");
     setFields({});
     try {
-      await catalogRequest("/api/v1/me/preferences", "PATCH", input);
+      const response = await catalogRequest(
+        "/api/v1/me/preferences",
+        "PATCH",
+        input,
+      );
       setBaseline(JSON.stringify(values));
-      router.replace(returnTo);
-      router.refresh();
+      setRevision(response.data.stateRevision);
+      if (settings) {
+        setSaved(response.data);
+        setMessage("Preferences saved. Your current plan is unchanged.");
+      } else {
+        router.replace(returnTo);
+        router.refresh();
+      }
     } catch (error) {
       setMessage(
         error instanceof Error
@@ -158,46 +173,57 @@ export function OnboardingForm({
   return (
     <>
       <UnsavedGuard dirty={dirty} />
-      <ol className="onboarding-steps" aria-label="Preparation setup steps">
-        {["Goals", "Schedule", "Starting point"].map((title, index) => (
-          <li
-            key={title}
-            aria-current={step === index + 1 ? "step" : undefined}
-          >
-            <span>{index + 1}</span>
-            {title}
-          </li>
-        ))}
-      </ol>
+      {!settings && (
+        <ol className="onboarding-steps" aria-label="Preparation setup steps">
+          {["Goals", "Schedule", "Starting point"].map((title, index) => (
+            <li
+              key={title}
+              aria-current={step === index + 1 ? "step" : undefined}
+            >
+              <span>{index + 1}</span>
+              {title}
+            </li>
+          ))}
+        </ol>
+      )}
       <div className="onboarding-layout">
         <section>
-          <p className="eyebrow">Step {step} of 3 · Preparation preferences</p>
+          <p className="eyebrow">
+            {settings
+              ? "Your preparation preferences"
+              : `Step ${step} of 3 · Preparation preferences`}
+          </p>
           <h1 ref={heading} tabIndex={-1}>
-            {step === 1
-              ? "What are you preparing for?"
-              : step === 2
-                ? "Make room for consistent progress."
-                : "Where are you starting?"}
+            {settings
+              ? "Settings"
+              : step === 1
+                ? "What are you preparing for?"
+                : step === 2
+                  ? "Make room for consistent progress."
+                  : "Where are you starting?"}
           </h1>
           <p className="student-lead">
-            {step === 1
-              ? "Choose your target companies. Your preparation also includes shared placement foundations."
-              : step === 2
-                ? "Choose a daily commitment that fits your schedule."
-                : "An honest starting point, not a test. Rate each subject from 1 (new) to 5 (very confident)."}
+            {settings
+              ? "Update your preparation goals and starting self-assessment. Changes apply to future proposals, never automatically to your current plan."
+              : step === 1
+                ? "Choose your target companies. Your preparation also includes shared placement foundations."
+                : step === 2
+                  ? "Choose a daily commitment that fits your schedule."
+                  : "An honest starting point, not a test. Rate each subject from 1 (new) to 5 (very confident)."}
           </p>
           {message && (
             <div className="student-notice" role="status">
               {message}{" "}
-              <Link
-                href={`/login?returnTo=${encodeURIComponent(returnTo)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Sign in again in a new tab if your session expired; then return
-                here to retry
-              </Link>
-              .
+              {!saved && (
+                <Link
+                  href={`/login?returnTo=${encodeURIComponent(returnTo)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Sign in again in a new tab if your session expired; then
+                  return here to retry
+                </Link>
+              )}
             </div>
           )}
           {Object.keys(fields).length > 0 && (
@@ -214,7 +240,7 @@ export function OnboardingForm({
           )}
           <form onSubmit={save} aria-busy={busy}>
             <fieldset disabled={busy} className="student-fieldset">
-              {step === 1 && (
+              {(settings || step === 1) && (
                 <fieldset
                   className="student-options"
                   aria-describedby={
@@ -264,7 +290,7 @@ export function OnboardingForm({
                   </div>
                 </fieldset>
               )}
-              {step === 2 && (
+              {(settings || step === 2) && (
                 <div className="student-stack">
                   <fieldset className="student-card">
                     <legend>Daily study time</legend>
@@ -337,7 +363,7 @@ export function OnboardingForm({
                   </p>
                 </div>
               )}
-              {step === 3 && (
+              {(settings || step === 3) && (
                 <div className="student-stack">
                   {(Object.keys(subjects) as (keyof typeof subjects)[]).map(
                     (subject) => (
@@ -408,7 +434,12 @@ export function OnboardingForm({
                 </div>
               )}
               <div className="student-actions">
-                {step > 1 && (
+                {settings && (
+                  <Link className="button button-outline" href="/dashboard">
+                    Cancel
+                  </Link>
+                )}
+                {!settings && step > 1 && (
                   <button
                     className="button button-outline"
                     type="button"
@@ -417,18 +448,43 @@ export function OnboardingForm({
                     Back
                   </button>
                 )}
-                {step < 3 ? (
+                {!settings && step < 3 ? (
                   <button className="button" type="submit">
                     Continue
                   </button>
                 ) : (
                   <button className="button" disabled={blocked} type="submit">
-                    {busy ? "Saving…" : "Save and continue"}
+                    {busy
+                      ? "Saving…"
+                      : settings
+                        ? "Save preferences"
+                        : "Save and continue"}
                   </button>
                 )}
               </div>
             </fieldset>
           </form>
+          {settings &&
+            initial.preferences &&
+            initial.preferences.deadline < minimumDeadline() && (
+              <p className="student-notice">
+                Your saved target date is too near or has passed. Study access
+                remains available. Choose at least seven inclusive study days
+                before saving new preferences.
+              </p>
+            )}
+          {settings && saved && !dirty && !blocked && (
+            <section aria-label="Saved preference planning options">
+              <h2>Review a new proposal</h2>
+              <p>
+                Your active plan has not changed. A replacement keeps its
+                existing window end; an updated target date applies to a new
+                preparation window. A proposal changes nothing until you
+                explicitly accept it.
+              </p>
+              <GeneratePlan revision={saved.stateRevision} kind="preferences" />
+            </section>
+          )}
           {blocked && (
             <section
               className="student-card"
@@ -448,18 +504,32 @@ export function OnboardingForm({
               </button>
               {remote && (
                 <>
-                  <pre className="student-json">
-                    {JSON.stringify(remote.preferences, null, 2)}
-                  </pre>
                   <p>
-                    Current state revision: {remote.stateRevision}. Existing
-                    plan unchanged.
+                    Saved: {remote.preferences?.companies.join(" + ")} ·{" "}
+                    {remote.preferences?.dailyMinutes} minutes/day · Target{" "}
+                    {remote.preferences?.deadline}. Self-assessment: DSA{" "}
+                    {remote.preferences?.skills.dsa}/5 · Aptitude{" "}
+                    {remote.preferences?.skills.aptitude}/5 · CS{" "}
+                    {remote.preferences?.skills.cs}/5. Existing plan unchanged.
                   </p>
                   {remote.preferences && (
                     <button
                       className="button"
                       disabled={busy}
                       onClick={() => {
+                        if (settings && remote.preferences) {
+                          setValues(remote.preferences);
+                          setBaseline(JSON.stringify(remote.preferences));
+                          setRevision(remote.stateRevision);
+                          setSaved(remote);
+                          setBlocked(false);
+                          setRemote(null);
+                          setFields({});
+                          setMessage(
+                            "Saved preferences loaded. Current plan unchanged.",
+                          );
+                          return;
+                        }
                         setBaseline(JSON.stringify(values));
                         router.replace(returnTo);
                         router.refresh();
@@ -473,6 +543,7 @@ export function OnboardingForm({
                     disabled={busy}
                     onClick={() => {
                       setRevision(remote.stateRevision);
+                      setBaseline(JSON.stringify(remote.preferences));
                       setBlocked(false);
                       setRemote(null);
                       setMessage(
@@ -488,6 +559,22 @@ export function OnboardingForm({
           )}
         </section>
         <aside className="preparation-brief student-card">
+          {settings && (
+            <section>
+              <h2>Account</h2>
+              <p>{initial.name}</p>
+              <p>{initial.email}</p>
+              <p>
+                {initial.emailVerified
+                  ? "Email verified"
+                  : "Email not verified"}
+              </p>
+              <p>
+                Sign out is available in the navigation. Account credentials
+                cannot be changed here.
+              </p>
+            </section>
+          )}
           <p className="eyebrow">Your preparation profile</p>
           <h2>Preparation brief</h2>
           <dl>

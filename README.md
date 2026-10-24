@@ -503,6 +503,62 @@ can outlive a source-module refresh.
 
 ### Sequential checks
 
+**EPERM investigation is paused by user request.** No further probes, diagnostic
+builds, Process Monitor comparisons or permission/security changes are authorised.
+Confirmed: Codex compilation hit Windows ACCESS DENIED/EPERM; the failing worker
+ran at Low integrity; filesystem probes passed. Root cause remains unproven.
+Diagnostic scripts are historical evidence, not normal build prerequisites.
+
+Temporary workflow:
+
+1. Finish source changes and applicable static/unit checks in Codex.
+2. When compilation is necessary, provide one ordinary Git Bash build block (no
+   diagnostic preload). The user runs it and supplies the result. This is not deploy.
+3. After success, run only justified production regressions sequentially, then reuse
+   that artifact for browser checks. Do not compile again between those checks.
+4. Avoid competing dev/build/test/typegen/cleanup processes sharing .next. Preserve
+   passing artifacts rather than deleting them merely to repeat verification.
+5. Record user-run versus agent-run evidence separately. Already-passed checks are
+   not repeated without a new reason, such as changed source or an expired fixture
+   needed specifically for a remaining browser check.
+
+Production planning/Progress/auth regressions and the desktop practice → Progress →
+Settings → unchanged plan → preview → acceptance journey already passed. Keyboard
+save, acknowledgement and unsaved-dialog focus also passed. These checks were not
+rerun for the documentation-only pause update.
+
+After an initial blank-page viewport check, actual application mobile verification
+completed at **390x844** against the user's successful ordinary production build.
+Both Progress and Settings measured innerWidth 390 and document scrollWidth 375,
+with no horizontal overflow. Stacked metrics/history, load-more, form validation,
+unsaved-input protection, visible keyboard focus and saving without changing the
+active plan were checked using disposable data. The old fixture had expired; only
+its existing constructor was rerun to prepare this remaining check. No Codex build,
+diagnostic or repeat of the completed desktop browser/authentication journey ran.
+The viewport was reset and temporary tab closed. The fixture harness exited
+successfully after its timed hold, cleaning its disposable database and shutting
+down its owned server. See the status document for counts and verification provenance.
+
+Known minor visual polish: the unsaved dialog opens flush at the top-left rather
+than centered/padded. It fits within the measured viewport and its keyboard controls
+work. No source fix was made during verification-only work. Mobile evidence applies
+to this viewport/browser, not all devices or an exhaustive accessibility audit.
+
+If the app's actual viewport cannot be set, use this short manual fallback in Chrome
+DevTools with a live disposable fixture (never save test changes on a real account):
+
+1. Open DevTools, toggle the device toolbar, select Responsive, set width **390**
+   and height 844. Confirm window.innerWidth is 390 in the Console.
+2. On /progress, check stacked metric cards, readable counts/bar labels, history,
+   refresh/loading states and no horizontal scrolling.
+3. On /account?view=settings, check company controls, budget/date inputs, ratings,
+   account panel and Cancel/Save fit without clipping. Tab through controls and
+   verify visible focus and readable validation feedback.
+4. With disposable data only, edit a preference, Cancel → keep editing, then save.
+   Verify the active plan stays unchanged until a preview is explicitly accepted.
+5. Report actual width and pass/fail per page, plus screenshots of any clipping or
+   inaccessible control. Record this as user-run mobile evidence, not agent-run.
+
 Use Node 24 and npm 10.9.3 in one normal VS Code PowerShell terminal. During active
 iteration, run only the relevant development suites and run them sequentially;
 wait for the terminal command to finish, not just its printed PASS line. Do not
@@ -596,6 +652,44 @@ and build on pull requests and pushes to main/dev. It does not deploy or use clo
 secrets. Database-backed integration checks run separately against disposable data.
 
 ## Boundaries and configuration
+
+### Student Progress and Settings
+
+When a new usable build is required, stop this project's competing dev/test terminals
+first. Run this one block in **VS Code Git Bash**, without a diagnostic preload or
+unnecessary output cleanup. This is local build verification, not deployment.
+
+```bash
+cd /c/PROJECTS/prep-pilot
+export PATH="$PWD/.tools/node_modules/node/bin:$PATH"
+npm.cmd run build
+```
+
+Report the complete build result. Reuse that artifact for the remaining mobile
+check with disposable fixtures. The existing production and desktop passes remain
+recorded; do not repeat them without a new reason. Do not run dev/typegen/build or
+cleanup concurrently with production checks. See Sequential checks for the current
+temporary workflow and manual mobile fallback.
+
+- `/progress` shows lifetime question submissions/latest self-reported outcomes,
+  due revisions, and active-plan-only task/resource completion. Historical plan
+  versions are counted separately, never added to current completion percentages.
+- `GET /api/v1/progress` is an authenticated student-only, private/no-store snapshot
+  read. Query filters and client-selected owners are not accepted. Existing
+  signed-cursor `/api/v1/attempts` supplies separately paginated history.
+- `/account?view=settings` edits onboarding preferences using the same guarded
+  `PATCH /api/v1/me/preferences`. Plain `/account` remains the login routing hub.
+  Expired saved goals do not block study; new saves require a valid future date.
+- Saving leaves the active plan untouched. The proposal button reads current state,
+  selects replacement for an unexpired active window or initial for a new window,
+  and reuses explicit preview/acceptance. Pending older previews become stale.
+- Planning integration includes Progress calculations/isolation and preference/plan
+  separation (`npm.cmd run test:planning -- --direct` for focused handler/domain
+  verification; omit `--direct` after a current production build).
+- `npm.cmd run test:student -- --progress --direct` runs the smaller connected
+  preferences/catalog + Progress regression, including no-active-plan, unavailable
+  history, partial dependency failure and preview-staleness cases, without repeating
+  the complete planning suite. It still uses and cleans only disposable test data.
 
 - `src/app`: pages, layouts and thin Node.js Route Handlers.
 - `src/modules/identity`: authentication, profiles, access policy and actor services.

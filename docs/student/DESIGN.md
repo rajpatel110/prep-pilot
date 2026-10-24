@@ -68,6 +68,25 @@ real backend states, not prototype switchers. Dates come only from saved receipt
 Due revisions and immutable history use compact reading-list layouts in the existing
 student shell as temporary destinations, not a fabricated dashboard or study plan.
 
+## Progress and Settings
+
+Reviewed Stitch desktop Progress (3656f06ce4c345e3b33613c43f83fc5c), desktop
+Settings (c7bbacffaec440688af4f610326e06c1) and mobile Settings
+(5cdceccf88414bca90dbb2c43469623a), including desktop HTML and screenshots.
+Reuse metric cards, readable topic outcome rows, a separate history panel,
+preference groups and an account sidebar. Keep ivory, forest green, charcoal and
+existing typography, native inputs and visible focus. Mobile cards and the account
+sidebar stack; Progress uses the existing responsive shell because no separate
+mobile Progress reference was inspected. Bars have equivalent exact text counts
+and measure latest self-reports among distinct attempted questions, not mastery.
+No prototype metrics, QA switches, institutional SSO, notifications, placement-cell
+claims or live recovery controls ship. Settings reuses onboarding's rating labels.
+
+The account routing hub remains intact; its explicit view=settings is the editable
+student destination. Preference success offers a proposal, never an automatic
+schedule change. Cancel/navigation uses the existing unsaved-change dialog. Summary
+and history failures are independent, with retry and no zero-data fallback.
+
 ## 9. Evidence and plan-change review
 
 Reviewed Stitch Active Plan Dashboard and Review Proposed Plan Changes

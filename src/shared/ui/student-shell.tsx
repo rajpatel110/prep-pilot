@@ -25,7 +25,8 @@ export function StudentShell({
               <Link href="/content">Content library</Link>
               <Link href="/revisions">Revisions</Link>
               <Link href="/attempts">History</Link>
-              <Link href="/onboarding?edit=1">Preferences</Link>
+              <Link href="/progress">Progress</Link>
+              <Link href="/account?view=settings">Settings</Link>
             </>
           )}
         </nav>

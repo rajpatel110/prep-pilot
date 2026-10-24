@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiRequest } from "@/shared/ui/api-client";
+import { studyDate } from "@/modules/identity/preferences-schema";
 import type { dashboard, readPlan, readPreview } from "../service";
 type Dashboard = Awaited<ReturnType<typeof dashboard>>;
 type Plan = NonNullable<Awaited<ReturnType<typeof readPlan>>["plan"]>;
@@ -18,7 +19,7 @@ export function GeneratePlan({
   kind = "initial",
 }: {
   revision: number;
-  kind?: "initial" | "reschedule" | "adapt";
+  kind?: "initial" | "reschedule" | "adapt" | "preferences";
 }) {
   const router = useRouter();
   const guard = useRef(false);
@@ -32,7 +33,12 @@ export function GeneratePlan({
     try {
       const current = await apiRequest("/api/v1/plans/current");
       const result = await apiRequest("/api/v1/plan-previews", "POST", {
-        kind,
+        kind:
+          kind === "preferences"
+            ? current.data.plan && current.data.plan.windowEnd >= studyDate()
+              ? "reschedule"
+              : "initial"
+            : kind,
         expectedStateRevision: current.data.stateRevision ?? revision,
       });
       router.push(`/plan-previews/${result.data.id}`);
@@ -58,11 +64,13 @@ export function GeneratePlan({
       <button className="button" disabled={busy} onClick={generate}>
         {busy
           ? "Generating proposal…"
-          : kind === "initial"
-            ? "Preview my study plan"
-            : kind === "adapt"
-              ? "Review suggested changes"
-              : "Preview a replacement schedule"}
+          : kind === "preferences"
+            ? "Preview a plan with saved preferences"
+            : kind === "initial"
+              ? "Preview my study plan"
+              : kind === "adapt"
+                ? "Review suggested changes"
+                : "Preview a replacement schedule"}
       </button>
       {error && (
         <button
@@ -504,7 +512,7 @@ export function DashboardView({
         </p>
         <div className="student-actions">
           <Link href="/content">Browse content</Link>
-          <Link href="/onboarding?edit=1">Edit preferences</Link>
+          <Link href="/account?view=settings">Edit preferences</Link>
           {plan && <Link href={`/plans/${plan.id}`}>View study plan</Link>}
         </div>
       </header>

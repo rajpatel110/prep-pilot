@@ -14,6 +14,8 @@ import { studyError, studyTransaction } from "@/modules/practice/errors";
 import { parseStudyInput } from "@/modules/practice/schemas";
 import { requirePracticeSetup } from "@/modules/practice/setup";
 import { planningAttempts } from "@/modules/practice/history-read";
+import { practiceProgress } from "@/modules/practice/progress-read";
+import { revisionProgress } from "@/modules/revisions/progress-read";
 import { profileModel } from "@/modules/identity/model";
 import { activatePlanPointer } from "@/modules/identity/plan-state";
 import {
@@ -774,6 +776,99 @@ export async function planHistory(headers: Headers, params: URLSearchParams) {
     throw planningError(error);
   }
 }
+export async function progress(headers: Headers) {
+  try {
+    const { connection, userId } = await context(headers);
+    return await connection.transaction(async (session) => {
+      const profile = await profileAt(connection, session, userId);
+      const plan = await activeAt(
+        connection,
+        session,
+        userId,
+        profile.activePlanId,
+      );
+      const attempts = await practiceProgress(connection, session, userId);
+      const date = studyDate();
+      const revisions = await revisionProgress(
+        connection,
+        session,
+        userId,
+        date,
+      );
+      const versions = await planTaskModel(connection)
+        .countDocuments({ userId })
+        .session(session)
+        .maxTimeMS(5000);
+      const tasks = plan ? storedProposal(plan).tasks : [];
+      const completed = tasks.filter((task) => task.status === "completed");
+      const topics = new Map(
+        attempts.topics.map((topic) => [
+          `${topic.subject}:${topic.topic}`,
+          { ...topic, readingCompleted: 0 },
+        ]),
+      );
+      for (const task of completed.filter(
+        (task) => task.contentSnapshot.type === "resource",
+      )) {
+        const { subject, topic } = task.contentSnapshot;
+        const key = `${subject}:${topic}`;
+        const entry = topics.get(key) ?? {
+          subject,
+          topic,
+          distinctAttempted: 0,
+          currentlySolved: 0,
+          neededHelp: 0,
+          failed: 0,
+          readingCompleted: 0,
+        };
+        entry.readingCompleted++;
+        topics.set(key, entry);
+      }
+      return {
+        asOf: new Date().toISOString(),
+        timezone: "Asia/Kolkata",
+        studyDate: date,
+        stateRevision: profile.stateRevision,
+        submissions: attempts.submissions,
+        practiceSubmissions: attempts.practice,
+        revisionSubmissions: attempts.revision,
+        distinctAttempted: attempts.topics.reduce(
+          (total, topic) => total + topic.distinctAttempted,
+          0,
+        ),
+        currentlySolved: attempts.topics.reduce(
+          (total, topic) => total + topic.currentlySolved,
+          0,
+        ),
+        activePlan: plan
+          ? {
+              id: String(plan._id),
+              windowStart: plan.windowStart,
+              windowEnd: plan.windowEnd,
+              completed: completed.length,
+              total: tasks.length,
+              completionPercent: tasks.length
+                ? Math.round((1000 * completed.length) / tasks.length) / 10
+                : null,
+              readingCompleted: completed.filter(
+                (task) => task.contentSnapshot.type === "resource",
+              ).length,
+            }
+          : null,
+        historicalPlanVersions: versions - (plan ? 1 : 0),
+        revisions,
+        topics: [...topics.values()].sort((left, right) =>
+          `${left.subject}:${left.topic}`.localeCompare(
+            `${right.subject}:${right.topic}`,
+          ),
+        ),
+      };
+    }, studyTransaction);
+  } catch (error) {
+    throw planningError(error);
+  }
+}
+
 export async function dashboard(headers: Headers) {
   try {
     const { connection, userId } = await context(headers);

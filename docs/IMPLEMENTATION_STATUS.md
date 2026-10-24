@@ -1,6 +1,408 @@
 # PrepPilot implementation status
 
-Updated: 24 October 2026 (Asia/Kolkata).
+Updated: 25 October 2026 (Asia/Kolkata).
+
+## Latest checkpoint: compiled dialog verification complete
+
+The Progress/Settings milestone is ready for a checkpoint commit for its approved
+scope. No commit, push or deployment has been performed. Full PRD release readiness
+is not implied; the separate integration/content/operations gaps below remain.
+
+User-run normal Git Bash production build passed after the shared CSS fix:
+Next.js 16.4.2/Webpack compiled in 5.5 seconds, TypeScript completed in 1872ms,
+14 static pages generated, and page-data collection/build traces completed. This
+is user-run build evidence, not a successful Codex compilation or an EPERM fix.
+
+Agent-run focused browser checks reused that exact production artifact with
+`next start` on port 3104 and a newly generated, guarded
+`prep_pilot_dialog_test_<12 hexadecimal characters>` database. A small temporary
+fixture runner created only disposable student/admin accounts, saved preparation
+preferences and one draft. No publishing or real-data mutation occurred; unrelated
+functional suites were not rerun. The initial fixture setup rejected a draft with
+missing required attribution (422), cleaned up, and was corrected before the
+successful fixture run. No application source changed and no rebuild/typegen/dev
+server or EPERM diagnostics ran.
+
+Settings checks passed in measured 1280x720 desktop and 390x844 mobile viewports.
+Changed daily minutes locally from 60 to 90, followed Cancel navigation, and
+observed the native modal with initial focus on Stay and keep editing. Keep editing
+preserved 90 and restored focus to Cancel. Reopened and pressed Escape: dialog
+dismissed, input remained 90 and focus returned to Cancel. Discard and leave
+navigated to the dashboard; fresh Settings reads showed the saved budget still 60.
+Desktop dialog bounds: x232.4/y250.6/800x218.8. Mobile bounds:
+x19/y263.1/337.2x317.8. Both centered within the available viewport excluding its
+vertical scrollbar, with comfortable margins and wrapped mobile actions.
+
+Admin saved-detail and publish-confirmation dialogs passed open/cancel checks at
+both widths. Loaded detail bounds: desktop x232.4/y16/800x688 and mobile
+x19/y16/337.2x812; both scroll internally (1374 vs 686px and 2157 vs 810px
+scroll/client heights respectively). Close details initially received focus and
+Tab reached Edit content. Lifecycle confirmation initially focused Cancel; mobile
+Tab reached Confirm publish without activating it. Confirmation bounds: desktop
+x232.4/y227.3/800x265.4 and mobile x19/y273.3/337.2x297.4. Cancel returned to the
+detail with focus on Publish; Close details returned to the library item. Mobile
+Escape from the nested lifecycle also dismissed its enclosing detail and restored
+focus to the library item; explicit Cancel retained the detail. No lifecycle
+confirmation was submitted. The library continued to show draft revision 1.
+
+Agent screenshots show the actual compiled Settings and admin dialogs, not the
+earlier isolated CSS fixture. Browser tabs were closed and viewport reset. The
+fixture runner reported successful guarded database deletion and owned server
+shutdown, and exited with code 0. Temporary runner/stop files were removed.
+Previous production/authentication, Progress calculations, Settings save and
+preview/acceptance evidence is reused rather than repeated. EPERM investigation
+remains paused and its root cause unproven.
+
+## Shared dialog positioning fix: source and isolated checks
+
+The earlier top-left unsaved-dialog limitation is corrected in source. Its
+`.library-dialog` rules previously existed only in the admin Content Library
+stylesheet, so Settings/onboarding did not reliably load them. The existing rules
+now live in `src/shared/ui/dialog.css`, imported by global CSS. Fixed positioning,
+inset zero and automatic margins center the native modal; border-box sizing,
+16px minimum viewport margins, dynamic viewport height and vertical overflow retain
+comfortable, scrollable bounds. Dialog actions wrap with the existing spacing.
+Admin-only duplicate rules were removed. No dialog JavaScript, actions, modal
+opening/cancellation or focus-restoration code changed.
+
+Agent-run checks for this CSS-only change: repository formatting, lint and
+`tsc --noEmit` passed; `git diff --check` passed. Direct tsc reused existing route
+types, not a new `next typegen` run. Previous authentication, production regression
+and Progress/Settings desktop/mobile journey evidence below is reused, not rerun.
+No production build was attempted: the user's temporary manual-build workflow
+remains in effect, with EPERM investigation paused and cause unproven.
+
+Agent browser verification used an isolated native-dialog HTML fixture loading the
+actual shared stylesheet, not an old compiled application with injected CSS.
+Measured desktop viewport 1280x720: dialog x240/y232, width800/height256, centered.
+Measured mobile viewport 390x844: x19/y257.6, width352.4/height328.8, centered,
+wrapped actions and no clipped content. Native `:modal` was true; initial focus,
+Tab to discard, Escape and return to the opening button worked in the fixture.
+Long detail content was bounded to height812 at y16, with clientHeight810,
+scrollHeight3399 and overflow-y:auto. Content-detail/lifecycle consumers were
+inspected: their shared class, native handlers and existing admin-specific styles
+remain intact. Representative long-detail and lifecycle shapes were checked in
+the fixture; this is not a full compiled admin workflow retest. No database or
+real account was used. Temporary servers were stopped and browser tabs closed.
+
+The previously pending user-run build and compiled Settings/admin dialog checks
+are now complete as recorded at the latest checkpoint above. Earlier isolated
+fixture results remain narrower historical evidence, not substitutes for those
+compiled-app checks. No commit, push or deployment occurred.
+
+## Read-only completion review: PRD and design requirements
+
+Compared PRD release scope/acceptance gates, System Design operations and service
+boundaries, API contracts and Database Design lifecycle requirements with current
+routes, scripts, implementation boundaries and recorded evidence. Existing screens
+or routes alone were not treated as proof of complete behaviour. Historical
+milestone limitations below are superseded where later work provides evidence.
+
+### Missing implementation
+
+| Gap                                                                        | User impact                                                                                                                         | Smallest next action                                                                                                                              |
+| -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Live verification/recovery delivery and token lifecycle                    | General users cannot verify or recover forgotten passwords; placeholder routes explicitly return EMAIL_DISABLED.                    | Implement the documented guarded Resend flows and replay/reset-revocation tests behind the disabled capability.                                   |
+| R2 file lifecycle, protected grants, validation/quota/cleanup              | Admins cannot attach materials and students cannot download protected attachments.                                                  | Implement the documented disabled-by-default file foundation, then controlled integration tests; keep rejecting nonempty attachments until ready. |
+| Admin dependency readiness and operator account-erasure/recovery procedure | Liveness alone cannot diagnose dependencies; owner-requested erasure/recovery lacks an executable supported workflow.               | Add the narrow readiness check and a documented, tested restartable operator procedure separately.                                                |
+| OpenAPI artifact and repeatable reviewed seed tooling                      | Consumers lack the promised machine-readable contract; curated baseline cannot yet be reproducibly installed without risking edits. | Encode current contracts; add seedKey/$setOnInsert tooling only after reviewed material is approved.                                              |
+
+### Implemented but not verified
+
+| Gap                                                                                             | User impact                                                                                      | Smallest next action                                                                                                                     |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| New shared CSS in the compiled app and actual other-consumer layouts                            | A global-import/cascade regression is not excluded by the isolated fixture.                      | User-run build, then focused desktop/mobile Settings and admin dialog open/cancel checks.                                                |
+| Codex compilation reliability and separate development compilation                              | Agent-driven compilation remains unreliable; a manual pass does not resolve it.                  | Continue the agreed user-build/artifact-reuse workflow; do not restart diagnosis without approval.                                       |
+| Deployed end-to-end persistence, broader browser/accessibility, pilot latency and restore gates | Local evidence is not deployment, full accessibility, performance or disaster-recovery evidence. | After deployment approval, run the documented preview smoke/redeploy, keyboard/browser, 10-user measurement and isolated restore checks. |
+
+### External setup required
+
+| Gap                                                                                   | User impact                                            | Smallest next action                                                                                                                  |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Owner-controlled verified email domain/Resend sender                                  | Live recipients cannot receive verification/recovery.  | Confirm DNS ownership and sender configuration; never enable live mode on credentials alone before flows work.                        |
+| Activated private R2 storage, scoped credentials, CORS and usage controls             | Files cannot be accepted as operational.               | Confirm activation and environment-specific bucket/access configuration when that integration is approved.                            |
+| Production/preview Vercel and Atlas configuration, backups and operational monitoring | No verified hosted pilot or recovery guarantee exists. | Confirm isolated environment targets, HTTPS/origins, scoped secrets, transaction support and backup/restore ownership before release. |
+
+### Real content required
+
+| Gap                                                                                       | User impact                                                                                                                      | Smallest next action                                                                                                                         |
+| ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Reviewed 50-item baseline (20 DSA, 15 aptitude, 15 CS across four CS topics) and coverage | Synthetic fixture success does not make real plans useful; last recorded real catalog assessment was empty, not re-queried here. | Review a small authorized foundation batch first, then assess coverage and grow to the PRD target with provenance/attribution/review dates.  |
+| Reviewed Cognizant/LTM materials and editorial mapping                                    | Company preferences are not proof of current hiring coverage.                                                                    | Validate source/provenance and compare curated coverage against canonical topics; retain the explicit editorial-not-official-syllabus label. |
+
+Progress/Settings core journeys retain their recorded verification. The new visual
+fix now has compiled integration verification at desktop and 390x844 as recorded
+above, superseding that gap in the earlier review table. Full PRD release readiness
+is not claimed. Live code
+execution, mock tests, recurring reminders and other explicitly deferred products
+are not missing v1 requirements.
+
+## Current checkpoint: EPERM paused; mobile application checked at 390px
+
+Agent-run mobile verification now completed against the latest user-built production
+artifact with a recreated disposable fixture. No source compilation or EPERM
+diagnostic was run. The existing fixture constructor's connected assertions passed;
+it was used solely to obtain the isolated mobile data/server, not to repeat the
+completed desktop browser or authentication journeys.
+
+Measured application viewport on both /progress and /account?view=settings:
+innerWidth 390, innerHeight 844, document scrollWidth 375 (vertical scrollbar), with
+no horizontal overflow. Observed stacked metric cards, wrapped text/bar equivalents,
+responsive navigation, history cards and successful load-more of the final two
+attempts. Settings company, budget/date, rating, account and Save/Cancel controls
+fit. Removing both companies produced the documented validation feedback while
+retaining entries; no invalid write occurred. Restored companies and changed only
+the disposable budget 60→90. Cancel opened the unsaved dialog, focused Stay and keep
+editing, and Enter restored editing. Tab focused Save with a visible solid 2.4px
+outline; Enter saved successfully. Progress still linked to the same active plan,
+with 7 attempts and completion 1/5; saving did not activate a new plan. The preview
+button's right edge measured 336.4px, within the viewport; acceptance was not repeated.
+The viewport override was reset and the temporary tab closed. Screenshots in the
+task workspace show actual 390px application pages with disposable values.
+
+The fixture harness subsequently exited with code 0 after its timed hold, completing
+the guarded disposable-database cleanup and owned test-server shutdown. No real
+catalog, account or plan was used for mutation checks. No server is intentionally
+being retained for this checkpoint, and no arbitrary process was terminated.
+
+Known minor visual limitation: the unsaved dialog is flush at the top-left rather
+than centered/padded like the intended card treatment. Measured bounds were
+x=0,y=0,width=337.2,height=232.2 within 390x844; text/actions were readable, keyboard
+focus and return worked, and it did not overflow. No source change was made for
+this polish issue under the verification-only scope. This is not an exhaustive
+accessibility audit or a claim about every mobile width/browser.
+
+Latest user-run ordinary Git Bash production build passed without the diagnostic
+preload: compilation, TypeScript, page data/static generation and build traces all
+completed, with both Progress routes present. No clean-output removal was reported.
+The agent is reusing that artifact without compilation. The only repeated harness
+setup is to recreate the expired disposable fixture for the newly enabled mobile
+check; the existing harness runs its connected assertions as part of fixture setup.
+This is the specific new reason, not a new feature or a repeat of the completed
+desktop browser journey. The authentication suite is not being repeated.
+
+At the user's explicit request, EPERM investigation is paused. Do not run further
+filesystem probes, diagnostic builds or Process Monitor comparisons, or change
+permissions, integrity labels or security settings. Existing diagnostic scripts
+are retained as historical evidence, not active setup steps.
+
+Confirmed findings: Codex-run compilation encountered Windows ACCESS DENIED/Node
+EPERM. The user-provided Process Monitor event shows CreateFile, disposition Create,
+directory options, and ACCESS DENIED at .next\server\app\api for PID 11876. The
+matching Process tab identifies Node v24.22.1, Next's processChild.js worker and
+Low integrity. Filesystem probes passed. Neither Low integrity, inherited Modify
+permissions nor FLTMGR stack frames establish the root cause, which remains
+**unproven**. No fix or security-setting change is claimed.
+
+Temporary workflow: finish source/static checks in Codex; when compilation is
+needed, give the user one normal Git Bash build block without diagnostic preloads.
+After a user-run successful build, perform only justified production regressions
+sequentially and reuse that artifact for browser verification. Do not interleave
+dev/typegen/build/cleanup/test processes using .next. Distinguish user-run and
+agent-run evidence. Existing production and desktop passes below remain valid for
+the source they checked; they were not repeated for this documentation-only update.
+
+One supported browser viewport attempt was made after the pause: set({width:390,
+height:844}) on the advertised viewport capability, then read window.innerWidth
+and innerHeight on an isolated about:blank tab. Actual values were **390x844**.
+The override was reset and the blank tab closed. No app server, probe, diagnostic
+build, mutation fixture or regression suite was started. This supersedes the earlier
+viewport-tool failure but does **not** verify PrepPilot's mobile application layout.
+
+Mobile application verification uses the latest successful ordinary user-run build
+and a live disposable fixture. Do not request another build while this artifact is
+usable. Use the fixture only for the remaining mobile check. Recreating an expired fixture is a new setup
+reason, not a reason to repeat the already-passed desktop journey or authentication
+suite. Measure the actual application viewport before recording mobile success.
+If application resizing still fails, use README's Chrome DevTools checklist instead.
+
+Verified milestone scope: implementation, prior source checks, user-run successful
+production build, agent-run production regressions, desktop/keyboard journey and
+the mobile layout/interaction checks at the measured 390x844 viewport above.
+Remaining limitation: minor unsaved-dialog visual polish described above. Codex compilation
+reliability is a separately paused environment issue, not a resolved milestone claim.
+No commit, push or deployment is authorised or performed.
+
+## Resumed verification — 25 October
+
+The user supplied a successful traced production build using Node v24.22.1 and
+`next build --webpack` in normal VS Code Git Bash. Compilation, TypeScript, page
+generation and build traces completed, including /progress and /api/v1/progress.
+This was user-run, not a Codex-run build, and no successful clean was reported.
+The diagnostic-only module-type warning did not block it. Do not change package
+module type to hide that warning.
+
+Against that preserved artifact the earlier agent-run production planning + Progress
+suite completed successfully (its browser hold expired while the chat was paused).
+On resumption the agent-run production authentication regression passed: sessions,
+signup/duplicate/input/origin, role isolation, concurrency, CSRF, disabled email and
+rate limits. A fresh disposable production fixture was prepared solely because
+the prior browser fixture expired; its planning/Progress assertions passed again.
+
+Agent desktop browser journey passed: recorded an independent practice outcome
+(sequence 8); Progress showed 8 submissions (7 practice, 1 recall), 2 distinct
+questions, 1 currently independent, active completion 1/5 (20%) and 1 completed
+resource. Changed saved preferences from 60 to 90 minutes/day. Cancel opened the
+unsaved dialog with focus on Stay and keep editing; Enter restored the editor with
+local input retained. Tab/Enter saved preferences. A separate read confirmed active
+plan version 4 and its ID remained unchanged. The Settings proposal required an
+explicit deferral acknowledgement before keyboard acceptance. Only acceptance
+created version 5. Dashboard and Progress then linked to the same new plan, retained
+the completed resource and all 8 attempts, and excluded 4 historical versions from
+current completion. Reloaded Settings retained the saved values. Loading states
+and desktop layouts were observed; screenshots contain disposable fixture values.
+
+The production browser harness exited successfully after its timed hold, running
+its guarded disposable-database drop and owned-server shutdown. Authentication
+harness cleanup also completed. Socket checks on 3101/3104 timed out rather than
+returning an explicit refusal, so they are not claimed as a full process/handle
+audit. No arbitrary Node process was stopped. The user approved guidance for a
+project-filtered Process Monitor capture; no new build will run until capture is
+ready, and the diagnostic tool itself has not been installed by the agent.
+
+Mobile remains **not verified**: requested 390x844 via the advertised browser
+viewport capability, but DOM measurements remained innerWidth 1280, including on
+a fresh tab. No desktop screenshot is presented as mobile evidence. The override
+was reset. Separate development compilation and a successful Codex production build
+remain unverified; no unchanged compilation retry was made on resumption.
+
+The Codex compilation cause remains unknown and no correction has been established.
+A bounded query for project-related Controlled Folder Access events could not run
+because Get-WinEvent returned UnauthorizedAccessException. No event content was
+printed; this is not evidence Defender caused the failure. No security/ACL changes,
+dependency upgrades, feature development, commits, pushes or deployment occurred.
+
+## EPERM diagnostic history — before the successful user-run traced build
+
+Follow-up: the user-run VS Code Git Bash probe with identical Node v24.22.1 passed
+all four locations, including v1\admin, matching Codex. This does not establish an
+ACL, lock, sandbox or framework cause. Additional agent probes passed 320 concurrent
+recursive mkdir calls, the same calls in a child Node process, callback mkdir with
+a missing parent (correct ENOENT) then existing parent (success), and 320 concurrent
+calls using webpack's callback/recurse-on-ENOENT mkdir pattern. Probe trees were
+removed. General concurrency or all child-process writes do not reproduce it.
+
+One additional build was diagnostic, not an unchanged retry: transient NODE_OPTIONS
+loaded scripts/trace-next-fs.ts to report failing mkdir callsites without retries,
+error suppression or configuration changes. It failed with mkdir EPERM at
+.next\types\app\content\[id], in Next's bundled webpack mkdirp helper. The error
+callback observed target absent and parent present. That identifies the emitting
+call, not the underlying Windows denial. The preload emitted a module-type warning;
+package.json was not changed to silence a diagnostic-only warning.
+
+Next step: the identical traced build in normal VS Code Git Bash, with the same Node
+and command-scoped preload. Wait for its output before another build or correction.
+Even a manual pass would establish a difference, not identify its cause or prove
+Codex compilation resolved. All pending production/browser/dev checks remain pending.
+
+Feature work is paused. All existing feature edits remain; no dependency, application
+configuration, ACL, security setting, commit, push or deployment was changed.
+The cause remains **unknown**; low-integrity execution, inherited ACLs or a directory
+owner alone do not establish why compilation failed.
+
+Agent environment: PowerShell Core 7.6.5, working directory C:\PROJECTS\prep-pilot,
+Node v24.22.1 from .tools\node_modules\node\bin\node.exe; npm 10.9.3 from
+C:\Program Files\nodejs\npm.cmd. The initial workspace writable roots were outside
+the project. Turn-scoped project write and network permission were granted, then
+explicit .next write permission was granted. Granular sandbox_approval remains
+disabled. The observed process identity is the normal user with a Low Mandatory
+Level token; that observation is not a denial diagnosis.
+
+Before the build, .next\types\app\api\v1 already existed. Checked C:\PROJECTS,
+the repository, .next and the type-path parents: normal directories, no reparse
+points or symlink/junction targets, same user owner, inheritance enabled. ACLs
+include inherited Modify entries for sandbox-related principals and normal Windows
+entries; no change was made. CIM process enumeration is denied and tasklist cannot
+enumerate in this context. Socket probes did not complete connections to ports
+3000/3101/3103/3104, and no Next lock marker was present; this does not conclusively
+exclude every process or handle. No process was killed or positively identified as
+a running project server. No new test server has been started in this checkpoint.
+
+The disposable TypeScript probe scripts/diagnose-next-fs.ts uses the exact Node
+binary above. It creates deep nested directories, writes, renames a file and a
+directory, and removes only its UUID-named probe tree. Agent probes passed in a
+fresh project-local tree, under .next and beneath the earlier exact failing v1
+directory. A separate check also covers the latest admin path. Probe success is
+not evidence that every Next worker/operation succeeds under compilation.
+
+Generated-output cleanup was requested twice; both commands were rejected by the
+tool approval policy **before execution**, including after the narrower grant.
+Cleanup did not execute. This is distinct from the subsequent actual filesystem
+error. One controlled agent production build executed without a successful clean:
+`npm.cmd run build` → `next build --webpack` → `EPERM: operation not permitted,
+mkdir 'C:\PROJECTS\prep-pilot\.next\types\app\api\v1\admin'`. Immediately
+afterward that exact path was a normal existing directory with inherited ACLs and
+the same owner. No unchanged build retry followed.
+
+Next discriminating step: user runs the identical probe and identical Node binary
+in normal VS Code Git Bash, after stopping their PrepPilot terminals, and reports
+its compact output. Wait for that comparison before attributing the failure or
+changing permissions. Production regressions, Progress/Settings browser/mobile/
+keyboard and separate development compilation remain blocked/pending; earlier
+user-run builds do not demonstrate that this Codex failure is resolved.
+
+## Student Progress and editable Settings
+
+Implemented `/progress`, student-only `GET /api/v1/progress`, and explicit
+`/account?view=settings`. Plain `/account` keeps existing authentication routing.
+Navigation links to both. No new dependencies, setup, migration, auth flow or real
+catalog mutation was needed. The API document now records the minimal read-only
+Progress projection absent from the baseline endpoint list.
+
+Progress uses a consistent database snapshot and owner-indexed, time-bounded server
+aggregations with bounded grouped output. It shows lifetime submissions versus
+distinct questions/latest self-reports, active-plan completion with denominator,
+completed resource tasks separately, due/unavailable revisions and historical plan
+version counts. No mastered/readiness/accuracy/streak/measured-time score exists.
+History reuses the signed paginated attempt list; partial errors never become zero.
+
+Settings reuses onboarding controls and strict server-side preferences writes,
+session/CSRF/state revision guards, field feedback, preserved local edits and
+explicit uncertain-save reconciliation. Cancel uses the existing unsaved dialog.
+Expired saved deadlines do not gate study. Success leaves plans unchanged and offers
+the existing initial/replacement preview flow; acceptance remains explicit, older
+previews stale, and changed deadlines affect the next window. Account info and
+existing sign-out are reused; no notification/credential/account-deletion UI.
+
+Verification: 59 existing unit tests passed; the added Progress rendering check and
+three relevant preference/return-path tests passed separately (4/4). Formatting,
+lint and TypeScript checks passed. Initial typecheck caught a disposable-fixture
+typing error, corrected before the passing checks. The focused direct handler/domain
+planning regression passed, including Progress latest outcomes and user isolation.
+The extended combined run reached all active/historical task, resource, unavailable
+history, preference-staleness and partial-failure assertions, then failed a test-only
+whole-profile comparison: existing identity ensureProfile refreshes updatedAt on
+reads. The assertion now excludes only that maintenance timestamp, retaining every
+state/ownership/preference field. The final focused
+`test:student -- --progress --direct` passed, including the no-active-plan case,
+latest failed recall, exact counts, isolation, unavailable history, independent
+summary/history failure, expired-goal access, preview staleness and unchanged plan
+records. This avoids rerunning the unchanged full planning suite again. The earlier
+planning regression's own assertions passed. Final changed-file TypeScript, lint
+and formatting checks passed after the reconciliation/refresh improvements.
+
+All database fixtures used guarded `prep_pilot_student_test_<random>` databases and
+were cleaned by the harness, including on failure. No real catalog records, auth
+accounts or plans were modified. Existing next-env.d.ts generated churn was preserved,
+not intentionally edited as feature work. No commit, push or deployment occurred.
+
+Agent-run production build is blocked: `EPERM: operation not permitted, mkdir
+C:\PROJECTS\prep-pilot\.next\types\app\api\v1`. No unchanged build retry was made.
+A separate development-mode fixture attempt also failed at the existing content
+page with HTTP 500; Next's development log identifies `EPERM ... mkdir
+C:\PROJECTS\prep-pilot\.next\dev\static\chunks\app\(auth)\login`. Its owned
+server stopped and disposable fixture cleanup ran. Thus the current full browser
+journey/mobile/keyboard and production regression are **not verified**. This is
+generated-output failure evidence, not proof of a lock, ACL or sandbox cause.
+No dependency reinstall, security change, output-directory workaround or live data
+mutation was used. The prior artifact does not verify these changes. Follow README's
+normal-terminal Git Bash fallback, then run production regressions before commit.
+
+The earlier successful user-run build remains user-run evidence and was not clean
+because the PowerShell cleanup failed in Git Bash. Live verification/recovery,
+R2 and deployment remain incomplete. The known real catalog has no content; empty
+progress/catalog and honest planner shortages are expected until separately approved
+content curation. Do not populate it as a verification fallback.
 
 ## Catalog coverage and evidence-based adjustment previews
 

@@ -11,6 +11,7 @@ import {
   readPlan,
   planHistory,
   dashboard,
+  progress,
 } from "./service";
 export async function planningHttp(
   request: Request,
@@ -21,7 +22,8 @@ export async function planningHttp(
     | "current"
     | "plan"
     | "history"
-    | "dashboard",
+    | "dashboard"
+    | "progress",
   id?: string,
 ) {
   const requestId = randomUUID();
@@ -60,6 +62,8 @@ export async function planningHttp(
       result = { data: await readPreview(request.headers, id!) };
     else if (operation === "history")
       result = await planHistory(request.headers, query);
+    else if (operation === "progress")
+      result = { data: await progress(request.headers) };
     else if (operation === "dashboard")
       result = { data: await dashboard(request.headers) };
     else {

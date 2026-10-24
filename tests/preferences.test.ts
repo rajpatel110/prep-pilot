@@ -65,6 +65,13 @@ test("safe preference errors never echo privileged field names or values", () =>
   }
 });
 test("student return paths reject external, encoded, privileged and malformed destinations", () => {
+  assert.equal(studentReturn("/progress"), "/progress");
+  assert.equal(
+    studentReturn("/account?view=settings"),
+    "/account?view=settings",
+  );
+  assert.equal(studentReturn("/account?view=settings&returnTo=/admin"), null);
+  assert.equal(studentReturn("/account"), null);
   for (const value of [
     "https://evil.example/content",
     "//evil.example/content",

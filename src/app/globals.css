@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../shared/ui/dialog.css";
 
 .auth-layout {
   display: grid;

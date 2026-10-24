@@ -540,3 +540,20 @@
   min-height: 44px;
   overflow-wrap: anywhere;
 }
+.progress-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 1rem;
+}
+.progress-number {
+  font-size: 2.2rem;
+  color: var(--forest, #164b35);
+}
+.progress-topic {
+  padding-block: 1rem;
+  border-bottom: 1px solid #dce2d8;
+}
+.progress-topic progress {
+  width: 100%;
+  accent-color: #164b35;
+}
