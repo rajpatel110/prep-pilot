@@ -5,6 +5,7 @@ import {
   type Model,
   type Connection,
 } from "mongoose";
+import { preferencesSchema } from "./preferences-schema";
 
 const profileSchema = new Schema(
   {
@@ -21,7 +22,15 @@ const profileSchema = new Schema(
       default: "active",
       required: true,
     },
-    preferences: { type: Schema.Types.Mixed, default: null },
+    preferences: {
+      type: Schema.Types.Mixed,
+      default: null,
+      validate: {
+        validator: (value: unknown) =>
+          value === null || preferencesSchema.safeParse(value).success,
+        message: "Invalid preparation preferences.",
+      },
+    },
     timezone: { type: String, default: "Asia/Kolkata" },
     activePlanId: { type: Schema.Types.ObjectId, default: null },
     planVersion: { type: Number, default: 0 },

@@ -276,7 +276,7 @@ export function ContentLibrary({
               <p>
                 {activeFilters
                   ? "Try a different keyword or clear the filters."
-                  : "No saved content yet. Create/edit forms arrive in the next milestone; this view shows persisted records only."}
+                  : "No saved content yet. Choose Create draft to add your first item."}
               </p>
             </div>
           )}
@@ -371,6 +371,12 @@ export function ContentLibrary({
       {selected && (
         <ContentDetail
           id={selected}
+          onChanged={() => {
+            setSelected(null);
+            selectedButton.current?.focus();
+            void loadMore(true);
+            router.refresh();
+          }}
           onClose={() => {
             setSelected(null);
             selectedButton.current?.focus();

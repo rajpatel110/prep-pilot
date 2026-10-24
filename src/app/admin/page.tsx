@@ -12,8 +12,8 @@ export default async function AdminPage() {
     <Workspace name={actor.session.user.name} title="Administration">
       <p>
         Administrator access confirmed. Inspect saved drafts, published material
-        and archived content in the library. Editing and file operations are not
-        yet available here.
+        and archived content in the library. Create, edit, preview and publish
+        reviewed material; file operations remain unavailable.
       </p>
       <Link className="button button-primary" href="/admin/content">
         Open content library

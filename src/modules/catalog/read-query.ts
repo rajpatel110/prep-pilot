@@ -43,9 +43,13 @@ export function queryObject(params: URLSearchParams) {
   return values;
 }
 
-export function cursorBinding(query: CatalogQuery, actor: string) {
+export function cursorBinding(
+  query: CatalogQuery,
+  actor: string,
+  endpoint = "/api/v1/admin/content",
+) {
   return JSON.stringify({
-    endpoint: "/api/v1/admin/content",
+    endpoint,
     order: "id:asc",
     actor,
     limit: query.limit,

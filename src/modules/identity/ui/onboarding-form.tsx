@@ -1,0 +1,527 @@
+"use client";
+import { useRef, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type { MeDto } from "../service";
+import {
+  minimumDeadline,
+  preferenceFields,
+  preferencesInputSchema,
+  studyDate,
+} from "../preferences-schema";
+import {
+  apiRequest as catalogRequest,
+  ApiRequestError as CatalogRequestError,
+} from "@/shared/ui/api-client";
+import { UnsavedGuard } from "@/shared/ui/unsaved-guard";
+
+const subjects = {
+  dsa: "Data Structures & Algorithms",
+  aptitude: "Quantitative & Logical Aptitude",
+  cs: "Computer Science Fundamentals",
+};
+const ratings = [
+  "New to this",
+  "Know the basics",
+  "Need practice",
+  "Mostly confident",
+  "Very confident",
+];
+type Values = {
+  companies: ("cognizant" | "ltm")[];
+  dailyMinutes: number;
+  deadline: string;
+  skills: { dsa: number; aptitude: number; cs: number };
+};
+
+export function OnboardingForm({
+  initial,
+  returnTo,
+}: {
+  initial: MeDto;
+  returnTo: string;
+}) {
+  const router = useRouter();
+  const [values, setValues] = useState<Values>(
+    initial.preferences ?? {
+      companies: [],
+      dailyMinutes: 90,
+      deadline: "",
+      skills: { dsa: 0, aptitude: 0, cs: 0 },
+    },
+  );
+  const [baseline, setBaseline] = useState(JSON.stringify(values));
+  const [revision, setRevision] = useState(initial.stateRevision);
+  const [step, setStep] = useState(1);
+  const [fields, setFields] = useState<Record<string, string[]>>({});
+  const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [blocked, setBlocked] = useState(false);
+  const [remote, setRemote] = useState<MeDto | null>(null);
+  const submitting = useRef(false);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const dirty = JSON.stringify(values) !== baseline;
+  function move(next: number) {
+    setStep(next);
+    setFields({});
+    setMessage("");
+    requestAnimationFrame(() => heading.current?.focus());
+  }
+  function next() {
+    const parsed = preferencesInputSchema.safeParse({
+      ...values,
+      expectedStateRevision: revision,
+    });
+    const errors = parsed.success ? {} : preferenceFields(parsed.error);
+    const required = step === 1 ? ["companies"] : ["dailyMinutes", "deadline"];
+    const visible = Object.fromEntries(
+      Object.entries(errors).filter(([key]) => required.includes(key)),
+    );
+    setFields(visible);
+    if (!Object.keys(visible).length) move(step + 1);
+  }
+  async function save(event: React.FormEvent) {
+    event.preventDefault();
+    if (step < 3) {
+      next();
+      return;
+    }
+    if (submitting.current || blocked) return;
+    const input = { ...values, expectedStateRevision: revision };
+    const parsed = preferencesInputSchema.safeParse(input);
+    if (!parsed.success) {
+      setFields(preferenceFields(parsed.error));
+      setMessage("Check your preparation setup. Your entries are preserved.");
+      return;
+    }
+    submitting.current = true;
+    setBusy(true);
+    setMessage("");
+    setFields({});
+    try {
+      await catalogRequest("/api/v1/me/preferences", "PATCH", input);
+      setBaseline(JSON.stringify(values));
+      router.replace(returnTo);
+      router.refresh();
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to save. Your entries are preserved.",
+      );
+      if (error instanceof CatalogRequestError) {
+        setFields(error.fields);
+        if (error.uncertain || error.code === "STATE_CONFLICT") {
+          setBlocked(true);
+          setRemote(null);
+        }
+      }
+    } finally {
+      submitting.current = false;
+      setBusy(false);
+    }
+  }
+  async function reconcile() {
+    if (submitting.current) return;
+    submitting.current = true;
+    setBusy(true);
+    try {
+      const response = await catalogRequest("/api/v1/me");
+      setRemote(response.data);
+      setMessage(
+        "Saved preferences loaded. Your local entries are unchanged; choose explicitly how to continue.",
+      );
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Cannot read saved preferences.",
+      );
+    } finally {
+      submitting.current = false;
+      setBusy(false);
+    }
+  }
+  const errorFor = (key: string) =>
+    fields[key] ? (
+      <p id={`pref-${key}-error`} className="student-error">
+        {fields[key]?.join(" ")}
+      </p>
+    ) : null;
+  const days = values.deadline
+    ? Math.floor(
+        (Date.parse(`${values.deadline}T00:00:00Z`) -
+          Date.parse(`${studyDate()}T00:00:00Z`)) /
+          86400000,
+      ) + 1
+    : null;
+  return (
+    <>
+      <UnsavedGuard dirty={dirty} />
+      <ol className="onboarding-steps" aria-label="Preparation setup steps">
+        {["Goals", "Schedule", "Starting point"].map((title, index) => (
+          <li
+            key={title}
+            aria-current={step === index + 1 ? "step" : undefined}
+          >
+            <span>{index + 1}</span>
+            {title}
+          </li>
+        ))}
+      </ol>
+      <div className="onboarding-layout">
+        <section>
+          <p className="eyebrow">Step {step} of 3 · Preparation preferences</p>
+          <h1 ref={heading} tabIndex={-1}>
+            {step === 1
+              ? "What are you preparing for?"
+              : step === 2
+                ? "Make room for consistent progress."
+                : "Where are you starting?"}
+          </h1>
+          <p className="student-lead">
+            {step === 1
+              ? "Choose your target companies. Your preparation also includes shared placement foundations."
+              : step === 2
+                ? "Choose a daily commitment that fits your schedule."
+                : "An honest starting point, not a test. Rate each subject from 1 (new) to 5 (very confident)."}
+          </p>
+          {message && (
+            <div className="student-notice" role="status">
+              {message}{" "}
+              <Link
+                href={`/login?returnTo=${encodeURIComponent(returnTo)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Sign in again in a new tab if your session expired; then return
+                here to retry
+              </Link>
+              .
+            </div>
+          )}
+          {Object.keys(fields).length > 0 && (
+            <div role="alert" className="student-error">
+              <p>Check these fields:</p>
+              <ul>
+                {Object.entries(fields).map(([field, errors]) => (
+                  <li key={field}>
+                    {field}: {errors.join(" ")}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <form onSubmit={save} aria-busy={busy}>
+            <fieldset disabled={busy} className="student-fieldset">
+              {step === 1 && (
+                <fieldset
+                  className="student-options"
+                  aria-describedby={
+                    fields.companies ? "pref-companies-error" : undefined
+                  }
+                >
+                  <legend>Target companies</legend>
+                  {(["cognizant", "ltm"] as const).map((company) => (
+                    <label
+                      key={company}
+                      className={`company-option ${values.companies.includes(company) ? "selected" : ""}`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={values.companies.includes(company)}
+                        onChange={(event) =>
+                          setValues({
+                            ...values,
+                            companies: event.target.checked
+                              ? [...values.companies, company]
+                              : values.companies.filter(
+                                  (entry) => entry !== company,
+                                ),
+                          })
+                        }
+                      />
+                      <span>
+                        <strong>
+                          {company === "ltm" ? "LTM" : "Cognizant"}
+                        </strong>
+                        <span className="student-muted">
+                          {company === "ltm"
+                            ? "Technical and problem-solving foundations."
+                            : "Aptitude, logical reasoning and programming foundations."}
+                        </span>
+                      </span>
+                    </label>
+                  ))}
+                  {errorFor("companies")}
+                  <div className="student-notice">
+                    <strong>Build your foundations</strong>
+                    <p>
+                      DSA, aptitude and core CS topics are included. Company
+                      labels describe provenance, not guaranteed hiring
+                      requirements.
+                    </p>
+                  </div>
+                </fieldset>
+              )}
+              {step === 2 && (
+                <div className="student-stack">
+                  <fieldset className="student-card">
+                    <legend>Daily study time</legend>
+                    <p>30–240 minutes, in 15-minute increments.</p>
+                    <div className="duration-presets">
+                      {[30, 60, 90, 120].map((minutes) => (
+                        <button
+                          type="button"
+                          className="student-choice"
+                          aria-pressed={values.dailyMinutes === minutes}
+                          key={minutes}
+                          onClick={() =>
+                            setValues({ ...values, dailyMinutes: minutes })
+                          }
+                        >
+                          {minutes} min
+                        </button>
+                      ))}
+                    </div>
+                    <label className="student-label">
+                      Daily minutes
+                      <input
+                        type="number"
+                        min={30}
+                        max={240}
+                        step={15}
+                        required
+                        value={
+                          Number.isNaN(values.dailyMinutes)
+                            ? ""
+                            : values.dailyMinutes
+                        }
+                        aria-invalid={!!fields.dailyMinutes}
+                        aria-describedby="pref-dailyMinutes-error"
+                        onChange={(event) =>
+                          setValues({
+                            ...values,
+                            dailyMinutes: event.target.valueAsNumber,
+                          })
+                        }
+                      />
+                    </label>
+                    {errorFor("dailyMinutes")}
+                  </fieldset>
+                  <div className="student-card">
+                    <label className="student-label">
+                      Target preparation date
+                      <input
+                        type="date"
+                        required
+                        min={minimumDeadline()}
+                        value={values.deadline}
+                        aria-invalid={!!fields.deadline}
+                        aria-describedby="pref-deadline-error"
+                        onChange={(event) =>
+                          setValues({ ...values, deadline: event.target.value })
+                        }
+                      />
+                    </label>
+                    {errorFor("deadline")}
+                    <p>
+                      At least seven inclusive study days, including today, in
+                      Asia/Kolkata. A longer goal will use a preparation window
+                      of at most 30 days when you generate a proposal.
+                    </p>
+                  </div>
+                  <p className="student-notice">
+                    Your study timezone is India Standard Time (Asia/Kolkata).
+                    No schedule or email reminders are created here.
+                  </p>
+                </div>
+              )}
+              {step === 3 && (
+                <div className="student-stack">
+                  {(Object.keys(subjects) as (keyof typeof subjects)[]).map(
+                    (subject) => (
+                      <fieldset
+                        key={subject}
+                        className="student-card skill-options"
+                        aria-describedby="pref-skills-error"
+                      >
+                        <legend>{subjects[subject]}</legend>
+                        <div>
+                          {ratings.map((rating, index) => (
+                            <label
+                              key={rating}
+                              className={
+                                values.skills[subject] === index + 1
+                                  ? "selected"
+                                  : ""
+                              }
+                            >
+                              <input
+                                type="radio"
+                                name={`skill-${subject}`}
+                                required
+                                checked={values.skills[subject] === index + 1}
+                                onChange={() =>
+                                  setValues({
+                                    ...values,
+                                    skills: {
+                                      ...values.skills,
+                                      [subject]: index + 1,
+                                    },
+                                  })
+                                }
+                              />{" "}
+                              <span>
+                                <strong>{index + 1}</strong>
+                                {rating}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </fieldset>
+                    ),
+                  )}
+                  {errorFor("skills")}
+                  <section className="student-card">
+                    <h2>Review your preparation setup</h2>
+                    <p>
+                      {values.companies
+                        .map((company) =>
+                          company === "ltm" ? "LTM" : "Cognizant",
+                        )
+                        .join(" + ")}{" "}
+                      · {values.dailyMinutes} min/day · Target{" "}
+                      {values.deadline || "not set"}
+                    </p>
+                    <p>
+                      DSA {values.skills.dsa || "unrated"}/5 · Aptitude{" "}
+                      {values.skills.aptitude || "unrated"}/5 · CS{" "}
+                      {values.skills.cs || "unrated"}/5
+                    </p>
+                    <p>
+                      Saving preferences does not generate, accept or change a
+                      study plan. Review a proposal from your dashboard before
+                      explicitly accepting a schedule.
+                    </p>
+                  </section>
+                </div>
+              )}
+              <div className="student-actions">
+                {step > 1 && (
+                  <button
+                    className="button button-outline"
+                    type="button"
+                    onClick={() => move(step - 1)}
+                  >
+                    Back
+                  </button>
+                )}
+                {step < 3 ? (
+                  <button className="button" type="submit">
+                    Continue
+                  </button>
+                ) : (
+                  <button className="button" disabled={blocked} type="submit">
+                    {busy ? "Saving…" : "Save and continue"}
+                  </button>
+                )}
+              </div>
+            </fieldset>
+          </form>
+          {blocked && (
+            <section
+              className="student-card"
+              aria-label="Preference reconciliation"
+            >
+              <h2>Reconcile before retrying</h2>
+              <p>
+                No automatic retry was sent. Read the current saved preferences
+                to resolve an uncertain save or a changed revision.
+              </p>
+              <button
+                className="button"
+                disabled={busy}
+                onClick={() => void reconcile()}
+              >
+                Read saved preferences
+              </button>
+              {remote && (
+                <>
+                  <pre className="student-json">
+                    {JSON.stringify(remote.preferences, null, 2)}
+                  </pre>
+                  <p>
+                    Current state revision: {remote.stateRevision}. Existing
+                    plan unchanged.
+                  </p>
+                  {remote.preferences && (
+                    <button
+                      className="button"
+                      disabled={busy}
+                      onClick={() => {
+                        setBaseline(JSON.stringify(values));
+                        router.replace(returnTo);
+                        router.refresh();
+                      }}
+                    >
+                      Continue with saved preferences
+                    </button>
+                  )}
+                  <button
+                    className="button button-outline"
+                    disabled={busy}
+                    onClick={() => {
+                      setRevision(remote.stateRevision);
+                      setBlocked(false);
+                      setRemote(null);
+                      setMessage(
+                        "Local entries retained against the current revision. Review and explicitly save again.",
+                      );
+                    }}
+                  >
+                    Keep my entries and use current revision
+                  </button>
+                </>
+              )}
+            </section>
+          )}
+        </section>
+        <aside className="preparation-brief student-card">
+          <p className="eyebrow">Your preparation profile</p>
+          <h2>Preparation brief</h2>
+          <dl>
+            <dt>Target companies</dt>
+            <dd>
+              {values.companies.length
+                ? values.companies
+                    .map((company) => (company === "ltm" ? "LTM" : "Cognizant"))
+                    .join(" + ")
+                : "Not selected yet"}
+            </dd>
+            <dt>Daily commitment</dt>
+            <dd>{values.dailyMinutes || "Not set"} minutes</dd>
+            <dt>Target date</dt>
+            <dd>{values.deadline || "Not set"}</dd>
+            <dt>Preparation window</dt>
+            <dd>
+              {days && days >= 7
+                ? `${Math.min(days, 30)} days in a proposed plan`
+                : "Choose at least seven study days"}
+            </dd>
+          </dl>
+          <p>
+            Preferences are saved only when you finish. No placement prediction
+            or plan is generated.
+          </p>
+          {initial.capabilities.emailMode === "test" && (
+            <p>
+              Demo email mode: verification and password recovery remain
+              unavailable.
+            </p>
+          )}
+        </aside>
+      </div>
+    </>
+  );
+}

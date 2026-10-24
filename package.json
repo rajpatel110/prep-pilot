@@ -11,6 +11,9 @@
     "test:integration": "node --env-file=.env.local --import tsx tests/auth-integration.ts",
     "test:catalog": "node --conditions=react-server --env-file=.env.local --import tsx tests/catalog-integration.ts",
     "test:admin-content": "node --conditions=react-server --env-file=.env.local --import tsx tests/integration/admin-content.ts",
+    "test:student": "node --conditions=react-server --env-file=.env.local --import tsx tests/integration/student-journey.ts",
+    "test:practice": "node --conditions=react-server --env-file=.env.local --import tsx tests/integration/student-journey.ts --practice",
+    "test:planning": "node --conditions=react-server --env-file=.env.local --import tsx tests/integration/student-journey.ts --planning",
     "auth:setup": "tsx scripts/setup-local-auth.ts",
     "db:setup": "node --env-file=.env.local --import tsx scripts/setup-database.ts",
     "admin:provision": "node --conditions=react-server --env-file=.env.local --import tsx scripts/provision-admin.ts",
@@ -30,6 +33,7 @@
     "next": "16.4.2",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "react-markdown": "10.1.0",
     "server-only": "0.0.1",
     "zod": "4.6.7"
   },

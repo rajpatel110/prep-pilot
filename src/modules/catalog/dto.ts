@@ -2,9 +2,7 @@ import "server-only";
 import type { z } from "zod";
 import type { storedContentSchema } from "./schemas";
 
-export function adminContentSummaryDto(
-  content: z.output<typeof storedContentSchema>,
-) {
+function contentSummaryDto(content: z.output<typeof storedContentSchema>) {
   return {
     id: content._id,
     slug: content.slug,
@@ -23,6 +21,14 @@ export function adminContentSummaryDto(
     })),
     revision: content.revision,
     reviewedAt: content.reviewedAt?.toISOString() ?? null,
+  };
+}
+
+export function adminContentSummaryDto(
+  content: z.output<typeof storedContentSchema>,
+) {
+  return {
+    ...contentSummaryDto(content),
     status: content.status,
     createdAt: content.createdAt.toISOString(),
     updatedAt: content.updatedAt.toISOString(),
@@ -48,3 +54,23 @@ export function adminContentDto(content: z.output<typeof storedContentSchema>) {
 
 export type AdminContentSummary = ReturnType<typeof adminContentSummaryDto>;
 export type AdminContentDetail = ReturnType<typeof adminContentDto>;
+
+export function studentContentSummaryDto(
+  content: z.output<typeof storedContentSchema>,
+) {
+  return { ...contentSummaryDto(content), availability: "available" as const };
+}
+export function studentContentDto(
+  content: z.output<typeof storedContentSchema>,
+) {
+  return {
+    ...studentContentSummaryDto(content),
+    prompt: content.prompt ?? null,
+    body: content.body ?? null,
+    explanation: content.explanation ?? null,
+    externalUrl: content.externalUrl ?? null,
+    source: content.source,
+    attribution: content.attribution,
+    attachments: [],
+  };
+}

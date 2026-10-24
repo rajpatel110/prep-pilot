@@ -1,5 +1,8 @@
 import "server-only";
-import { requireAdmin } from "@/modules/identity/service";
+import { requireAdmin, requireStudyActor } from "@/modules/identity/service";
+import { findAttemptContentSnapshot } from "@/modules/practice/history-read";
+import { findPlanContentSnapshot } from "@/modules/planning/history-read";
+import { z } from "zod";
 import { getDomainConnection } from "@/shared/server/db";
 import { serverConfig } from "@/shared/server/config";
 import { HttpError } from "@/shared/server/http";
@@ -9,7 +12,12 @@ import {
   findCatalogDetail,
 } from "./repository";
 import { domainId } from "./schemas";
-import { adminContentDto, adminContentSummaryDto } from "./dto";
+import {
+  adminContentDto,
+  adminContentSummaryDto,
+  studentContentDto,
+  studentContentSummaryDto,
+} from "./dto";
 import { catalogQuerySchema, cursorBinding, queryObject } from "./read-query";
 import { inspectCatalogCursor, issueCatalogCursor } from "./cursor";
 
@@ -43,12 +51,21 @@ const queryMessages: Record<string, string> = {
   limit: "Supply a whole-number limit from 1 to 50.",
 };
 
-export async function listAdminContent(
+async function listContent(
   headers: Headers,
   params: URLSearchParams,
+  student: boolean,
 ) {
   try {
-    const actor = await requireAdmin(headers);
+    const actor = await (student
+      ? requireStudyActor(headers)
+      : requireAdmin(headers));
+    if (student && params.has("status"))
+      throw invalid({
+        _form: [
+          "Student lists only include published content; status is not a supported filter.",
+        ],
+      });
     const parsed = catalogQuerySchema.safeParse(queryObject(params));
     if (!parsed.success) {
       const fields: Record<string, string[]> = {};
@@ -65,8 +82,15 @@ export async function listAdminContent(
       }
       throw invalid(fields);
     }
-    const query = parsed.data;
-    const binding = cursorBinding(query, actor.session.user.id);
+    const query = {
+      ...parsed.data,
+      ...(student ? { status: "published" as const } : {}),
+    };
+    const binding = cursorBinding(
+      query,
+      actor.session.user.id,
+      student ? "/api/v1/content" : "/api/v1/admin/content",
+    );
     const secret = serverConfig.BETTER_AUTH_SECRET!;
     const after = query.cursor
       ? inspectCatalogCursor(query.cursor, binding, secret)
@@ -81,7 +105,13 @@ export async function listAdminContent(
     await requireCatalogSetup(connection);
     const documents = await findCatalogPage(connection, query, after);
     const hasMore = documents.length > query.limit;
-    const data = documents.slice(0, query.limit).map(adminContentSummaryDto);
+    const data = documents
+      .slice(0, query.limit)
+      .map((document) =>
+        student
+          ? studentContentSummaryDto(document)
+          : adminContentSummaryDto(document),
+      );
     return {
       data,
       meta: {
@@ -122,3 +152,77 @@ export async function getAdminContent(
 }
 
 export type AdminContentPage = Awaited<ReturnType<typeof listAdminContent>>;
+
+export async function listAdminContent(
+  headers: Headers,
+  params: URLSearchParams,
+) {
+  const result = await listContent(headers, params, false);
+  return result as {
+    data: ReturnType<typeof adminContentSummaryDto>[];
+    meta: typeof result.meta;
+  };
+}
+
+export async function listStudentContent(
+  headers: Headers,
+  params: URLSearchParams,
+) {
+  const result = await listContent(headers, params, true);
+  return result as {
+    data: ReturnType<typeof studentContentSummaryDto>[];
+    meta: typeof result.meta;
+  };
+}
+
+const historySnapshot = z.object({
+  title: z.string().min(1).max(160),
+  subject: z.enum(["dsa", "aptitude", "cs"]),
+  topic: z.string().min(1).max(80),
+  type: z.enum(["question", "resource"]),
+});
+
+export async function getStudentContent(
+  headers: Headers,
+  id: string,
+  params = new URLSearchParams(),
+) {
+  try {
+    const actor = await requireStudyActor(headers);
+    if (!domainId.safeParse(id).success)
+      throw invalid({ id: ["Use a 24-character hexadecimal content ID."] });
+    if (params.size)
+      throw invalid({ _form: ["Remove unsupported query parameters."] });
+    const connection = await getDomainConnection();
+    await requireCatalogSetup(connection);
+    const content = await findCatalogDetail(connection, id);
+    if (content?.status === "published") return studentContentDto(content);
+    const attempt = historySnapshot.safeParse(
+      await findAttemptContentSnapshot(actor.session.user.id, id),
+    );
+    const plan = attempt.success
+      ? null
+      : historySnapshot.safeParse(
+          await findPlanContentSnapshot(actor.session.user.id, id),
+        );
+    const snapshot = attempt.success
+      ? attempt.data
+      : plan?.success
+        ? plan.data
+        : null;
+    if (!snapshot)
+      throw new HttpError(404, "RESOURCE_NOT_FOUND", "Content was not found.");
+    return {
+      id,
+      availability: "unavailable" as const,
+      reason: !content
+        ? "missing"
+        : content.status === "archived"
+          ? "archived"
+          : "not_published",
+      snapshot,
+    };
+  } catch (error) {
+    throw readError(error);
+  }
+}

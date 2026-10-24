@@ -264,7 +264,10 @@ async function main() {
     await db
       .collection("profiles")
       .updateOne({ userId: adminId }, { $set: { role: "admin" } });
-    if (!process.argv.includes("--reads-only")) {
+    if (
+      !process.argv.includes("--reads-only") &&
+      !process.argv.includes("--lifecycle-only")
+    ) {
       stage = "CSRF protection";
       for (const headers of [
         { "x-csrf-token": "" },
@@ -638,8 +641,10 @@ async function main() {
               expectedRevision: 1,
               title: "Unsupported",
             }),
-            409,
-            "INVALID_CONTENT_STATE",
+            status === "published" ? 422 : 409,
+            status === "published"
+              ? "PUBLISH_REQUIREMENTS_NOT_MET"
+              : "INVALID_CONTENT_STATE",
           ),
         );
       }
@@ -784,6 +789,18 @@ async function main() {
         .updateOne({ userId: adminId }, { $set: { stateRevision: 7 } });
     }
     stage = "boundary checks";
+    if (!process.argv.includes("--reads-only")) {
+      stage = "publication lifecycle and student isolation";
+      const { exerciseLifecycle } = await import("./lifecycle-cases");
+      await exerciseLifecycle({
+        db,
+        request,
+        error,
+        noMutation,
+        studentCookie,
+        adminId,
+      });
+    }
     stage = "guarded library reads";
     const reads = await import("../../src/modules/catalog/reads");
     domain ??= await (
@@ -1073,7 +1090,17 @@ async function main() {
         "BROWSER READY: disposable library fixture server on port 3103. Press Enter to finish; automatic cleanup after ten minutes.",
       );
       await new Promise<void>((resolve) => {
-        const timer = setTimeout(finish, 600000);
+        const browserDuration = Number(
+          process.argv
+            .find((value) => value.startsWith("--browser-ms="))
+            ?.split("=")[1] ?? 600000,
+        );
+        const timer = setTimeout(
+          finish,
+          Number.isFinite(browserDuration)
+            ? Math.max(30000, Math.min(browserDuration, 600000))
+            : 600000,
+        );
         function finish() {
           clearTimeout(timer);
           process.stdin.off("data", finish);

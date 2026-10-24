@@ -129,6 +129,7 @@ _id = "catalog"; revision Int default 0; commitSerial Int default 0; common time
 | previousPlanId | ObjectId N | Previous version for the same user; null for the first plan. |
 | sourcePreviewId | ObjectId R | Unique; identifies the confirmation command even after its preview is purged. |
 | generatedAt | Date R | Server commit-time instant. |
+| attemptSequenceAtGeneration | Int O | Additive adaptation watermark captured from the guarded profile at acceptance. New plans save it; legacy absence reads as 0 without rewriting history. Suppress reviewed evidence until a newer attemptSequence, not a wall-clock comparison. Internal service field, not a student DTO field. |
 | templateVersion; rulesVersion | String R | Immutable version identifiers, each at most 80 characters. |
 | timezone; windowStart; windowEnd | String R; LocalDates R | Asia/Kolkata; original window contains 7–30 inclusive days. |
 | budgetSnapshot | Object R | dailyMinutes plus complete preferences used to build the plan. |

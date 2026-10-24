@@ -279,7 +279,229 @@ For focused read regressions during iteration use
 test database and never establishes production-build acceptance. The default
 suite retains the full transactional draft regression coverage.
 
+## Editor, safe preview and publication (Steps 4–5)
+
+The Content Library now offers **Create draft**. Select a saved title for
+**Edit content**, **Admin preview** and the state-appropriate lifecycle action.
+Routes are `/admin/content/new`, `/admin/content/:id/edit` and
+`/admin/content/:id/preview`; all require current server-side admin access.
+The new editor/preview screens extend the existing ivory/forest/charcoal style;
+Stitch currently provides only the Content Library reference for this workflow.
+
+1. Create a draft with identity/classification, source and optional learning text.
+2. Edit metadata, tags, Markdown, HTTPS links, attribution, review date and optional
+   Cognizant/LTM associations with their own provenance and review dates.
+3. Preview the local form without saving, or open the saved revision's Admin preview.
+   Explanations are revealed explicitly; external practice/resource links are labelled.
+4. Save, review and publish through confirmation. A question requires a prompt or
+   HTTPS URL; a resource requires a body or HTTPS URL. Review metadata must be valid.
+5. Published edits must remain publishable. Archive requires a reason; reopening
+   returns to draft without changing the slug or clearing publication history.
+
+The documented publish/archive/reopen POST endpoints require JSON, Origin,
+session-bound CSRF and expectedRevision. They use the existing catalog/profile/
+content/audit transaction and revision fencing. Stale revisions never auto-merge.
+PATCH now supports drafts and publication-valid published records; archived records
+must reopen first. This supersedes the earlier Step 2 draft-only restriction.
+Historical plans/attempts and saved task estimates are not rewritten.
+
+Unchanged editor fields are omitted from PATCH, optional cleared text becomes null,
+and changed arrays replace their previous values. Recoverable errors retain input.
+Stale or uncertain saves block further saves until explicit reconciliation: read
+the saved record and compare, discard local input, or explicitly rebase changed
+fields onto the observed revision. For uncertain creates, reconciliation searches
+paginated admin summaries for the attempted unique slug and loads its detail.
+There is no general create idempotency guarantee or silent retry. Review the
+comparison before choosing to retry or adopt a saved record. Unsaved link/back
+navigation uses a confirmation dialog; tab close/reload uses the browser warning.
+
+`react-markdown` 10.1.0 is the sole new direct dependency. It supports the installed
+React version and provides a real Markdown AST renderer instead of ad-hoc HTML
+substitution. Our wrapper disables raw HTML and images, allows only absolute HTTPS
+links without credentials, and uses noopener/noreferrer for external tabs. No raw
+HTML plugin or remote image fetching is enabled. The existing strict input safety
+rules remain. See the [maintainer's security guidance](https://github.com/remarkjs/react-markdown#security).
+No preview writes attempts, revisions or task completions.
+
+`GET /api/v1/content` and `/api/v1/content/:id` require study access and expose only
+published learning data through explicit student DTOs. Status is not a student
+filter; all other documented filters and signed pagination rules apply, with cursor
+scope separated from admin lists. Unpublished/missing detail is 404 unless an owned
+attempt or plan task contains a saved snapshot; then only the unavailable reason
+and that snapshot are returned, never the draft/archived body. The owning practice
+and planning modules provide read-only history lookup; this does not implement
+submissions, scheduling or the full student catalog UI.
+
+Attachments remain empty and nonempty assetIds are rejected. R2, live verification,
+password recovery, the full seed collection and study workflows are still deferred.
+No new external account, email or storage credential is required.
+
+The existing admin integration suite now also exercises the full lifecycle,
+publication-valid edits, history isolation, revision races and lifecycle audit
+rollback against disposable records. `--lifecycle-only` skips old draft cases during
+focused iteration; `--reads-only` skips lifecycle writes. Browser review may add
+`--browser-ms=180000` to shorten the optional fixture pause (30 seconds–10 minutes).
+These flags do not replace final full regression/build verification.
+
+## Student onboarding and reading
+
+Students without saved preferences are directed to `/onboarding`: choose Cognizant,
+LTM or both, a study budget/deadline, and three 1–5 self-assessments. The final save
+uses `PATCH /api/v1/me/preferences` with CSRF and `expectedStateRevision`; it replaces
+the complete preferences object, not individual nested values. A saved deadline
+must allow seven inclusive days in Asia/Kolkata. Existing past deadlines remain
+readable; a later edit must meet the current save rule.
+
+Completed students continue to the functional `/dashboard`. The content library
+remains independently browsable. `/onboarding?edit=1` edits existing preferences without
+generating or accepting a plan. Admins continue to their admin workspace.
+
+The library uses real published-content list/detail services and API pagination,
+URL search/subject/topic/company/difficulty filters, and Load more. Detail back
+links preserve filters. Tab-local storage keeps only a page-count/scroll hint,
+never content bodies or credentials; returning refetches up to 20 pages from the
+real API. Cursor expiry offers a fresh first-page read. No total count is invented.
+Question/resource pages reuse the safe Markdown renderer and clearly label HTTPS
+destinations; neither reading nor link clicks records completion or outcomes.
+
+Reviewed Stitch desktop onboarding/library/question/resource screens and mobile
+schedule/library references guide the layout. Prototype state switchers, unsupported
+companies, bookmarking/sharing, fake totals and plan/outcome/completion controls are
+intentionally omitted. See `docs/student/DESIGN.md` for the adaptation decisions.
+No new dependency, service account or credential is required.
+
+`npm.cmd run test:student -- --dev` runs the connected HTTP/server-page integration
+against its own migrated `prep_pilot_student_test_*` database and port 3104.
+`--browser` holds disposable fixtures for ten minutes, or until Enter, then cleans up. Its explicit
+test login is `student-browser@example.com` / `Disposable-student-browser-only-481!`,
+not a real account. Never reuse that password for real credentials. `--direct`
+exercises actual Route Handlers/auth/MongoDB without a Next server when compiler
+output is blocked; it explicitly skips browser/pages/routing assertions and does
+not substitute for production verification. Omit `--dev` for a successful current
+production artifact. Run all suites sequentially, never alongside interactive dev.
+
+## Practice outcomes, history and revisions
+
+Published questions now support explicit practice outcomes: Solved independently
+(`independent`), Solved with help (`needed_help`), and Not solved yet (`failed`).
+Perceived difficulty is optional. `POST /api/v1/attempts` accepts only the documented
+submission UUID, content ID, kind, outcome and optional difficulty. Plan/task context
+fields are not part of that request contract and are rejected, not trusted.
+
+The browser freezes a submission's payload and identifier before sending it and
+keeps it in user/content-scoped tab storage until success. After a lost response,
+retry the same identifier; a deliberate later attempt starts a new one. If tab
+storage is disabled, keep the page open to retain the in-memory identity. A replay
+returns the original persisted receipt even after later attempts; refreshed history
+and revisions are authoritative for current state.
+
+`/attempts` is immutable owned history; `/revisions` is the temporary due-work entry
+point alongside the dashboard. Include upcoming revisions to see future work.
+Opening a revision records nothing; saving a `revision` recall outcome writes a new
+attempt and reschedules that owned cycle. Intervals use Asia/Kolkata calendar days:
+failed or hard → 1; otherwise help or medium → 3; otherwise independent → 7.
+Archived material stays unavailable while saved historical facts remain readable.
+
+The reusable `PATCH /api/v1/plans/:id/tasks/:taskId` supports completion/undo only
+for an existing owned active-plan task with the current state revision. No plan
+records are generated by task completion itself. Independently browsed resources have **no** completion
+button, and recording a question outcome never completes a task.
+
+### Database migration and checks
+
+Migration 002 adds the documented attempt/revision indexes and validates existing
+study records. Migration 001's manifest/checksum is unchanged. Setup is explicit,
+preserves records/singletons, fails on invalid/conflicting data and never drops
+indexes or synchronises them at startup. For the local development database:
+
+```powershell
+npm.cmd run db:setup -- --database prep_pilot_dev --environment development
+```
+
+Select your own exact development/test database if using another configuration;
+never infer a target from the URI. No new account, service or credential is needed.
+
+`npm.cmd run test:practice -- --direct` reuses the disposable student harness and
+exercises actual auth, Route Handlers and MongoDB transactions without a Next
+server. Omit `--direct` after a successful current production build, or use `--dev`
+for focused development checks. `--browser` pauses on isolated deterministic due
+fixtures; no real days need to pass. Explicit test plan/task records exist only in
+that disposable database. Run suites sequentially; port 3104 is shared with the
+student suite. No fixtures are a production fallback.
+
+## Study plans and dashboard
+
+Students now land on `/dashboard` after completing preferences. With no active
+plan, review saved preferences and explicitly generate a proposal. Review dated
+tasks, actual subject minutes, daily budgets and every deferred item before
+accepting. Generation and page views never activate or complete anything.
+
+`POST /api/v1/plan-previews` captures a consistent study snapshot; owned previews
+can be reloaded at `/plan-previews/:id`. They are valid for ten minutes and retained
+for 24 hours. Confirmation uses `/api/v1/plan-previews/:id/confirm`; retry the same
+preview ID after an uncertain response. A successful replay returns its original
+plan, which may now be archived. Date, preferences/activity/task state, catalog,
+template or rules changes require regeneration. All deferrals must be acknowledged.
+
+The Study Plan navigation opens the active plan; saved versions remain accessible
+by ID and the previous-version link. Explicit replacement preserves completed work
+and historical versions. Attempts never auto-complete tasks. Resource completion
+is available only in an owned active task context; independently browsed resources
+still have no completion control. After uncertain task writes, refresh saved state
+before trying another action. Dashboard minutes are estimates, not measured time.
+
+Editorial mappings, minimal prerequisites, assumptions and update/version policy
+are in `docs/PLANNING_CONFIGURATION.md`. They are not official company syllabuses.
+The planner aims for 50/25/25 subject minutes without shortening estimates, repeating
+fresh work, inventing missing content or bypassing prerequisites. Windows are
+7–30 days; task/deferred arrays are each capped at 480 and proposals at 2 MiB.
+Catalog snapshots are bounded to 2,000 records and fail explicitly if exceeded.
+Automatic adaptation recommendations and full analytics remain deferred.
+
+Migration 003 adds unique plan-version/source-preview indexes and preview retention
+indexes through the existing explicit migration runner. Use Node 24 and an exact
+development/test target, for example:
+
+```powershell
+npm.cmd run db:setup -- --database prep_pilot_dev --environment development
+```
+
+`npm.cmd run test:planning -- --direct` tests real Route Handlers and disposable
+MongoDB transactions, not server/browser rendering. Use `--dev --browser` for an
+isolated interactive fixture on port 3104 (same public test login as the student
+suite), or omit both flags to verify a successful current production artifact.
+Run sequentially, never alongside another project server. Include
+`npm.cmd run test:planning` after the existing production checks below.
+
 ## Repeatable local build and integration sequence
+
+### Catalog coverage and suggested changes
+
+Run the read-only report against the explicitly authorized configured development
+database (never a guessed target):
+
+```powershell
+node --env-file=.env.local --import tsx scripts/catalog-coverage.ts --database prep_pilot_dev --environment development
+```
+
+See `docs/CATALOG_COVERAGE.md` for observed gaps and
+`docs/PLANNING_CONFIGURATION.md` for the transparent last-three adjustment rule.
+Dashboard recommendations use recorded outcomes and unscheduled due revisions;
+they do not generate plans on page views. Choose Review suggested changes to
+persist a proposal, compare tasks/daily minutes, then Keep current plan or Accept
+updated plan. No-useful/insufficient-content previews cannot create a new version.
+New practice/task/preferences/catalog changes require fresh review. No live email,
+R2, full analytics or automated ability assessment is enabled by this feature.
+The existing `test:planning` suite includes focused adjustment transaction cases.
+For an isolated interactive adjustment fixture after a successful current build,
+use `npm.cmd run test:planning -- --browser --adjustment-browser`; the harness
+prints a disposable question path and retains an active plan for the review flow.
+The fixture expires after ten minutes and cleans up its database. Do not test with
+real-account fixtures or start another server/build during that window. Restart a
+development server after Mongoose schema changes because cached model definitions
+can outlive a source-module refresh.
+
+### Sequential checks
 
 Use Node 24 and npm 10.9.3 in one normal VS Code PowerShell terminal. During active
 iteration, run only the relevant development suites and run them sequentially;
@@ -287,11 +509,21 @@ wait for the terminal command to finish, not just its printed PASS line. Do not
 run an interactive PrepPilot dev server alongside a `--dev` suite: all use
 `.next/dev`, regardless of their different ports.
 
+The commands in the final sequence below are PowerShell, not Git Bash. A prompt
+containing `MINGW64` uses Bash: select PowerShell in VS Code's terminal dropdown,
+or use `cd /c/PROJECTS/prep-pilot` and
+`export PATH="$PWD/.tools/node_modules/node/bin:$PATH"` for Bash setup. Do not paste
+PowerShell `Set-Location`, `$env:PATH`, `Test-Path` or `Remove-Item` syntax into Bash.
+If `npm.cmd run build` nevertheless succeeds, record it as a successful build,
+not a clean build when the cleanup command failed; do not delete a passing artifact
+merely to repeat verification.
+
 For final verification:
 
 1. Finish the relevant dev suites and stop only your positively identified PrepPilot
    `dev`, `start` or test terminals with Ctrl+C. Never kill all Node processes.
-   Check known ports 3000 (interactive), 3101 (auth tests) and 3103 (draft tests).
+   Check known ports 3000 (interactive), 3101 (auth tests), 3103 (draft tests)
+   and 3104 (student journey tests).
    Absence of a Next lock file alone is not a process/handle check.
 2. Run any needed unit/lint/format/type checks before preparing the final build;
    `typecheck` generates Next route types. Already passing checks need not be
@@ -323,6 +555,10 @@ npm.cmd run test:admin-content
 if ($LASTEXITCODE -ne 0) { throw 'Draft regression failed; stop and inspect.' }
 npm.cmd run test:integration
 if ($LASTEXITCODE -ne 0) { throw 'Authentication regression failed; inspect.' }
+npm.cmd run test:student
+if ($LASTEXITCODE -ne 0) { throw 'Student regression failed; inspect.' }
+npm.cmd run test:practice
+if ($LASTEXITCODE -ne 0) { throw 'Practice regression failed; inspect.' }
 ```
 
 These are local build/test operations, not deployment. Keep credentials in ignored
@@ -382,7 +618,8 @@ guarantee of zero billing.
 
 The visual foundation uses warm ivory, forest green, charcoal and system typography.
 Landing, authentication and the read-only admin Content Library adapt the reviewed
-Stitch direction. Remaining study/admin workflows and a component library are deferred.
+Stitch direction. The editor/preview extend that system where no Stitch screen
+exists. Remaining student workflows and a component library are deferred.
 
 See [implementation status](docs/IMPLEMENTATION_STATUS.md), [working instructions](AGENTS.md)
 and the four design documents referenced there for scope, architecture and next steps.

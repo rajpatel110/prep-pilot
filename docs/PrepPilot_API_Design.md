@@ -306,6 +306,7 @@ initial requires complete preferences (422 PREFERENCES_REQUIRED) and no active p
 | Identity and validity | id, kind, state:pending\|confirmed, basePlanId:null\|ID, baseStateRevision, catalogRevision, localDateAtCreation, expiresAt, confirmedPlanId:null\|ID. |
 | proposal | windowStart, windowEnd, timezone, budgetSnapshot, templateVersion, rulesVersion, tasks:TaskDTO[], deferred:DeferredDTO[]. Not an active plan. |
 | evidence | At most 100 entries of {subject,topic,attemptIds:ID[],ruleCode}; at most 3 source attempts per entry. |
+| adjustment | null for initial/reschedule; for adapt: {useful:boolean,summaries:string[],limitations:string[],contentAvailable:boolean,changes:{taskId,title,change:added\|removed\|moved,fromDate:null\|LocalDate,toDate:null\|LocalDate}[]}. Derived explanation/comparison, not editable schedule input. Evidence ruleCode is LAST_THREE_SUPPORT or REVISION_DUE. |
 | diff | {addedTaskIds,removedTaskIds,moved:[{taskId,fromDate,toDate}]}; compact IDs refer to proposal/base tasks, not duplicated full plans. |
 | dailyTotals | Array of {date,beforeMinutes,afterMinutes,budgetMinutes}, at most 30. Includes revisions and retained completed work. |
 
@@ -325,6 +326,8 @@ The acknowledgement array must equal the complete deferred taskId set, without d
 A preview is valid for ten minutes and stored for 24 hours. Same-preview retries resolve through plans.sourcePreviewId even after preview cleanup; replays return the original plan, which may now be archived. Another preview from an old base receives 409 STALE_PREVIEW. On expiry return 409 PREVIEW_EXPIRED, on excessive proposal size 422 PLAN_SCOPE_TOO_LARGE, and on insufficient valid window 422 PLAN_WINDOW_INVALID.
 
 Content shortages produce visible deferred work and unused capacity. A budget below already completed minutes today returns 422 PLAN_BUDGET_CONFLICT. Preview generation does not invent content or promise that every candidate fits.
+
+An adapt preview without a useful evidence-related easier-task/revision change has adjustment.useful=false. It remains reviewable; confirmation returns 422 VALIDATION_ERROR without advancing state or plan versions. Keep current plan performs no mutation. Recommendations are evidence signals, not a guarantee that eligible content/capacity can produce a useful change.
 
 ## 10 Task completion and dashboard
 

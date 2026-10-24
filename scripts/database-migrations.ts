@@ -9,10 +9,12 @@ import {
   storedContentSchema,
   catalogStateSchema,
 } from "../src/modules/catalog/schemas";
+import { practiceMigration, practiceChecksum } from "./migrations/002-practice";
+import { storedAttempt } from "../src/modules/practice/schemas";
+import { storedRevision } from "../src/modules/revisions/schemas";
+import { planningMigration, planningChecksum } from "./migrations/003-planning";
+import { proposalValue } from "../src/modules/planning/schemas";
 
-const migrationId = foundationMigration.id;
-const indexes = foundationMigration.indexes;
-const checksum = foundationChecksum;
 const lockId = "__database_runner_lock__";
 const leaseMilliseconds = 5 * 60 * 1000;
 type NamedDocument = Document & { _id: string };
@@ -68,24 +70,30 @@ async function existingIndexes(db: Db, collection: string) {
   return db.collection(collection).listIndexes().toArray();
 }
 
-async function validateExistingCatalog(db: Db, renew: () => Promise<void>) {
+async function validateExistingCatalog(
+  db: Db,
+  renew: () => Promise<void>,
+  indexes: Record<string, IndexDescription[]>,
+  foundation: boolean,
+) {
   let count = 0;
-  for await (const content of db
-    .collection("contentItems")
-    .find({})
-    .batchSize(100)) {
-    if (count++ % 100 === 0) await renew();
-    if (!(content._id instanceof ObjectId))
-      throw new MigrationError("INVALID_EXISTING_CONTENT");
-    const result = storedContentSchema.safeParse({
-      ...content,
-      _id: String(content._id),
-      assetIds: Array.isArray(content.assetIds)
-        ? content.assetIds.map(String)
-        : content.assetIds,
-    });
-    if (!result.success) throw new MigrationError("INVALID_EXISTING_CONTENT");
-  }
+  if (foundation)
+    for await (const content of db
+      .collection("contentItems")
+      .find({})
+      .batchSize(100)) {
+      if (count++ % 100 === 0) await renew();
+      if (!(content._id instanceof ObjectId))
+        throw new MigrationError("INVALID_EXISTING_CONTENT");
+      const result = storedContentSchema.safeParse({
+        ...content,
+        _id: String(content._id),
+        assetIds: Array.isArray(content.assetIds)
+          ? content.assetIds.map(String)
+          : content.assetIds,
+      });
+      if (!result.success) throw new MigrationError("INVALID_EXISTING_CONTENT");
+    }
   for await (const state of db
     .collection<NamedDocument>("catalogState")
     .find({}))
@@ -137,7 +145,13 @@ async function validateExistingCatalog(db: Db, renew: () => Promise<void>) {
   }
 }
 
-export async function migrateDatabase(db: Db) {
+async function runMigration(
+  db: Db,
+  migrationId: string,
+  indexes: Record<string, IndexDescription[]>,
+  checksum: string,
+  foundation: boolean,
+) {
   const migrations = db.collection<NamedDocument>("schemaMigrations");
   const ownerToken = randomUUID();
   const now = new Date();
@@ -242,7 +256,85 @@ export async function migrateDatabase(db: Db) {
       });
       started = true;
     }
-    await validateExistingCatalog(db, renew);
+    await validateExistingCatalog(db, renew, indexes, foundation);
+    if (!foundation) {
+      for (const collection of ["attempts", "revisions"] as const) {
+        let count = 0;
+        for await (const document of db
+          .collection(collection)
+          .find({})
+          .batchSize(100)) {
+          if (count++ % 100 === 0) await renew();
+          const data = {
+            ...document,
+            _id: String(document._id),
+            contentId: String(document.contentId),
+            ...(collection === "attempts"
+              ? {
+                  resultSnapshot: {
+                    ...document.resultSnapshot,
+                    revisionId: String(document.resultSnapshot?.revisionId),
+                  },
+                }
+              : { lastAttemptId: String(document.lastAttemptId) }),
+          };
+          if (
+            !(
+              collection === "attempts" ? storedAttempt : storedRevision
+            ).safeParse(data).success
+          )
+            throw new MigrationError("INVALID_EXISTING_STUDY_DATA");
+        }
+      }
+    }
+    if (migrationId === planningMigration.id) {
+      for (const collection of ["plans", "planPreviews"] as const) {
+        let count = 0;
+        for await (const document of db
+          .collection(collection)
+          .find({})
+          .batchSize(100)) {
+          if (count++ % 100 === 0) await renew();
+          const proposal =
+            collection === "plans"
+              ? Object.fromEntries(
+                  [
+                    "windowStart",
+                    "windowEnd",
+                    "timezone",
+                    "budgetSnapshot",
+                    "templateVersion",
+                    "rulesVersion",
+                    "tasks",
+                    "deferred",
+                  ].map((field) => [field, document[field]]),
+                )
+              : document.proposal;
+          if (
+            !(document._id instanceof ObjectId) ||
+            typeof document.userId !== "string" ||
+            !document.userId ||
+            !proposalValue.safeParse(JSON.parse(JSON.stringify(proposal)))
+              .success
+          )
+            throw new MigrationError("INVALID_EXISTING_PLANNING_DATA");
+          if (
+            collection === "plans" &&
+            (!(document.sourcePreviewId instanceof ObjectId) ||
+              !Number.isSafeInteger(document.version) ||
+              document.version < 1)
+          )
+            throw new MigrationError("INVALID_EXISTING_PLANNING_DATA");
+          if (
+            collection === "planPreviews" &&
+            (!(document.expiresAt instanceof Date) ||
+              !(document.purgeAt instanceof Date) ||
+              !["pending", "confirmed"].includes(document.state))
+          )
+            throw new MigrationError("INVALID_EXISTING_PLANNING_DATA");
+        }
+      }
+    }
     for (const [collection, definitions] of Object.entries(indexes)) {
       for (const { key, ...options } of definitions) {
         await renew();
@@ -253,7 +345,7 @@ export async function migrateDatabase(db: Db) {
     }
     await renew();
     const timestamp = new Date();
-    if (previous?.state !== "applied")
+    if (foundation && previous?.state !== "applied")
       await fenced(async (session) => {
         await db.collection<NamedDocument>("catalogState").updateOne(
           { _id: "catalog" },
@@ -335,4 +427,28 @@ export async function migrateDatabase(db: Db) {
       { $set: { leaseUntil: null, updatedAt: new Date() } },
     );
   }
+}
+
+export async function migrateDatabase(db: Db) {
+  await runMigration(
+    db,
+    foundationMigration.id,
+    foundationMigration.indexes,
+    foundationChecksum,
+    true,
+  );
+  await runMigration(
+    db,
+    practiceMigration.id,
+    practiceMigration.indexes,
+    practiceChecksum,
+    false,
+  );
+  await runMigration(
+    db,
+    planningMigration.id,
+    planningMigration.indexes,
+    planningChecksum,
+    false,
+  );
 }

@@ -1,0 +1,542 @@
+.student-app {
+  min-height: 100dvh;
+  background: var(--color-ivory);
+  color: var(--color-charcoal);
+}
+.outcome-panel {
+  margin-top: 28px;
+}
+.practice-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 16px;
+  margin: 12px 0;
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.practice-option:has(:checked) {
+  background: #e9f0e8;
+  border-color: var(--color-forest);
+}
+.outcome-panel .student-label {
+  margin-top: 20px;
+}
+.practice-confirmation a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: underline;
+}
+.student-header {
+  max-width: 1240px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--color-line);
+}
+.student-header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  flex: 1;
+}
+.student-header a,
+.student-header button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.student-name {
+  font-size: 14px;
+  color: var(--color-muted);
+  max-width: 160px;
+  overflow-wrap: anywhere;
+}
+.student-main {
+  max-width: 1160px;
+  margin: auto;
+  padding: 42px 28px 64px;
+}
+.student-main h1 {
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.15;
+  letter-spacing: -1.2px;
+  margin: 16px 0;
+}
+.student-main h2 {
+  font-size: 21px;
+  line-height: 1.4;
+  margin: 12px 0;
+}
+.student-main h3 {
+  font-size: 18px;
+  margin: 18px 0 8px;
+}
+.student-main p {
+  line-height: 1.7;
+}
+.student-lead {
+  color: var(--color-muted);
+  max-width: 65ch;
+  margin-bottom: 28px;
+}
+.student-card {
+  padding: 26px;
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  background: white;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.student-notice {
+  background: #e9f0e8;
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  padding: 18px;
+  margin: 20px 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.student-notice a:not(.button),
+.student-back {
+  color: var(--color-forest);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.student-stack {
+  display: grid;
+  gap: 24px;
+}
+.student-label {
+  display: grid;
+  gap: 9px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.student-label input,
+.student-label select {
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  padding: 12px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-ivory);
+  color: var(--color-charcoal);
+  font: inherit;
+  font-size: 16px;
+}
+.student-main input[type="checkbox"],
+.student-main input[type="radio"] {
+  accent-color: var(--color-forest);
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.student-main [aria-invalid="true"] {
+  border-color: #9c2424;
+}
+.student-main :focus-visible {
+  outline: 3px solid var(--color-forest);
+  outline-offset: 4px;
+}
+.student-main button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.student-error {
+  color: #8b2424;
+  padding: 8px 0;
+  line-height: 1.7;
+}
+.student-error ul {
+  list-style: disc;
+  padding-left: 24px;
+}
+.student-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 26px 0 8px;
+}
+.student-muted,
+.student-item-meta {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+.student-footer {
+  border-top: 1px solid var(--color-line);
+  padding: 24px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+.onboarding-steps {
+  display: flex;
+  gap: 24px;
+  padding: 4px 0 30px;
+  list-style: none;
+  flex-wrap: wrap;
+}
+.onboarding-steps li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--color-muted);
+  font-size: 14px;
+}
+.onboarding-steps li span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e9f0e8;
+}
+.onboarding-steps [aria-current="step"] {
+  color: var(--color-forest);
+  font-weight: 700;
+}
+.onboarding-steps [aria-current="step"] span {
+  background: var(--color-forest);
+  color: white;
+}
+.onboarding-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr);
+  gap: 38px;
+  align-items: start;
+}
+.student-fieldset {
+  min-width: 0;
+  border: 0;
+  padding: 0;
+}
+.student-options {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.student-options legend {
+  font-size: 15px;
+  margin-bottom: 14px;
+}
+.company-option {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 24px;
+  background: white;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  min-height: 100px;
+}
+.company-option strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 19px;
+}
+.company-option .student-muted {
+  display: block;
+}
+.company-option.selected,
+.skill-options .selected {
+  border-color: var(--color-forest);
+  background: #e9f0e8;
+}
+.preparation-brief {
+  margin-top: 14px;
+}
+.preparation-brief dt,
+.student-reading-meta dt {
+  color: var(--color-muted);
+  font-size: 13px;
+  margin-top: 20px;
+}
+.preparation-brief dd,
+.student-reading-meta dd {
+  margin: 6px 0;
+  line-height: 1.7;
+}
+.preparation-brief p {
+  font-size: 13px;
+}
+.duration-presets {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0;
+}
+.student-choice {
+  min-height: 48px;
+  padding: 12px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: #edf2eb;
+  font: inherit;
+  cursor: pointer;
+}
+.student-choice[aria-pressed="true"] {
+  color: white;
+  background: var(--color-forest);
+}
+.skill-options legend {
+  padding: 0 6px;
+  font-size: 17px;
+  font-weight: 700;
+}
+.skill-options > div {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+.skill-options label {
+  display: flex;
+  align-items: start;
+  gap: 8px;
+  padding: 12px 8px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  min-height: 100px;
+}
+.skill-options label strong {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.student-json {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 320px;
+  overflow: auto;
+  padding: 16px 0;
+}
+.student-filters {
+  margin: 26px 0 18px;
+}
+.student-filters summary {
+  color: var(--color-forest);
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 44px;
+  padding: 10px 0;
+}
+.student-filters form {
+  padding-top: 12px;
+}
+.student-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+.student-filter-context {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.student-results {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+.student-content-row {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  padding: 24px;
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+}
+.student-content-row > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.student-content-row h2 {
+  font-size: 20px;
+  margin: 8px 0;
+}
+.student-content-row .button {
+  flex-shrink: 0;
+}
+.student-provenance {
+  font-size: 13px;
+  color: var(--color-forest);
+}
+.student-load-more {
+  text-align: center;
+  margin: 32px 0;
+}
+.student-empty {
+  padding: 50px 24px;
+  text-align: center;
+}
+.student-skeleton {
+  padding: 32px;
+  border-radius: 12px;
+  background: #e9ece4;
+  min-height: 120px;
+  margin: 20px 0;
+}
+.student-back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-bottom: 18px;
+}
+.student-detail-heading {
+  margin-bottom: 28px;
+}
+.student-reading-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2.2fr) minmax(220px, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+.student-reading {
+  font-size: 16px;
+  line-height: 1.85;
+}
+.student-reading section {
+  margin-bottom: 28px;
+}
+.student-reading-meta {
+  font-size: 14px;
+}
+.student-provenance-block {
+  border-top: 1px solid var(--color-line);
+  padding-top: 14px;
+  margin-top: 14px;
+}
+.student-external-url {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.student-explanation summary {
+  cursor: pointer;
+  min-height: 48px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #e9f0e8;
+  color: var(--color-forest);
+  font-weight: 700;
+}
+.student-reading .content-markdown {
+  max-width: 65ch;
+  overflow-wrap: anywhere;
+}
+.student-reading .content-markdown p {
+  margin: 14px 0;
+}
+.student-reading .content-markdown ul,
+.student-reading .content-markdown ol {
+  padding-left: 24px;
+  list-style: revert;
+}
+.student-reading .content-markdown a {
+  color: var(--color-forest);
+  text-decoration: underline;
+}
+.student-reading .content-markdown pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 18px;
+  background: var(--color-ivory);
+  border-radius: 8px;
+}
+.student-reading .content-markdown blockquote {
+  border-left: 3px solid var(--color-forest);
+  padding-left: 18px;
+}
+@media (max-width: 767px) {
+  .student-header {
+    padding: 14px 18px;
+    gap: 12px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .student-header .student-name {
+    display: none;
+  }
+  .student-header nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    gap: 4px 16px;
+    font-size: 14px;
+  }
+  .student-header > div {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .student-header .auth-error:empty {
+    display: none;
+  }
+  .student-header .brand {
+    font-size: 19px;
+  }
+  .student-main {
+    padding: 26px 18px 44px;
+  }
+  .student-card {
+    padding: 20px;
+  }
+  .onboarding-layout,
+  .student-reading-layout,
+  .student-filter-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+  .onboarding-steps {
+    gap: 16px;
+  }
+  .onboarding-steps li {
+    font-size: 12px;
+    gap: 6px;
+  }
+  .preparation-brief {
+    margin-top: 0;
+  }
+  .skill-options > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .skill-options label {
+    min-height: 52px;
+    align-items: center;
+    font-size: 14px;
+  }
+  .skill-options label strong {
+    display: inline;
+    margin-right: 10px;
+  }
+  .duration-presets {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .student-content-row {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 18px;
+    padding: 20px;
+  }
+}
+.plan-tasks {
+  display: grid;
+  gap: 1rem;
+}
+.plan-deferral {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 44px;
+  overflow-wrap: anywhere;
+}

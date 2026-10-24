@@ -3,6 +3,7 @@ import { getAuth } from "./auth";
 import { ensureProfile } from "./profile";
 import { createAccessGuards } from "./guards";
 import { serverConfig } from "@/shared/server/config";
+import { preferencesSchema } from "./preferences-schema";
 
 export const { requireActor, requireStudyActor, requireAdmin } =
   createAccessGuards({
@@ -24,7 +25,10 @@ export function actorDto(actor: Awaited<ReturnType<typeof requireActor>>) {
     email: session.user.email,
     role: profile.role,
     emailVerified: session.user.emailVerified,
-    preferences: profile.preferences,
+    preferences:
+      profile.preferences == null
+        ? null
+        : preferencesSchema.parse(profile.preferences),
     timezone: profile.timezone,
     activePlanId: profile.activePlanId?.toString() ?? null,
     planVersion: profile.planVersion,
@@ -47,3 +51,4 @@ export function actorDto(actor: Awaited<ReturnType<typeof requireActor>>) {
     destination: actor.destination,
   };
 }
+export type MeDto = ReturnType<typeof actorDto>;

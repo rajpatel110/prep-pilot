@@ -1,6 +1,587 @@
 # PrepPilot implementation status
 
-Updated: 23 October 2026 (Asia/Kolkata).
+Updated: 24 October 2026 (Asia/Kolkata).
+
+## Catalog coverage and evidence-based adjustment previews
+
+### Implementation
+
+The verified planning checkpoint below remains the baseline; its user-run build
+and agent-run production regression evidence were not repeated before implementation.
+No existing homepage/authentication behaviour or unrelated working-tree work was
+replaced. No new dependencies, external setup, migrations or production services
+were required.
+
+Added a reproducible read-only catalog report using the existing explicit target
+validation, a snapshot transaction and metadata/publication checks. Against the
+already-authorized configured development database prep_pilot_dev it observed zero
+records, zero eligible published items and all 17 canonical topic/foundation/company
+coverage gaps. Arrays is missing for both sorting/searching prerequisites. This is
+an actual observed content limitation, not a planner failure or a claim about
+official company syllabuses. No real catalog records or singleton state were changed.
+See CATALOG_COVERAGE.md for counts, impacts, command and provenance.
+
+Dashboard recommendations now derive the documented last-three non-revision
+attempt rule and unscheduled due revision evidence from a consistent read snapshot.
+They use stable evidence keys and do not run plan generation or persist previews
+on dashboard GET. Acceptance suppresses already-reviewed topic evidence until new
+source activity. User-requested adapt previews persist bounded allowlisted evidence
+with the existing proposal. Easier candidates respect published company/foundation
+eligibility, preference ceilings, prerequisites, daily capacity and retained history.
+Only harder pending fresh work can be replaced; never completed, overdue or revision
+tasks. Unscheduled substitutes restore the original candidate rather than losing it.
+Completed revision cycles are retained once, not duplicated as new pending work.
+
+Rules version deterministic-budget-2 invalidates older pending configurations.
+Selection details and the conservative editorial interpretation of easier are in
+PLANNING_CONFIGURATION.md. No numeric score/mastery/readiness threshold was added.
+Missing easier material produces a limitation and existing revision due dates,
+not an invented early repeat. Adapt previews without a useful evidence-related
+change remain readable but cannot activate another version (422 VALIDATION_ERROR).
+
+The existing create/read/confirm services remain the sole preview/acceptance path:
+ownership/CSRF, expiry/date/profile/plan/catalog/config guards, atomic catalog/profile/
+plan/receipt writes, bounded retries and durable original confirmation receipts.
+New practice invalidates a pending preview via stateRevision. Keep current plan is
+navigation without a mutation. Accepted plans preserve previous history and task IDs.
+
+Reviewed Stitch dashboard recommendation and plan-change review screenshot/HTML.
+The student UI connects preparation, explanation, named task/date changes, daily
+before/after budgets, explicit deferrals, keep/accept, no-useful/insufficient-evidence/
+content and recoverable stale/error states. Prototype confidence scores, arbitrary
+unlock thresholds and simulated retries are excluded. Mobile follows the existing
+single-column design system; no unseen mobile reference is claimed.
+
+### Verification
+
+All 59 unit tests passed, including eight focused adjustment/coverage cases: exact trigger/non-trigger ordering, revision-only
+evidence, deterministic replacements, budget/completion preservation, content/
+prerequisite/company shortages, strict evidence, valid/invalid metadata coverage
+and completed-cycle deduplication. Final full zero-warning lint and formatting
+passed. After the browser fixture exited, final `npm.cmd run typecheck` passed
+Next route generation and strict TypeScript, including the sequence watermark.
+
+Direct MongoDB/Route Handler planning and connected student regression passed,
+including the new adjustment evidence, no-useful rejection, review without mutation,
+new-practice staleness, rollback, concurrent replay and completion/history cases.
+An initial new-case run exposed missing admin PATCH support in the direct test
+dispatcher, not an application endpoint failure; the dispatcher was corrected and
+safe local-file diagnostic frames added without logging raw dependency errors.
+The corrected integration exited 0 and cleaned up its disposable database.
+
+The fresh Next development-server planning/connected-student suite also passed the
+new cases, including acceptance watermark capture and proof that a new attempt
+with a deliberately earlier fixture timestamp still produces evidence by sequence.
+No timestamp is used to decide whether an outcome is new. New plans store the
+internal attemptSequenceAtGeneration field; legacy absence reads as 0 without a
+destructive backfill or index change. A connected run during schema editing returned
+500 at acceptance and was not treated as passing; the fresh-server run is the
+verification evidence. Interactive browser verification used that disposable
+fixture, not the real development database.
+
+The actual development browser journey passed active-plan dashboard → question →
+keyboard-submitted help outcome → saved receipt → refreshed dashboard evidence →
+request persisted adjustment. The first `/plan-previews/[id]/page` development
+compilation then stalled: its Next development log showed the compilation start
+but no completion or filesystem error; browser error/warning logs were empty.
+At that development checkpoint, interactive preview → keep → review again → accept
+→ historical-plan navigation was not verified, despite passing equivalent HTTP/domain
+cases. Mobile recommendation layout and absence of horizontal overflow were
+checked with a 390px viewport override (375px content capture); the override was
+reset. Screenshot evidence is outside the repository. The browser fixture timed
+out normally, the harness exited 0 and its disposable database cleanup completed.
+Port 3104 was checked clear before type generation/build. Windows CIM process
+inspection was unavailable; no arbitrary process was stopped or permission weakened.
+
+The final agent-run `npm.cmd run build` failed during Webpack compilation with:
+
+```text
+EPERM: operation not permitted, mkdir 'C:\PROJECTS\prep-pilot\.next\static\chunks\app\(auth)\signup'
+```
+
+It was not retried unchanged. The precise Windows lock/ACL/sandbox cause is not
+established; the stalled development compilation is not assumed to share that
+cause. The user subsequently ran `npm.cmd run build` successfully in VS Code's
+Git Bash terminal: Next 16.4.2 Webpack compiled, completed TypeScript, generated
+13/13 static pages and finalized traces. This is user-run production-build evidence,
+not an agent-run build. It was NOT a clean build: the preceding PowerShell PATH
+and Remove-Item commands failed in Bash. Node/npm versions were not printed in
+that run. The terminal was already in the correct repository directory.
+
+The successful artifact is preserved without rebuilding, output cleanup or type
+generation. Agent-run `npm.cmd run test:planning -- --browser --adjustment-browser`
+passed its production HTTP/domain assertions against that artifact: evidence and
+non-triggers, no-useful rejection, staleness, receipts/concurrent acceptance,
+transaction rollback, history/completion preservation, routing and admin separation.
+These are local verification, not deployment.
+The preceding milestone's production results remain historical baseline evidence.
+
+The remaining actual production browser journey also passed in the isolated
+fixture: signed in to an active plan, keyboard-saved a new help outcome and saw
+its receipt, opened the recommendation and saved comparison, chose Keep current
+plan and verified the same active-plan ID, reviewed again, acknowledged the
+deferral with Space and accepted with Enter. The new active version retained
+completed work; its previous-version link opened the archived base with its
+original completion, and attempt history retained all six submissions. Daily
+comparisons stayed within budget. The preview/accepted-plan mobile layout had no
+horizontal overflow with a 390px viewport override (375px content width); the
+override was reset. Production preview navigation did not reproduce the earlier
+development compilation stall. Screenshot evidence is outside the repository at
+preppilot-adjustment-verified.png. No application source changed after the user's
+successful build. The fixture reached its normal ten-minute timeout, the production
+harness exited 0 and cleaned up its disposable database. No real development
+catalog/account records were modified. The milestone's production and complete
+interactive workflow verification are now complete; the earlier development
+compilation stall's cause remains undiagnosed rather than attributed speculatively.
+The build regenerated only the expected next-env.d.ts route imports from
+`.next/dev/types` to `.next/types`; this generated change is not feature work.
+
+### Limitations
+
+The real development catalog remains empty: reviewed curation is required for a
+useful real-user schedule or adjustment. Only isolated tests publish synthetic
+material. Full progress analytics, R2, live email/verification/password recovery,
+deployment and automatic plan changes remain out of scope. No commit, push or
+deployment is authorized or performed.
+
+Manual walkthrough after a successful current build: use the documented isolated
+adjustment browser fixture (or explicitly curate real reviewed content first), open
+an active plan, deliberately record relevant question outcomes, then review the
+dashboard suggestion. Compare named task/date changes and daily minutes, choose
+Keep current plan and verify the same active plan, review again, acknowledge any
+deferrals and Accept updated plan. Check the previous-plan link and retained
+completed work/history. Stale or expired proposals require fresh review. This full
+interactive sequence is now verified against the production artifact using
+disposable fixtures, not claimed as a real-user content-coverage demonstration.
+With verification complete, the next useful product step is reviewed real catalog curation;
+the measured empty catalog currently limits preparation usefulness more than adding
+analytics or external integrations.
+
+## Study planning, preview acceptance and dashboard
+
+### Scope and implementation
+
+The previous milestone's clean production build passed in the user's VS Code
+PowerShell terminal with Node 24.22.1/npm 10.9.3. This is user-run evidence, not an
+agent-run build. Existing uncommitted planning scaffolding was found at inspection,
+preserved and reviewed rather than overwritten or attributed as newly created.
+
+Editorial v1 configuration and its assumptions are documented in
+`docs/PLANNING_CONFIGURATION.md`. Both companies retain every canonical foundation
+topic. Only arrays-before-sorting/searching prerequisite edges are specified;
+uncertain relationships remain unspecified. Configuration integrity is tested,
+and persisted template/rules versions participate in preview staleness checks.
+
+The deterministic engine implements difficulty ceilings, current published company/
+foundation eligibility, no repeated fresh attempts, revision-cycle deduplication,
+oldest due/overdue priority and stable ties, 50/25/25 deficit allocation, unchanged
+15–60 minute estimates, bounded windows/capacity and explicit deferrals. Adjustments
+preserve completed task IDs and dates; a reduced budget cannot invalidate today's
+already completed minutes. Earlier completed facts remain historical, not new work
+against a reduced future budget. No self-assessment/history absence implies mastery.
+
+Owned preview/create/confirm, current/detail/history plan reads and dashboard APIs
+reuse the existing guards, CSRF, safe errors, transaction/session and migration
+infrastructure. Acceptance conditionally writes catalog commitSerial, then profile
+state, plan, pointer/version and preview receipt atomically. Replays resolve through
+sourcePreviewId even after preview deletion; concurrent competing previews cannot
+both activate. Generation itself never advances study state or activates a plan.
+
+Dashboard, preview and Study Plan pages use real persisted data and explicit
+generation/acceptance/task actions. Reloadable previews, daily totals, subject
+coverage, deferral acknowledgement, stale/expired recovery and historical plan links
+are connected. Owned task context is validated before showing completion actions
+on question/resource details. Independent resources retain no completion control.
+Task completion and outcomes remain separate. The dashboard deduplicates revision
+cycles already scheduled today and shows no fake measured time/readiness charts.
+
+Migration 003 is additive, validates existing planning proposals and creates the
+documented plan uniqueness/preview retention indexes. No startup sync, destructive
+conflict repair, new external account or dependency is introduced.
+
+### Verification checkpoint
+
+Direct planning integration passed ownership/CSRF, expiry/date/config/catalog/state
+guards, complete acknowledgement, acceptance receipts/races, both plan-insert and
+preview-receipt rollback, history preservation, task ownership, resource completion,
+dashboard persistence and repeated migration preservation. A rate-limit assertion
+crossed a ten-minute bucket boundary; its disposable fixture now deterministically
+seeds only the current/next test buckets instead of assuming elapsed wall time.
+Production rate limits were not weakened. The corrected integration passed.
+
+Practice regression passed idempotency, races/sequences, transactional attempt and
+revision rollback, owned history/cursors, recalls and resource task completion/undo.
+Catalog/operational regression passed setup, migration repeatability/restart/checksum/
+lock/conflict preservation, permissions and disposable admin provisioning/audit
+rollback. Native-auth HTTP regression passed on the Next development server:
+signup/duplicates, persistent/revoked sessions, role/lifecycle separation, profile
+concurrency, CSRF, disabled email mode and durable rate limits.
+
+All 50 unit tests, full formatting, zero-warning lint and Next route generation/
+TypeScript checks passed before the blocked build. Initial lint caught JSX inside
+try/catch in server pages; fetch error handling was moved outside rendering rather
+than disabling the rule. A final identity-owned pointer service replaced the new
+cross-module profile write, preserving the same transaction and guarded revision/
+version/pointer match. Its focused 13-test planning suite, TypeScript and lint passed;
+actual Next/MongoDB checks then proved pointer/receipt rollback and same-preview
+confirmation races through that service. Duplicate deferral acknowledgements return
+the documented DEFERRED_ACK_REQUIRED, also verified against the isolated Next server.
+
+After the final ownership/error refinements, all 51 unit tests, full formatting,
+zero-warning lint, TypeScript and git diff whitespace checks passed. The subsequent
+user-run production build regenerated next-env.d.ts imports from `.next/dev/types`
+to `.next/types`; this is Next-generated environment output, not a feature change.
+Auth and browser harnesses completed successfully
+and cleaned up their disposable databases; no test server is intentionally left up.
+
+The connected development browser journey passed first-visit dashboard → preview →
+reload saved preview → explicit acceptance → owned resource → explicit completion →
+updated dashboard. Saving existing onboarding preferences returned to the dashboard
+without rewriting the accepted plan. Keyboard Enter submission and 390px mobile
+layout/no horizontal overflow were checked; compact navigation and persisted task
+state were visually verified. Screenshot evidence is saved outside the repository.
+Browser fixtures now accept Enter for early cleanup, otherwise expire in ten minutes.
+
+Explicit setup verified migrations 001–003 in development database prep_pilot_dev,
+preserving existing records and singleton state. No real practice/plan fixtures or
+account promotions were performed; all test fixtures were guarded disposable data.
+
+The earlier agent-run production build attempt failed with
+`EPERM: operation not permitted, mkdir 'C:\PROJECTS\prep-pilot\.next\types\app\api'`.
+It was not retried unchanged. The user subsequently removed only `.next` and ran
+`npm.cmd run build` successfully in normal VS Code PowerShell against the latest
+source: Next 16.4.2 Webpack compiled successfully, completed TypeScript, generated
+13/13 static pages and finalized build traces. This is user-run production-build
+evidence, not an agent-run build; the original EPERM cause remains unproven.
+
+Against that existing production artifact, the agent sequentially ran
+`npm.cmd run test:integration` and `npm.cmd run test:planning`; both exited 0.
+Authentication covered signup, duplicates, sessions/revocation, role isolation,
+profile concurrency, CSRF, disabled email mode and rate limits. Planning covered
+ownership/CSRF, preview bounds and staleness, acceptance receipts/races, rollback,
+history, owned resource completion, persisted dashboard, connected student routing,
+admin separation and server pages. No rebuild or development server was interleaved.
+The planning milestone now has successful production build and regression evidence;
+development checks are recorded separately rather than substituted for production.
+
+The first development browser run was blocked by
+`EPERM mkdir C:\PROJECTS\prep-pilot\.next\dev\static\css\app`, not accepted as
+a passing browser check. The harness cleaned up; Node 24 subsequently created and
+removed an empty probe in that exact parent successfully. This does not establish
+the earlier error's cause. One development retry follows that diagnostic finding.
+
+### Remaining scope
+
+Automatic adaptation recommendations, full analytics, R2, live verification/password
+recovery, deployment and full reviewed content seeding remain outside this milestone.
+No template-management UI, arbitrary task creation or drag-and-drop scheduling is
+implemented. No commit, push or deployment is authorised in this task.
+
+## Practice outcomes and revision tracking
+
+### Starting point confirmed
+
+The corrected previous student production regression and connected browser journey
+had passed, including onboarding, filters, details, return context and mobile layouts.
+The last small UI fixes had a later EPERM-blocked build, so that earlier success
+was not called final-artifact verification. Existing uncommitted feature work is
+preserved. This checkpoint supersedes the older reading-only scope where stated.
+
+### Implemented
+
+- Strict `POST /api/v1/attempts`, owned `GET /api/v1/attempts`, and
+  `GET /api/v1/revisions`. Current student role/lifecycle, verification mode,
+  session-bound CSRF and exact Origin are enforced. Submission admission uses the
+  durable 60/minute limiter, including replays. No browser-supplied owner, timestamp,
+  sequence, due date or plan/task context is accepted.
+- Canonical payload hashes and unique owned submission IDs return original saved
+  receipts on exact retries; conflicting payloads return IDEMPOTENCY_CONFLICT.
+  Every new deliberate attempt allocates one server sequence and increments profile
+  state once. Immutable attempt snapshots preserve historical classification.
+- A bounded snapshot/majority transaction fences catalog availability before the
+  profile write, then saves attempt and revision on the same Mongoose session.
+  The catalog fence changes only its existing updatedAt metadata, not revision or
+  commitSerial: those semantic counters remain reserved for their documented uses.
+  This prevents an archive-versus-attempt write skew without inventing a counter.
+- Revision records are unique per student/content and track the newest allocated
+  sequence. Failed/hard → 1 day, otherwise help/medium → 3, independent → 7, using
+  the server attempt date in Asia/Kolkata. Revision recall requires an owned cycle
+  and writes a new immutable revision-kind attempt; it reschedules rather than
+  deleting history or silently completing a plan task.
+- Question UI has accessible outcome/difficulty selection, pending/validation/error
+  states, frozen safe retry identity, persisted tab-local recovery, confirmed receipt,
+  current-history refresh and an intentional later-attempt action. Replayed receipt
+  dates are labelled historical rather than overwriting newer revision state.
+- `/attempts` and `/revisions` are honest temporary student destinations, not a
+  fabricated dashboard or plan. Pagination is signed and bound to owner/endpoint/
+  filters/order/limit; revision cursors also bind the current study date. Unavailable
+  entries expose saved history facts only. Library/queue/history return links survive
+  reading and sign-in; opening content or external links records no attempt.
+- Reusable owned active-plan task completion/undo uses profile concurrency and a
+  transaction. Same-state/current-revision requests are no-ops; unavailable pending
+  content cannot become completed, while undo remains allowed. Independently browsed
+  resources have no completion button. No runtime plan/task creation is implemented.
+- Versioned migration 002 adds attempt/revision indexes, validates existing study
+  records and reuses the fenced migration runner. Migration 001's immutable manifest
+  remains unchanged. No automatic startup indexing, deletes or conflicting-data repair.
+
+### Verification evidence
+
+- All 38 unit tests passed, including every 1/3/7 branch, Kolkata midnight/year/leap
+  boundaries, strict input/authoritative-field rejection, canonical hashes, signed
+  cursors, frozen submission/reload recovery, immutable storage and existing security/
+  safe-rendering regressions.
+- Focused direct Route Handler integration passed real auth/CSRF, duplicate and
+  changed-payload submissions, concurrent sequences, original receipts after newer
+  attempts, attempt/revision rollback, history isolation/cursors, revision recall
+  and owned task completion/no-op/undo. The first rollback assertion included the
+  existing auth lookup's updatedAt touch; it now excludes only that timestamp as
+  existing admin tests do, while checking counters and transactional domain data.
+- Existing catalog/operational integration passed migration repeatability, restart,
+  checksum/lease/conflict preservation, permissions and disposable admin audit rollback.
+- Explicit setup verified migrations 001 and 002 in local development database
+  `prep_pilot_dev`, preserving records and singleton state. Test fixtures use only
+  random guarded `prep_pilot_student_test_*` databases; no real account was promoted
+  and no practice or plan fixtures were inserted in the development database.
+- Connected development HTTP/server-page integration passed, including existing
+  student routing/admin separation and the practice assertions above. Browser checks
+  passed outcome submission, an injected revision-write failure with unchanged data,
+  retained selection/submission ID after reload, explicit safe retry and confirmation.
+  A deterministic due revision opened in recall mode, saved a new historical attempt,
+  rescheduled to seven days later and disappeared from the due-only queue. History
+  retained the previous attempts. Keyboard radio/Tab controls and the 390px mobile
+  history/receipt layout were checked without horizontal overflow. The first fixture
+  expired during browser work; a fresh disposable fixture completed the remaining
+  recall/mobile checks, rather than treating that expired-server page as a product bug.
+  Both disposable harness runs completed successfully and cleaned up; port 3104 no
+  longer responded afterward. next-env.d.ts has no final generated-only diff.
+- Final formatting, zero-warning lint and route generation/TypeScript checks passed.
+  The one final production build failed during Webpack compilation with
+  `EPERM: operation not permitted, mkdir 'C:\PROJECTS\prep-pilot\.next\types\app\api\v1\identity'`.
+  No unchanged build retry or security/ACL workaround was attempted. This is not
+  evidence of a TypeScript failure, nor enough evidence to diagnose the Windows
+  restriction. A current production artifact and production HTTP regressions remain
+  unverified. Use README's normal VS Code clean-build fallback, then run the practice
+  and authentication production regressions sequentially. Direct/development checks
+  are not represented as production-build verification.
+
+### Remaining scope
+
+At this earlier checkpoint, resource completion UI and generation/acceptance were
+deferred. The planning milestone above supersedes those limitations. Practice
+outcomes never imply task completion. Analytics, R2 and live email remain deferred; verification and password
+recovery remain explicitly incomplete. No external account or cron service was
+introduced. No commit, push or deployment is part of this task.
+
+## Student onboarding and published-content browsing
+
+### Implemented
+
+- Preserved the uncommitted admin editor/lifecycle/student API work present at the
+  start. Creation, publication, archive/reopen and protected reads already existed;
+  the missing dependencies were preference persistence and connected student UI.
+- Strict complete preferences PATCH uses the current actor, exact Origin/session
+  CSRF, allowlisted Zod fields and an atomic owned active-profile revision match.
+  It increments stateRevision once; no plan, task, catalog or audit mutation occurs.
+  Mongoose also validates stored preference structure without rejecting old deadlines
+  merely because time passed. MeDTO projects validated preferences explicitly.
+- Three-step onboarding retains entries, supports existing preferences, labelled
+  keyboard-native choices, inline validation, pending/duplicate-submit protection,
+  recoverable input preservation and explicit stale/uncertain-save reconciliation.
+  Seven inclusive days and midnight boundaries use Asia/Kolkata; daily minutes are
+  30–240 in 15-minute increments and all three ratings are 1–5.
+- Current student/admin/verification/lifecycle guards control routing. Completed
+  students skip onboarding unless explicitly editing preferences. Validated content
+  return destinations survive sign-in/onboarding; external/privileged destinations
+  are rejected. The unfinished dashboard temporarily redirects to the real library,
+  which explains the limitation rather than showing invented progress.
+- Published library uses URL filters/search, existing signed cursors, Load more,
+  cancellation/stale-result protection, retained results after pagination failure,
+  empty/no-match/error states and bounded page/scroll restoration. No content bodies
+  or credentials are stored in the restoration hint, and restored data is refetched.
+- Question/resource detail pages display real prompts/bodies, external HTTPS links,
+  revealable explanations, source/attribution/review and honest company provenance.
+  Historical unavailable responses show only the permitted snapshot, never archived
+  bodies. No outcome/completion actions or implicit study writes are introduced.
+- Generic request/unsaved-navigation mechanisms are shared between onboarding and
+  the admin editor; compatibility exports preserve existing admin callers/tests.
+
+### Design evidence and differences
+
+Stitch project 7439735129249105516 now includes all three desktop onboarding steps,
+student library, question and resource details, plus mobile schedule/library
+references. Their screenshots and HTML were inspected. Existing ivory/forest/charcoal
+tokens and typography are retained. Design adaptations are documented in
+`docs/student/DESIGN.md`: no prototype state switchers, fabricated totals/predictions,
+unsupported companies, bookmarks/sharing, outcomes, completion, uploads or plan
+acceptance controls. Mobile details collapse the desktop reading/metadata columns;
+the mobile filter drawer is an accessible native disclosure.
+
+### Verification
+
+- All 33 unit tests pass, including exact preference/date validation, safe field
+  errors, return-path restrictions, list merging, existing auth/permission/CSRF rules,
+  actual malicious-Markdown rendering and shared request error handling.
+- Direct student Route Handler integration passed against a guarded disposable
+  `prep_pilot_student_test_*` database: real auth sessions, preference persistence,
+  privileged fields, CSRF/Origin, stale/concurrent writes, unchanged plans/catalog,
+  real admin publication and published list pagination/filter isolation. This mode
+  intentionally does not exercise Next server pages, redirect routing or browser UI.
+- Initial development-server verification was blocked while compiling `/content`:
+  `EPERM: operation not permitted, mkdir 'C:\PROJECTS\prep-pilot\.next\dev\static\css\app'`.
+  The browser received Internal Server Error, not a working student page. The owned
+  harness stopped and removed its disposable database; no unchanged dev retry ran.
+- Generated-output clean-up was rejected by command policy, including after a
+  narrow `.next` filesystem permission grant. Nothing was deleted. The subsequent
+  normal production build passed (compile, TypeScript and page generation), with
+  all new routes listed. This does not establish the cause of the earlier EPERM.
+- Agent-run production admin/lifecycle/read regression and authentication regression
+  passed sequentially against that successful build. The production student HTTP
+  journey also passed, including redirects, admin separation and server-rendered
+  library/question/resource pages. Its first routing assertion was corrected to
+  recognise Next's documented streaming meta redirect as well as HTTP 307; the
+  test still verifies the exact permitted destination.
+- Browser verification on isolated production fixtures completed sign-in → three
+  onboarding steps → saved preferences → library → URL filters → question and
+  resource → filter-preserving return. It also verified required-company feedback,
+  retained step entries, saved preferences on explicit edit, Load more and loaded-page
+  restoration, explanation reveal, safe external destination labels, mobile
+  schedule/ratings/library/resource layouts at 390px without horizontal overflow,
+  and unsaved-dialog focus/Escape/input preservation/discard. Network failure and
+  uncertain-save UI branches are covered by shared request/unit tests and backend
+  concurrency checks, not claimed as exhaustively browser-injected failures.
+- Final small UI fixes add safe query-field error messages, fresh first-page cursor
+  recovery, new-tab sign-in recovery without losing preference input, and generic
+  unsaved-dialog wording. ESLint passed after these changes. The subsequent latest
+  production build failed with `EPERM: operation not permitted, mkdir
+'C:\PROJECTS\prep-pilot\.next\server\app\api'`; no unchanged retry was made.
+  Therefore the earlier production pass is not a claim of final-artifact verification
+  for those last UI changes. A normal-terminal production build is still required.
+- At the user's request, the actual configured application was started in development
+  mode on port 3000 (not the disposable test server). `http://localhost:3000/login`
+  returned HTTP 200 with the real login form and was opened in the browser. The dev
+  server remains running for user review; no build/type-generation or integration
+  server should be run alongside it. Final TypeScript/format checks and the latest
+  clean production build should be completed after that review using README's sequence.
+
+### Boundaries / next milestone
+
+No student practice submissions, resource completion, scheduling/revisions, plan
+generation/acceptance, analytics, R2 or live email are implemented here. Verification
+and password recovery remain unavailable, and configuration cannot turn incomplete
+flows into operational services. No new external setup is required. Test fixtures
+are explicit and isolated; runtime has no sample-content fallback. No commit, push
+or deployment is part of this task. Next recommended feature: idempotent practice
+outcomes and revision persistence, before planning and progress UI.
+
+## Steps 4–5: editor, safe preview and publication lifecycle
+
+The approved feature is implemented; production verification remains blocked by
+the Windows build-output EPERM described below. No production success is inferred from Step 3.
+All subsequent milestone sections are historical checkpoints. No commit, push,
+deployment, student onboarding/submissions/scheduling, R2 or live-email work is
+included in this milestone.
+
+### Completed implementation
+
+- Admin creation/edit routes expose every documented editable field with strict
+  draft/patch validation, safe server field feedback, pending states and preserved
+  input. PATCH contains only changed fields, null-clears optional text/review dates
+  and replaces changed arrays. Slugs lock after publication, including reopened
+  drafts. Save routing goes to the actual saved editor resource.
+- Unsaved internal navigation/back actions require confirmation; tab close/reload
+  retains native beforeunload protection. Stale/unknown outcomes block further saves
+  pending explicit read/compare/adopt/rebase. Changed-field rebasing preserves newer
+  unrelated remote edits; it is an explicit operator choice, never automatic.
+  Ambiguous creates reconcile against the original attempted unique slug using
+  existing paginated reads, not a new filter or an idempotency claim.
+- Local form preview is clearly distinct from the saved Admin preview page. It
+  shows draft/archived availability, question/resource Markdown, labelled external
+  HTTPS links, source/association provenance and revealable explanations. Preview
+  writes no attempts or completion. New dependency react-markdown 10.1.0 uses its
+  AST renderer with skipHtml, disabled images, HTTPS-only credential-free links
+  and external-tab isolation; no unsafe HTML plugin is installed.
+- Publish/archive/reopen endpoints use current admin + CSRF, strict action bodies,
+  expectedRevision and the existing catalog→profile→content→audit transaction.
+  Content/catalog/profile revisions advance exactly once per committed mutation;
+  commitSerial and task snapshots remain unchanged. Failed audit insertion rolls
+  back all domain changes. Archive reasons are required and audited. Reopening
+  preserves prior transition timestamps and never makes content student-visible.
+- PATCH now edits drafts and publication-valid published content. Archived content
+  must reopen first. Publication rejects missing usable learning content/review;
+  published edits cannot invalidate those requirements. Nonempty attachments remain
+  rejected throughout. There is no hard-delete or R2 integration.
+- Student GET list/detail endpoints use study access and explicit DTOs, published
+  filtering, existing bounded text search, company foundations and stable signed
+  cursors scoped separately to endpoint/actor/filters/limit/order. Explanations are
+  omitted from summaries. Unavailable details return only an owned historical
+  attempt/plan-task snapshot; absent ownership yields 404. History queries are
+  public read services in their owning modules, not competing models or writes.
+- Stitch currently lists a Content Library screen but no editor or preview screen.
+  These screens intentionally extend the established design, not an unseen mockup.
+  No new service account/configuration was needed. Migration manifests, indexes,
+  homepage and authentication infrastructure are preserved.
+
+### Verification results
+
+- All 30 unit tests pass, including publication, editor PATCH/rebase, failed/ambiguous
+  client saves and actual malicious-Markdown rendering. Initial renderer-fixture failure was Markdown's HTML block consuming
+  following lines; the fixture now separates blocks so valid links are tested too.
+- Expanded development integration completed successfully, reusing all Step 2/3
+  coverage and exercising lifecycle, published edits, audit rollback, student
+  projections and owned historical availability. Fixtures use only guarded random
+  test databases; real accounts and the configured development database are untouched.
+- Browser review verified create/edit, missing-review publish feedback, explicit
+  review and publish, required archive reason, archive/reopen and retained slug lock;
+  local Markdown/explanation preview; and two-tab stale-save input preservation
+  with explicit current-revision reconciliation. It caught create routing reverting
+  after a native history update; the fix uses router.replace and was verified by
+  reaching the real saved `/edit` URL. Escape/focus return worked in lifecycle
+  confirmation. Subsequent browser CDP navigation/focus timeouts blocked final
+  mobile editor and replacement unsaved-navigation dialog acceptance checks;
+  those are not claimed as passed. Responsive CSS and native modal focus trapping
+  are implemented, but need the remaining interactive review.
+- Formatting, zero-warning ESLint, Next route type generation and strict TypeScript
+  checks passed with the project Node 24.22.1 runtime. Authentication regression
+  passed in development mode, including persistent/revoked sessions, isolation,
+  Origin/CSRF, concurrency, email-disabled mode and durable rate limits.
+- The single production build attempt failed with `EPERM: operation not permitted,
+mkdir 'C:\\PROJECTS\\prep-pilot\\.next\\static\\chunks\\app\\api\\v1\\admin'`.
+  Ports 3000, 3101 and 3103 were not responding before the build. This identifies
+  the failing operation, not whether Windows ACLs, a lock or sandbox enforcement
+  caused it. No security/permission weakening, dependency reinstall or unchanged
+  build retry was performed. Production integration checks have not run for this
+  milestone because there is no successful current production artifact.
+- A second development lifecycle/read run completed the lifecycle assertions but
+  failed a later unsupported-DELETE check (500 rather than 405) after its browser
+  pause and hot source edits. That observation is not labelled a pass or assumed
+  to share the build cause. The focused development lifecycle/read rerun without
+  browser pause or intervening source edits passed, including that DELETE=405
+  assertion and final empty-library rendering/cleanup. No application workaround
+  was added for the non-reproduced 500.
+- No real development database setup or account promotion was performed. Test
+  harnesses migrate guarded random `prep_pilot_s2_test_*` / `prep_pilot_auth_test_*`
+  databases on the configured cluster and remove their own fixtures/database.
+  Generated `next-env.d.ts` currently matches Git; no generated churn is included.
+
+### Finish verification / next milestone
+
+Use README's normal VS Code terminal clean-build fallback (not deployment), with
+all project dev/test servers stopped. Report the build output; after a successful
+current build, run production admin-content and authentication regressions
+sequentially. Complete mobile editor and unsaved-navigation keyboard review.
+Only then call this milestone fully production-verified. The next feature milestone
+is student catalog browsing/detail UI using these published-only endpoints; practice
+and planning remain separate approvals.
+
+### Remaining boundaries
+
+No student catalog UI, practice submissions, task completion, planning, R2/uploads,
+full seed collection, live verification or password recovery is implemented here.
+History lookup supports the documented persisted snapshots but does not create
+study history. Saved published edits intentionally become visible immediately.
+An uncertain create cannot generally be proven absent just by a failed connection;
+operators must reconcile, compare and explicitly decide whether to retry.
 
 ## Step 3: guarded admin reads and Content Library
 

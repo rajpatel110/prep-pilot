@@ -2,13 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { AdminContentDetail } from "../dto";
+import Link from "next/link";
+import { LifecycleControls } from "./lifecycle-controls";
 
 export function ContentDetail({
   id,
   onClose,
+  onChanged,
 }: {
   id: string;
   onClose: () => void;
+  onChanged: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [item, setItem] = useState<AdminContentDetail | null>(null);
@@ -77,6 +81,23 @@ export function ContentDetail({
       )}
       {item && (
         <>
+          <nav className="editor-actions" aria-label="Content actions">
+            <Link className="button" href={`/admin/content/${item.id}/edit`}>
+              {item.status === "archived"
+                ? "Manage archived content"
+                : "Edit content"}
+            </Link>
+            <Link className="button" href={`/admin/content/${item.id}/preview`}>
+              Admin preview
+            </Link>
+            <LifecycleControls
+              item={item}
+              onSaved={() => {
+                dialog.current?.close();
+                onChanged();
+              }}
+            />
+          </nav>
           <dl className="library-detail-grid">
             {Object.entries({
               ID: item.id,

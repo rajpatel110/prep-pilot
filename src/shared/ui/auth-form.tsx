@@ -7,10 +7,12 @@ export function AuthForm({
   mode,
   enabled,
   emailMode,
+  returnTo = null,
 }: {
   mode: "login" | "signup";
   enabled: boolean;
   emailMode: "test" | "live";
+  returnTo?: string | null;
 }) {
   const [visible, setVisible] = useState(false);
   const router = useRouter();
@@ -53,7 +55,11 @@ export function AuthForm({
         );
         return;
       }
-      router.replace("/account");
+      router.replace(
+        returnTo
+          ? `/account?returnTo=${encodeURIComponent(returnTo)}`
+          : "/account",
+      );
       router.refresh();
     } catch {
       setMessage(

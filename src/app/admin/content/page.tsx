@@ -48,14 +48,18 @@ export default async function ContentLibraryPage({
       <nav aria-label="Admin workspace" className="library-nav">
         <Link href="/admin">Administration</Link>
         <span aria-current="page">Content library</span>
+        <Link className="button" href="/admin/content/new">
+          Create draft
+        </Link>
       </nav>
       <p className="library-intro">
         Inspect the material students prepare with. Company labels retain their
         saved provenance.
       </p>
       <p className="library-notice">
-        Read-only library. Create/edit forms, publishing, student-view preview
-        and uploads are not available yet.
+        Create drafts, inspect and preview saved content, then publish reviewed
+        material. Archive and reopen preserve history. Uploads remain
+        unavailable.
       </p>
       <ContentLibrary
         key={params.toString()}

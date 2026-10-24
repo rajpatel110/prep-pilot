@@ -22,6 +22,7 @@ const messages: Record<string, string> = {
   reviewedAt:
     "Use null or a valid UTC review instant that is not in the future.",
   expectedRevision: "Supply a positive safe-integer expected revision.",
+  reason: "Supply a nonblank archive reason of at most 500 characters.",
   prompt:
     "Use at most 12000 characters of Markdown without HTML or unsafe links.",
   body: "Use at most 12000 characters of Markdown without HTML or unsafe links.",

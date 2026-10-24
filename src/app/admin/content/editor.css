@@ -1,0 +1,163 @@
+.content-editor {
+  display: grid;
+  gap: 24px;
+  margin-top: 24px;
+}
+.content-editor form {
+  display: grid;
+  gap: 28px;
+}
+.content-editor fieldset {
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  background: white;
+}
+.content-editor legend {
+  padding: 0 8px;
+  font-weight: 700;
+  font-size: 18px;
+}
+.editor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.content-editor label,
+.lifecycle-controls label {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  min-width: 0;
+}
+.content-editor input,
+.content-editor select,
+.content-editor textarea,
+.lifecycle-controls textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-ivory);
+  color: var(--color-charcoal);
+  font: inherit;
+  min-height: 44px;
+}
+.content-editor textarea,
+.lifecycle-controls textarea {
+  resize: vertical;
+}
+.content-editor [aria-invalid="true"] {
+  border-color: #9c2424;
+}
+.content-editor :disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+}
+.editor-company {
+  margin: 24px 0;
+  border-top: 1px solid var(--color-line);
+  padding-top: 20px;
+}
+.content-editor .editor-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+.editor-checkbox input {
+  width: 22px;
+  height: 22px;
+  min-height: 22px;
+  accent-color: var(--color-forest);
+}
+.editor-reconciliation,
+.editor-message {
+  padding: 20px;
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  background: #eef1e9;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.editor-reconciliation pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 450px;
+  overflow: auto;
+}
+.content-preview {
+  padding: 28px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--color-line);
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+}
+.content-preview h2 {
+  font-size: clamp(25px, 4vw, 36px);
+  margin: 24px 0;
+}
+.content-preview h3 {
+  font-size: 22px;
+  margin: 24px 0 12px;
+  font-weight: 700;
+}
+.content-preview summary,
+.editor-reconciliation summary {
+  cursor: pointer;
+  min-height: 44px;
+  color: var(--color-forest);
+  font-weight: 700;
+}
+.content-markdown h1,
+.content-markdown h2 {
+  font-size: 26px;
+  margin: 20px 0;
+}
+.content-markdown p {
+  margin: 12px 0;
+}
+.content-markdown ul,
+.content-markdown ol {
+  padding-left: 24px;
+  list-style: revert;
+}
+.content-markdown a {
+  color: var(--color-forest);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.content-markdown pre {
+  padding: 16px;
+  background: var(--color-ivory);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.content-markdown blockquote {
+  border-left: 3px solid var(--color-forest);
+  padding-left: 16px;
+}
+.content-preview .library-notice {
+  font-size: 14px;
+}
+@media (max-width: 800px) {
+  .editor-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .content-editor fieldset,
+  .content-preview {
+    padding: 20px;
+  }
+}
