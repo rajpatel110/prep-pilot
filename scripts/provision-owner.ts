@@ -88,7 +88,7 @@ async function main() {
     console.error(
       error instanceof HttpError
         ? `${error.code}: ${error.message}`
-        : "Owner provisioning failed. Use an exact existing user ID/email, explicit development/test database, --preview first, then --apply with --expected-revision. Require verification and migration 006. No partial promotion is committed.",
+        : "Owner provisioning failed. Use an exact existing user ID/email, explicit development/test database, --preview first, then --apply with --expected-revision. Require verification and migration 006. Deliberate hosted access also requires exact HOSTED_DATABASE_CONFIRMATION. No partial promotion is committed.",
     );
     process.exitCode = 1;
   } finally {

@@ -103,3 +103,35 @@ mobile widths it stays single-column rather than forcing the desktop two-column
 prototype. No separate mobile adjustment reference was found. Native buttons and
 links preserve tab order, visible focus and >=44px targets. Preparing/acceptance
 states disable duplicate submission; failures are inline alerts, not fake success.
+
+## 10. Dashboard-to-practice UI completion
+
+Read-only Stitch project 7439735129249105516 references: active dashboard
+5d55e62366df43d5a63c59bb3614f9ed, first-visit dashboard
+1a0d8ad940cf4f48b3e9470d542f94d9, mobile first visit
+2395aafb77a9494db2e0559cb3eff784 and mobile library/practice
+0cff7d48f84d4d099105a4ee47b9dd11. HTML and screenshots were inspected.
+Additional desktop library, question/resource, plan, Progress, Settings and admin
+HTML were inspected for the gap review; no Stitch designs were modified.
+
+Use a broad agenda column and narrower preparation overview on desktop, collapsing
+to a single reading order below 768px. Preserve the established ivory/forest/
+charcoal palette and system sans typography. The next available pending task is
+the primary action; explicit task context and dashboard return paths are retained.
+Preparation statistics project only saved dashboard DTO fields; no confidence,
+readiness, measured study time, prototype totals or percentages without a real
+denominator. Explain task completion versus independent question outcomes.
+
+Navigation indicates the current page, including nested content and plan preview
+routes. Mobile uses a native disclosure rather than permanent crowding or an
+overlay that can cover practice controls. Enter/Space toggles it, Tab reaches its
+44px targets and Escape closes/restores summary focus. Close on successful route
+change, not link click, so a cancelled unsaved-navigation dialog does not hide its
+focus-restoration target. Existing global focus rings and reduced-motion behavior
+remain. This is a deliberate functional adaptation of Stitch's mobile navigation,
+not a claim that its fixed bottom bar or QA simulator has shipped.
+
+No remote fonts, new services or animation library. Do not reproduce prototype
+50/30/20 allocation (the product is 50/25/25), campus performance statistics,
+institutional/helpdesk links, unsupported notifications, 2.4x learning claims or
+company-syllabus guarantees. The selected scope needs no new Stitch screen.

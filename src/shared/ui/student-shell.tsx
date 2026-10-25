@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SignOut } from "./sign-out";
+import { StudentNavigation } from "./student-navigation";
 import "@/app/content/student.css";
 
 export function StudentShell({
@@ -17,19 +18,7 @@ export function StudentShell({
         <Link className="brand" href="/account">
           PrepPilot
         </Link>
-        <nav aria-label="Student navigation">
-          {!onboarding && (
-            <>
-              <Link href="/dashboard">Dashboard</Link>
-              <Link href="/plans">Study plan</Link>
-              <Link href="/content">Content library</Link>
-              <Link href="/revisions">Revisions</Link>
-              <Link href="/attempts">History</Link>
-              <Link href="/progress">Progress</Link>
-              <Link href="/account?view=settings">Settings</Link>
-            </>
-          )}
-        </nav>
+        {!onboarding && <StudentNavigation />}
         <span className="student-name">{name}</span>
         <SignOut />
       </header>

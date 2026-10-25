@@ -1,5 +1,12 @@
 # Owner administration
 
+Local and hosted temporarily share `prep_pilot_dev`; separation is deferred.
+See [current deployment rules](../DEPLOYMENT.md). Intentional operator work on
+this shared database requires `HOSTED_DATABASE_CONFIRMATION=prep_pilot_dev` in
+addition to the explicit CLI target. Existing hosted ownership needs no reapply.
+Tests must use only disposable databases; the shared name is never a test target,
+even with confirmation. No account changes are needed for the UI milestone.
+
 One shared email/password login. Students land in onboarding/dashboard; admins and
 the owner land in `/admin`. Owner inherits content/file access and alone uses
 `/admin/administrators`. This does not enable R2 or email delivery.

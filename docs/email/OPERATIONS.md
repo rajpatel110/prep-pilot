@@ -1,5 +1,13 @@
 # Email verification and recovery
 
+Separation is deferred; local and hosted currently share `prep_pilot_dev`.
+Automated tests must use only disposable targets, never the shared database.
+The existing real owner was later
+genuinely verified through an explicitly chosen local owner-inbox session on that
+shared database; this does not authorize routine tests on it. Hosted remains
+email-disabled. See [the runbook](../DEPLOYMENT.md) for environment separation and
+the supported, user-operated exposed-password reset/session-revocation procedure.
+
 ## Configuration and availability
 
 `EMAIL_MODE` remains the access policy, not a provider sandbox switch. `test`

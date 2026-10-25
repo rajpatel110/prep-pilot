@@ -1,12 +1,27 @@
 # PrepPilot
 
+## Hosted checkpoint: temporarily shared database
+
+Hosted app: <https://prep-pilot-theta-tan.vercel.app>. The existing hosted database
+is still named `prep_pilot_dev`; it contains real owner/account/content state and
+must not be treated as disposable. By the owner's current decision, local and
+hosted continue sharing this database. Separation to `prep_pilot_local` is
+deferred; no Atlas or real environment configuration was changed.
+See [deployment notes](docs/DEPLOYMENT.md) for current safety rules.
+
+Local runtime accepts the shared target without an extra flag. Operator scripts
+still require exact `HOSTED_DATABASE_CONFIRMATION` for shared-target operations
+and always reject it as a test target. Preview refuses hosted/local targets.
+Use disposable databases for all automated/browser fixture writes and cleanup.
+Keep EPERM diagnosis paused and use the established user-run build fallback.
+
 A modular monolith for placement preparation across DSA, aptitude and CS fundamentals.
-This repository implements the local scaffold, homepage, authentication foundation
-and transactional admin draft creation/editing API.
+This repository implements the homepage, authentication, owner/admin catalog
+workflows, student practice, planning, Progress and Settings.
 The homepage follows the reviewed Stitch landing direction, with responsive sections,
 native FAQ disclosures and explicitly illustrative plan/progress examples. Accounts,
 persistent database sessions and protected account destinations are implemented.
-Content-library/editor UI, publishing, study plans and practice remain future milestones.
+Attachment integration is mock-verified; real R2 and hosted email remain disabled.
 The sample-plan links show illustrative data only.
 
 ## Run locally

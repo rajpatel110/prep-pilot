@@ -47,23 +47,11 @@ export default async function DashboardPage() {
     );
   return (
     <StudentShell name={actor.session.user.name}>
-      {!plan && preferences.success && (
-        <section className="student-card">
-          <h2>Your saved preferences</h2>
-          <p>
-            {preferences.data.companies.join(" + ")} ·{" "}
-            {preferences.data.dailyMinutes} min/day · through{" "}
-            {preferences.data.deadline}
-          </p>
-          <p>
-            Starting self-assessment: DSA {preferences.data.skills.dsa}/5 ·
-            Aptitude {preferences.data.skills.aptitude}/5 · CS{" "}
-            {preferences.data.skills.cs}/5. These are preferences, not measured
-            mastery.
-          </p>
-        </section>
-      )}
-      <DashboardView data={data} plan={plan} />
+      <DashboardView
+        data={data}
+        plan={plan}
+        preferences={preferences.success ? preferences.data : undefined}
+      />
     </StudentShell>
   );
 }

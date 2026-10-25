@@ -3,7 +3,10 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiRequest } from "@/shared/ui/api-client";
-import { studyDate } from "@/modules/identity/preferences-schema";
+import {
+  studyDate,
+  type Preferences,
+} from "@/modules/identity/preferences-schema";
 import type { dashboard, readPlan, readPreview } from "../service";
 type Dashboard = Awaited<ReturnType<typeof dashboard>>;
 type Plan = NonNullable<Awaited<ReturnType<typeof readPlan>>["plan"]>;
@@ -487,16 +490,28 @@ export function PreviewView({ preview }: { preview: Preview }) {
 export function DashboardView({
   data,
   plan,
+  preferences,
 }: {
   data: Dashboard;
   plan: Plan | null;
+  preferences?: Preferences | undefined;
 }) {
   const remaining = data.todayTasks
     .filter((task) => task.status === "pending")
     .reduce((sum, task) => sum + task.estimatedMinutes, 0);
+  const completedToday = data.todayTasks.filter(
+    (task) => task.status === "completed",
+  ).length;
+  const nextTask = data.todayTasks.find(
+    (task) => task.status === "pending" && task.availability === "available",
+  );
+  const nextDestination =
+    nextTask && plan
+      ? `/content/${nextTask.contentId}?returnTo=%2Fdashboard&planId=${plan.id}&taskId=${nextTask.taskId}${nextTask.kind === "revision" ? "&kind=revision" : ""}`
+      : null;
   return (
-    <>
-      <header className="student-card">
+    <div className="student-stack dashboard-workspace">
+      <header className="dashboard-heading">
         <p className="eyebrow">
           Your preparation · {data.studyDate} · Asia/Kolkata
         </p>
@@ -510,105 +525,247 @@ export function DashboardView({
             ? `${remaining} estimated minutes remaining today. This is scheduled effort, not measured study time.`
             : "Review a suggested plan based on your preferences, available time and starting point."}
         </p>
-        <div className="student-actions">
-          <Link href="/content">Browse content</Link>
-          <Link href="/account?view=settings">Edit preferences</Link>
+        <div className="student-actions dashboard-next-action">
+          {nextDestination && (
+            <Link className="button" href={nextDestination}>
+              {nextTask?.kind === "revision"
+                ? "Continue revision"
+                : nextTask?.contentSnapshot.type === "resource"
+                  ? "Continue reading"
+                  : "Continue practice"}
+            </Link>
+          )}
+          <Link className="button button-outline" href="/content">
+            Browse content
+          </Link>
           {plan && <Link href={`/plans/${plan.id}`}>View study plan</Link>}
         </div>
       </header>
-      {plan && plan.windowEnd >= data.studyDate && (
-        <section
-          className="student-card"
-          aria-labelledby="recommendations-heading"
-        >
-          <p className="eyebrow">Based on your recorded activity</p>
-          <h2 id="recommendations-heading">Plan review</h2>
-          {data.suggestions.length ? (
-            <>
-              {data.suggestions.map((suggestion) => (
-                <p key={suggestion.key}>{suggestion.summary}</p>
-              ))}
-              <p>
-                A review may find no useful change if easier content,
-                prerequisites or daily capacity are unavailable. Your active
-                plan is unchanged.
+      <div className="dashboard-layout">
+        <div className="student-stack">
+          {!plan && preferences && (
+            <section
+              className="student-card"
+              aria-labelledby="saved-preferences-heading"
+            >
+              <div className="dashboard-section-heading">
+                <h2 id="saved-preferences-heading">Your saved preferences</h2>
+                <Link href="/account?view=settings">Edit preferences</Link>
+              </div>
+              <dl className="dashboard-preferences">
+                <div>
+                  <dt>Preparing for</dt>
+                  <dd>
+                    {preferences.companies
+                      .map((company) =>
+                        company === "ltm" ? "LTM" : "Cognizant",
+                      )
+                      .join(" + ")}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Daily budget</dt>
+                  <dd>{preferences.dailyMinutes} min/day</dd>
+                </div>
+                <div>
+                  <dt>Target date</dt>
+                  <dd>{preferences.deadline}</dd>
+                </div>
+              </dl>
+              <p className="student-muted">
+                Starting self-assessment: DSA {preferences.skills.dsa}/5 ·
+                Aptitude {preferences.skills.aptitude}/5 · CS{" "}
+                {preferences.skills.cs}/5. These are preferences, not measured
+                mastery.
               </p>
-              <GeneratePlan revision={data.stateRevision} kind="adapt" />
-            </>
-          ) : (
-            <p>
-              No adjustment needed from the available evidence. Topic
-              suggestions require three practice attempts with at least two
-              help/not-solved outcomes. Individual revision due dates still
-              apply.
-            </p>
-          )}
-        </section>
-      )}
-      {!plan ? (
-        <GeneratePlan revision={data.stateRevision} />
-      ) : (
-        <>
-          <section>
-            <h2>Today’s agenda</h2>
-            {!data.todayTasks.length ? (
-              <p className="student-notice">
-                No tasks today. Browse content or review upcoming days.
-              </p>
-            ) : remaining === 0 ? (
-              <p className="student-notice">
-                Today’s tasks are completed. Your saved history remains
-                available.
-              </p>
-            ) : null}
-            <TaskRows
-              tasks={data.todayTasks}
-              planId={plan.id}
-              revision={data.stateRevision}
-            />
-          </section>
-          <GeneratePlan
-            revision={data.stateRevision}
-            kind={plan.windowEnd < data.studyDate ? "initial" : "reschedule"}
-          />
-          {data.overdue.count > 0 && (
-            <section className="student-card">
-              <h2>{data.overdue.count} overdue tasks</h2>
-              <p>Nothing was silently moved. Review a replacement schedule.</p>
             </section>
           )}
-          <section>
-            <h2>Upcoming work</h2>
-            <TaskRows
-              tasks={data.upcomingTasks}
-              planId={plan.id}
-              revision={data.stateRevision}
-            />
-          </section>
-        </>
-      )}
-      <section className="student-card">
-        <h2>Due revisions</h2>
-        <p>
-          {data.revisions.dueCount} due, including{" "}
-          {data.revisions.unavailableDueCount} unavailable. Cycles already in
-          today’s agenda are not listed again.
-        </p>
-        {data.revisions.items.map((cycle) => (
-          <p key={cycle.id}>
-            {cycle.availability === "available" ? (
-              <Link
-                href={`/content/${cycle.contentId}?kind=revision&returnTo=%2Fdashboard`}
+          {plan &&
+            plan.windowEnd >= data.studyDate &&
+            data.suggestions.length > 0 && (
+              <section
+                className="student-card"
+                aria-labelledby="recommendations-heading"
               >
-                {cycle.title}
-              </Link>
-            ) : (
-              <span>{cycle.title} · unavailable</span>
+                <p className="eyebrow">Based on your recorded activity</p>
+                <h2 id="recommendations-heading">Plan review</h2>
+                {data.suggestions.length ? (
+                  <>
+                    {data.suggestions.map((suggestion) => (
+                      <p key={suggestion.key}>{suggestion.summary}</p>
+                    ))}
+                    <p>
+                      A review may find no useful change if easier content,
+                      prerequisites or daily capacity are unavailable. Your
+                      active plan is unchanged.
+                    </p>
+                    <GeneratePlan revision={data.stateRevision} kind="adapt" />
+                  </>
+                ) : (
+                  <p>
+                    No adjustment needed from the available evidence. Topic
+                    suggestions require three practice attempts with at least
+                    two help/not-solved outcomes. Individual revision due dates
+                    still apply.
+                  </p>
+                )}
+              </section>
             )}
-          </p>
-        ))}
-        <Link href="/revisions">Open revision queue</Link>
-      </section>
-    </>
+          {!plan ? (
+            <GeneratePlan revision={data.stateRevision} />
+          ) : (
+            <>
+              <section
+                className="dashboard-agenda"
+                aria-labelledby="today-heading"
+              >
+                <div className="dashboard-section-heading">
+                  <h2 id="today-heading">Today’s agenda</h2>
+                  <span>
+                    {completedToday} / {data.todayTasks.length} completed
+                  </span>
+                </div>
+                {data.todayTasks.length > 0 && (
+                  <progress
+                    className="dashboard-progress"
+                    value={completedToday}
+                    max={data.todayTasks.length}
+                    aria-label="Today's scheduled task completion"
+                  >
+                    {completedToday} of {data.todayTasks.length}
+                  </progress>
+                )}
+                {!data.todayTasks.length ? (
+                  <p className="student-notice">
+                    No tasks today. Browse content or review upcoming days.
+                  </p>
+                ) : remaining === 0 ? (
+                  <p className="student-notice">
+                    Today’s tasks are completed. Your saved history remains
+                    available.
+                  </p>
+                ) : null}
+                <TaskRows
+                  tasks={data.todayTasks}
+                  planId={plan.id}
+                  revision={data.stateRevision}
+                />
+              </section>
+              <GeneratePlan
+                revision={data.stateRevision}
+                kind={
+                  plan.windowEnd < data.studyDate ? "initial" : "reschedule"
+                }
+              />
+              {data.overdue.count > 0 && (
+                <section className="student-card">
+                  <h2>{data.overdue.count} overdue tasks</h2>
+                  <p>
+                    Nothing was silently moved. Review a replacement schedule.
+                  </p>
+                </section>
+              )}
+              <section>
+                <h2>Upcoming work</h2>
+                {!data.upcomingTasks.length && (
+                  <p className="student-notice">
+                    No upcoming tasks are scheduled. You can still browse
+                    published content.
+                  </p>
+                )}
+                <TaskRows
+                  tasks={data.upcomingTasks}
+                  planId={plan.id}
+                  revision={data.stateRevision}
+                />
+              </section>
+            </>
+          )}
+        </div>
+        <aside
+          className="student-stack dashboard-sidebar"
+          aria-label="Preparation overview"
+        >
+          <section
+            className="student-card"
+            aria-labelledby="dashboard-progress-heading"
+          >
+            <p className="eyebrow">Your recorded activity</p>
+            <h2 id="dashboard-progress-heading">Preparation progress</h2>
+            <dl className="dashboard-statistics">
+              <div>
+                <dt>Distinct questions attempted</dt>
+                <dd>{data.progress.distinctAttempted}</dd>
+              </div>
+              <div>
+                <dt>Currently solved independently</dt>
+                <dd>{data.progress.currentlySolved}</dd>
+              </div>
+              <div>
+                <dt>Active-plan tasks completed</dt>
+                <dd>
+                  {plan
+                    ? `${data.progress.planCompleted} / ${data.progress.planTotal}`
+                    : "No active plan"}
+                </dd>
+              </div>
+            </dl>
+            <p className="student-muted">
+              Latest self-reported outcomes, not an ability or placement score.
+              Saving an outcome does not complete a plan task.
+            </p>
+            <Link className="dashboard-text-link" href="/progress">
+              View detailed progress
+            </Link>
+          </section>
+          <section className="student-card">
+            <h2>Due revisions</h2>
+            <p>
+              {data.revisions.dueCount} due, including{" "}
+              {data.revisions.unavailableDueCount} unavailable. Cycles already
+              in today’s agenda are not listed again.
+            </p>
+            {data.revisions.items.map((cycle) => (
+              <p key={cycle.id}>
+                {cycle.availability === "available" ? (
+                  <Link
+                    href={`/content/${cycle.contentId}?kind=revision&returnTo=%2Fdashboard`}
+                  >
+                    {cycle.title}
+                  </Link>
+                ) : (
+                  <span>{cycle.title} · unavailable</span>
+                )}
+              </p>
+            ))}
+            <Link className="dashboard-text-link" href="/revisions">
+              Open revision queue
+            </Link>
+          </section>
+          <section className="student-card dashboard-library-prompt">
+            <h2>Find your next practice</h2>
+            <p>
+              Explore published questions and resources across DSA, aptitude and
+              CS fundamentals. Your filters and reading position are kept when
+              you return.
+            </p>
+            <Link className="dashboard-text-link" href="/content">
+              Open content library
+            </Link>
+          </section>
+          {!plan && (
+            <section className="student-card">
+              <h2>How PrepPilot works</h2>
+              <ol className="dashboard-guide">
+                <li>Review your proposed schedule.</li>
+                <li>Accept it only when it fits.</li>
+                <li>Practice, then record your outcome.</li>
+              </ol>
+              <p>Nothing is accepted or completed automatically.</p>
+            </section>
+          )}
+        </aside>
+      </div>
+    </div>
   );
 }

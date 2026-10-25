@@ -427,11 +427,19 @@ Place Vercel functions and Atlas as close as practical. Atlas must allow the act
 | Variables | Handling |
 | --- | --- |
 | APP_URL; trusted origins | Exact HTTPS app origin and allowlist; separate by environment. |
-| MONGODB_URI; MONGODB_DB | Server-only; URI uses a scoped database user. Separate auth URI may be used for least privilege. |
-| BETTER_AUTH_SECRET; BETTER_AUTH_URL | Server-only, high-entropy secret and exact auth origin. |
+| MONGODB_URI; MONGODB_DB_NAME | Server-only; URI uses a database-scoped user. Current implementation uses the same URI and explicit database for auth and domain clients. |
+| BETTER_AUTH_SECRET; APP_URL | Server-only, high-entropy secret and exact auth origin. No separate BETTER_AUTH_URL is consumed by the implementation. |
 | CSRF_SECRET; RATE_LIMIT_SECRET | Independent high-entropy server secrets; do not reuse signing keys. |
-| EMAIL_MODE; RESEND_API_KEY; EMAIL_FROM | Live mode must validate complete provider/domain configuration. |
+| EMAIL_MODE; EMAIL_DELIVERY_MODE; RESEND_API_KEY; RESEND_FROM_EMAIL | Access and delivery are separate modes. Live delivery validates complete provider/domain configuration. |
 | FILES_ENABLED; R2_ACCOUNT_ID; R2_BUCKET; R2_ACCESS_KEY_ID; R2_SECRET_ACCESS_KEY | Server-only bucket configuration and scoped R2 token. Do not use NEXT_PUBLIC_ for secrets. |
+
+The temporary implementation shares prep_pilot_dev between local and hosted.
+Separation to prep_pilot_local is deferred by owner decision, not an implemented
+gate. See docs/DEPLOYMENT.md. Local runtime permits the shared target; operator
+changes require explicit HOSTED_DATABASE_CONFIRMATION and never allow this name
+as a test target. Preview cannot use hosted/local targets. Guards complement,
+but cannot replace, Atlas credential scoping. No real env target changes occur
+automatically when this source is edited.
 
 ### Deployment and rollback
 

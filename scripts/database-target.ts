@@ -1,3 +1,8 @@
+import {
+  hostedDatabase,
+  requireDatabaseBoundary,
+} from "../src/shared/server/database-boundary";
+
 export type DatabaseTarget = {
   uri: string;
   database: string;
@@ -39,5 +44,14 @@ export function databaseTarget(
     throw new Error("Database tools do not run in production mode.");
   if (["admin", "local", "config"].includes(database))
     throw new Error("System databases are not supported.");
+  requireDatabaseBoundary(database, env);
+  if (database === hostedDatabase) {
+    if (environment === "test")
+      throw new Error("The shared hosted database is never a test target.");
+    if (env.HOSTED_DATABASE_CONFIRMATION !== hostedDatabase)
+      throw new Error(
+        "Shared-database operator work requires exact HOSTED_DATABASE_CONFIRMATION.",
+      );
+  }
   return { uri, database, environment };
 }

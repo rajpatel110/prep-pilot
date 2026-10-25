@@ -1,12 +1,14 @@
 // This parser is also used by next.config.ts, outside React's module graph.
 // Application code must import it through the server-only config.ts wrapper.
 import { z } from "zod";
+import { requireDatabaseBoundary } from "./database-boundary";
 
 const schema = z.object({
   AUTH_ENABLED: z
     .enum(["true", "false"])
     .default("false")
     .transform((value) => value === "true"),
+  HOSTED_DATABASE_CONFIRMATION: z.literal("prep_pilot_dev").optional(),
   MONGODB_URI: z.string().optional(),
   MONGODB_DB_NAME: z
     .string()
@@ -70,6 +72,8 @@ export function getServerEnv(
     R2_ACCESS_KEY_ID: source.R2_ACCESS_KEY_ID || undefined,
     R2_SECRET_ACCESS_KEY: source.R2_SECRET_ACCESS_KEY || undefined,
     AUTH_ENABLED: source.AUTH_ENABLED,
+    HOSTED_DATABASE_CONFIRMATION:
+      source.HOSTED_DATABASE_CONFIRMATION || undefined,
     MONGODB_URI: source.MONGODB_URI || undefined,
     MONGODB_DB_NAME: source.MONGODB_DB_NAME || undefined,
     BETTER_AUTH_SECRET: source.BETTER_AUTH_SECRET || undefined,
@@ -101,6 +105,8 @@ export function getServerEnv(
     );
   }
   const config = result.data;
+  if (config.AUTH_ENABLED)
+    requireDatabaseBoundary(config.MONGODB_DB_NAME!, source);
   if (
     config.FILES_ENABLED &&
     (!config.AUTH_ENABLED ||

@@ -18,7 +18,7 @@ async function main() {
     console.error(
       error instanceof MigrationError
         ? `Database setup failed: ${error.code}. No records or indexes were deleted.`
-        : "Database setup failed. Require MONGODB_URI, --database <name> and --environment development|test; check access and data/index compatibility. No records or indexes were deleted.",
+        : "Database setup failed. Require MONGODB_URI, --database <name> and --environment development|test; check access and data/index compatibility. Deliberate hosted access also requires exact HOSTED_DATABASE_CONFIRMATION. No records or indexes were deleted.",
     );
     process.exitCode = 1;
   } finally {

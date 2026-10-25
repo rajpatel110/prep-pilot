@@ -2,6 +2,143 @@
 
 Updated: 25 October 2026 (Asia/Kolkata).
 
+## UI completion and shared-database reconciliation: focused verification complete
+
+Owner decision: separation is postponed. Normal local and hosted runtime continue
+sharing prep_pilot_dev. No Atlas users, .env.local, Vercel config, real roles or
+records were changed. The earlier separation proposal below is historical, not
+the current setup gate; docs/DEPLOYMENT.md explicitly marks it deferred.
+
+Reconciled only prior uncommitted separation work: local runtime/builds now allow
+the intended shared target without confirmation. Explicit operator operations
+still require exact HOSTED_DATABASE_CONFIRMATION for this name, and selecting it
+as a test target always fails, even with confirmation. Preview refusal of hosted/
+local targets and strict explicit CLI target selection are retained. .env.example
+again reflects the temporary shared target. Unrelated catalog drafts, diagnostics
+and generated next-env changes remain preserved.
+
+Read-only Stitch comparison and gap table: docs/student/UI_COMPLETION.md.
+Selected scope: dashboard → library → practice presentation/navigation, supported
+by existing APIs. Added first-visit preference layout/guidance, a contextual next
+available task action, today's completion progress, actual distinct/independent
+question and active-plan task counts, clear empty upcoming-work state, and a
+responsive agenda/overview layout. No invented metrics, fake content, new backend,
+automatic acceptance/completion or provider enablement. Shared student navigation
+now indicates current/nested destinations and uses a native keyboard-accessible
+mobile disclosure; cancelled unsaved navigation must retain its focus target.
+
+Stitch sources: active dashboard 5d55e62366df43d5a63c59bb3614f9ed, first visit
+1a0d8ad940cf4f48b3e9470d542f94d9, mobile first visit
+2395aafb77a9494db2e0559cb3eff784 and mobile library/practice
+0cff7d48f84d4d099105a4ee47b9dd11 (HTML/screenshots inspected). Existing desktop
+library, question/resource, plan/preview, Progress, Settings and admin HTML were
+also reviewed. No new Stitch screen or external setup is needed for this scope;
+no remote design was modified.
+
+Focused UI render assertions passed for first-visit/preferences, exact real DTO
+counts, active/completed/unavailable task states, context-safe links and current
+navigation. Nine focused boundary/target/identity tests passed without DB writes.
+Initial direct TypeScript checking identified a missing bfcacheId in the render
+test's Next router provider; the fixture was corrected, not application behavior.
+Final direct tsc --noEmit --incremental false and full lint passed after correcting
+that typed fixture. Focused render checks passed again after the mobile-navigation
+focus-preservation refinement. Formatting and diff-whitespace checks passed.
+
+One agent production build was attempted for these source changes. It failed
+during compilation with EPERM: operation not permitted, mkdir at
+C:\PROJECTS\prep-pilot\.next\server\app\api\v1\admin\files. No unchanged retry,
+output deletion, permission change or EPERM diagnosis followed. The failed output
+was not treated as a passing artifact. The user subsequently ran the ordinary
+Git Bash production build successfully: compilation 12.5 seconds, TypeScript
+7.6 seconds, 20 static pages in 681ms, traces/finalization 9.4 seconds. This is
+user-run evidence, not an agent build or proof that the recurring EPERM is fixed.
+The agent reuses that artifact without rebuilding for focused UI verification.
+
+Agent-run compiled-app browser verification passed using that user-built artifact,
+without recompilation. Actual DOM viewport measurements were desktop 1280×720
+and mobile 390×844. Desktop covered first-visit preferences, no-match search,
+filtered question/explanation, saved independent outcome, preserved filtered
+return, live dashboard counts, proposal generation and explicit acceptance.
+The active dashboard showed 30 estimated minutes and 0/2 completed tasks.
+Mobile covered contextual Continue practice, a second saved outcome, independent
+task-completion controls, library and resource readability, and collapsed mobile
+navigation after successful routing. Dashboard/library/question document widths
+were 375px within the 390px viewport: no horizontal overflow observed there.
+After two outcomes the dashboard accurately showed 2 distinct questions, 1 solved
+independently and 0/2 completed tasks. Menu Enter/Tab/Escape behavior passed;
+Escape restored summary focus. Unsaved Settings input (75 minutes) survived
+Keep editing, restored focus to the still-visible Dashboard link, and discarded
+navigation then succeeded without saving. Existing backend regressions are reused;
+pagination, forced network-failure states and exhaustive accessibility were not
+retested in this focused browser pass.
+
+Only the generated pp_student_ui_<12 hex> database was migrated/populated by
+tests/student-ui-fixture.ts; no shared database or real records were modified.
+Email/files remained disabled. Cleanup completed successfully: 2 disposable
+attempts and 1 plan observed, generated database removed, owned server stopped,
+browser tab closed and viewport restored. Remaining later UI polish and deferred
+capabilities are listed in docs/student/UI_COMPLETION.md. No genuinely necessary
+new Stitch screen, commit, push or deployment. EPERM diagnosis stays paused.
+
+## Historical separation proposal — superseded and deferred
+
+Current hosted origin is https://prep-pilot-theta-tan.vercel.app. User-run hosted
+login, genuine owner email verification, sole-owner provisioning and Manage admins
+lookup succeeded. Hosted helper grant/removal and disclosed-password rotation are
+not confirmed. Hosted email delivery and files remain disabled; local owner-inbox
+verification did not enable general-user delivery.
+
+Agent read-only checks in this milestone:
+
+- Local HEAD and live remote dev both equal
+  4716275957e2106fac1bfe15fd2ebc7123b7af25. The remote query returned no main ref.
+  Vercel deployed SHA/environment and production branch remain unknown; the owner
+  must inspect the existing deployment's Source/Branch Tracking, not redeploy.
+- Current shared prep_pilot_dev contains the selected verified active owner at
+  stateRevision 5, one content record (published), and applied migrations 001–006.
+  These checks did not change roles, verification, sessions, content or indexes.
+  A separate read-only content baseline digest (all records, sorted by ID) is
+  292f36b3b9ca8d9ac9975140d411c0db8e8a1fb4d1f001bdbc92a1be8f6316a2.
+  Compare it after the local-only write; investigate legitimate hosted changes
+  rather than resetting anything if the digest differs.
+- prep_pilot_local was absent from the authorized database list; direct collection
+  inventory succeeded with zero collections. This availability check creates no
+  database and is not a reservation; recheck before delayed setup.
+
+Prepared docs/DEPLOYMENT.md with explicit hosted/local/Preview/test map, exact
+variables and scopes, Atlas database-scoped users/privileges, supported local
+migration and verified local-owner workflows, deployment identity/rollback, and
+user-operated password recovery with all-session revocation. Code rollback does
+not undo database changes. Existing real data is not copied into local.
+
+Added a shared pure database-boundary guard used by runtime environment validation
+and the existing operator target resolver. Local servers/builds/operators now
+refuse the known hosted name unless an exact HOSTED_DATABASE_CONFIRMATION is
+explicitly supplied for exceptional operator access. Vercel Production remains
+supported. Preview refuses both hosted and local names even with acknowledgment.
+Database-scoped Atlas credentials remain the real access boundary, not these
+name checks. .env.example now proposes prep_pilot_local. No real environment file,
+credential, target or dashboard configuration was changed automatically.
+
+Focused boundary, existing target, identity and email-policy/transport tests:
+15 passed, no database or provider mutations. Full lint, direct tsc --noEmit
+--incremental false, full formatting and diff-whitespace checks passed. TypeScript
+was checked without Next type generation or rebuilding. Existing product
+regression/browser/build evidence is preserved,
+not rerun or claimed to verify the new environment parser. A new production build
+is pending the user's local setup and ordinary Git Bash build; EPERM diagnosis
+remains paused.
+
+Remaining gate: owner creates scoped local credentials and fresh local secrets,
+selects prep_pilot_local, runs supported additive setup, and confirms completion.
+Only then verify separate targets, credential denials, a disposable local write
+absent on hosted, read-only hosted owner/content preservation and any requested
+local owner journey. Existing random-database integrations need separate safe test
+credentials; do not broaden the local user onto hosted to run them. No such tests,
+local migrations, account creation, real emails, commit, push or deployment were
+performed in this milestone. The earlier source checkpoint sections below remain
+historical evidence and do not imply separation is finished.
+
 ## Owner-controlled administration: verified and ready for checkpoint
 
 Approved role-model amendment: student/admin/owner. Existing uncommitted R2 work,
