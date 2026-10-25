@@ -17,8 +17,7 @@ const messages: Record<string, string> = {
   tags: "Use at most 20 unique nonblank tags, each at most 40 characters.",
   companies:
     "Use at most two unique supported companies with provenance and valid UTC review dates.",
-  assetIds:
-    "Attachments are unavailable in this milestone; use an empty array.",
+  assetIds: "Use at most five unique valid attachment IDs.",
   reviewedAt:
     "Use null or a valid UTC review instant that is not in the future.",
   expectedRevision: "Supply a positive safe-integer expected revision.",

@@ -20,6 +20,8 @@ export const auditInputSchema = z.strictObject({
     .max(40),
   requestId: z.uuid(),
   reason: z.string().max(500).optional(),
+  previousRole: z.enum(["student", "admin", "owner"]).optional(),
+  newRole: z.enum(["student", "admin", "owner"]).optional(),
 });
 
 const auditSchema = new Schema(
@@ -37,6 +39,8 @@ const auditSchema = new Schema(
     changedFields: { type: [String], required: true },
     requestId: { type: String, required: true },
     reason: { type: String, maxlength: 500 },
+    previousRole: { type: String, enum: ["student", "admin", "owner"] },
+    newRole: { type: String, enum: ["student", "admin", "owner"] },
     schemaVersion: { type: Number, enum: [1], default: 1, required: true },
   },
   {

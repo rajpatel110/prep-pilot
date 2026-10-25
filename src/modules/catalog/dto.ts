@@ -1,6 +1,7 @@
 import "server-only";
 import type { z } from "zod";
 import type { storedContentSchema } from "./schemas";
+import type { FileDto } from "@/modules/files/schemas";
 
 function contentSummaryDto(content: z.output<typeof storedContentSchema>) {
   return {
@@ -32,11 +33,14 @@ export function adminContentSummaryDto(
     status: content.status,
     createdAt: content.createdAt.toISOString(),
     updatedAt: content.updatedAt.toISOString(),
-    attachmentCount: 0,
+    attachmentCount: content.assetIds.length,
   };
 }
 
-export function adminContentDto(content: z.output<typeof storedContentSchema>) {
+export function adminContentDto(
+  content: z.output<typeof storedContentSchema>,
+  attachments: FileDto[] = [],
+) {
   return {
     ...adminContentSummaryDto(content),
     prompt: content.prompt ?? null,
@@ -48,7 +52,7 @@ export function adminContentDto(content: z.output<typeof storedContentSchema>) {
     assetIds: [...content.assetIds],
     publishedAt: content.publishedAt?.toISOString() ?? null,
     archivedAt: content.archivedAt?.toISOString() ?? null,
-    attachments: [],
+    attachments,
   };
 }
 
@@ -62,6 +66,7 @@ export function studentContentSummaryDto(
 }
 export function studentContentDto(
   content: z.output<typeof storedContentSchema>,
+  attachments: FileDto[] = [],
 ) {
   return {
     ...studentContentSummaryDto(content),
@@ -71,6 +76,13 @@ export function studentContentDto(
     externalUrl: content.externalUrl ?? null,
     source: content.source,
     attribution: content.attribution,
-    attachments: [],
+    attachments: attachments
+      .filter((asset) => asset.status === "ready")
+      .map((asset) => ({
+        id: asset.id,
+        displayName: asset.displayName,
+        mimeType: asset.mimeType,
+        sizeBytes: asset.sizeBytes,
+      })),
   };
 }

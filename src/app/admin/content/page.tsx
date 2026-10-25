@@ -51,6 +51,7 @@ export default async function ContentLibraryPage({
         <Link className="button" href="/admin/content/new">
           Create draft
         </Link>
+        <Link href="/admin/files">Manage attachments</Link>
       </nav>
       <p className="library-intro">
         Inspect the material students prepare with. Company labels retain their
@@ -58,8 +59,9 @@ export default async function ContentLibraryPage({
       </p>
       <p className="library-notice">
         Create drafts, inspect and preview saved content, then publish reviewed
-        material. Archive and reopen preserve history. Uploads remain
-        unavailable.
+        material. Archive and reopen preserve history. Attachments can be
+        selected in the editor; transfers require explicitly enabled file
+        configuration.
       </p>
       <ContentLibrary
         key={params.toString()}

@@ -7,8 +7,20 @@ import {
 } from "@/config/planning";
 import { storedContentSchema } from "./schemas";
 import { publicationFields } from "./publication";
+import { fileRecord } from "@/modules/files/schemas";
 
-export function assessCoverage(records: Record<string, unknown>[]) {
+export function assessCoverage(
+  records: Record<string, unknown>[],
+  assets: Record<string, unknown>[] = [],
+) {
+  const ready = new Set(
+    assets.flatMap((asset) => {
+      const parsed = fileRecord.safeParse({ ...asset, _id: String(asset._id) });
+      return parsed.success && parsed.data.status === "ready"
+        ? [parsed.data._id]
+        : [];
+    }),
+  );
   const rejected: { id: string; fields: string[] }[] = [];
   const eligible = records.flatMap((record) => {
     if (record.status !== "published") return [];
@@ -32,7 +44,12 @@ export function assessCoverage(records: Record<string, unknown>[]) {
       });
       return [];
     }
-    const fields = Object.keys(publicationFields(parsed.data));
+    const fields = Object.keys(
+      publicationFields({
+        ...parsed.data,
+        readyAssets: parsed.data.assetIds.filter((id) => ready.has(id)).length,
+      }),
+    );
     if (fields.length) {
       rejected.push({ id: parsed.data._id, fields });
       return [];

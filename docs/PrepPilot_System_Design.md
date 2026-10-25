@@ -14,7 +14,7 @@ The technology choices below are confirmed. The detailed defaults in this docume
 | Data and validation | MongoDB Atlas; Mongoose for application collections; Zod at all external boundaries. |
 | Identity | Better Auth with its official MongoDB adapter; database-backed sessions in secure cookies. This library selection is a design recommendation. |
 | Services | Vercel hosting; private Cloudflare R2 attachments; Resend transactional email. |
-| Product | Students and an internal admin role; curated content; attempts, revisions, versioned plans and explainable adaptation. |
+| Product | Students, admins and one owner; curated content; attempts, revisions, versioned plans and explainable adaptation. |
 
 ### Design goals
 
@@ -115,9 +115,38 @@ Read the current Profile role on each protected request. Logout revokes the curr
 | --- | --- |
 | requireActor | Validate session and ensure a Profile; return trusted userId, role and emailVerified state. |
 | requireStudyActor | Also enforce verified email in live mode. Test mode explicitly allows unverified student demo access. |
-| requireAdmin | Read the current server-owned role. Live mode also requires verified email. |
+| requireAdmin | Current active profile role admin or owner. Live mode also requires verified email. |
+| requireOwner | Study access plus current active profile role owner; required for all administrator-management reads and writes. |
 | Resource ownership | Query with both resource ID and actor.userId; return 404 for another student’s resource. |
-| Admin provisioning | Restricted TypeScript operator command against an existing exact user ID/email; record audit event. No public promotion endpoint. |
+| Owner provisioning | Explicit TypeScript operator preview/apply against an exact verified ID/email and selected development/test DB. Unique partial profile index permits at most one owner. Legacy direct admin grants retired. |
+
+### Owner management amendment — 25 October 2026
+
+The domain profile is the only role/ownership authority. One shared login routes
+owner/admin to /admin and students to onboarding/dashboard. Student-only writes
+remain student-only. No cached role authorizes a request. Demoted accounts use
+their existing preferences, or onboarding when incomplete, without history erasure.
+
+Identity exposes minimal canonical auth-identity reads to Administration; no
+competing auth models or password storage. Password confirmation calls the pinned
+Better Auth server-only verifyPassword API. Store only a session-ID digest, user ID,
+confirmation time and five-minute expiry in adminReauth; never store the password
+or a duplicate session token. Check live session and proof expiry on mutations.
+Five confirmation attempts per account per 15 minutes bound failed attempts too.
+
+Role mutations recheck/lock the acting owner profile inside the domain transaction,
+then conditionally update one target profile, append audit and retain an idempotent
+operation record. Actor profile lock precedes target profile, then dependent records;
+only one owner can initiate these operations, avoiding two-owner lock inversions.
+Target stateRevision advances once per transition, invalidating pending previews.
+Current session authorization is revalidated independently through Better Auth;
+do not claim the domain transaction contains an auth-library transaction.
+
+Public auth allowlisting still excludes delete-user, role edits and password
+verification routes. No erasure/deactivation implementation currently exists;
+any future operator erasure must refuse role=owner and use separate ownership
+recovery/transfer procedures. General-user delivery remains blocked pending a
+verified sender; demo study access never bypasses verified-target promotion.
 
 ### CSRF and browser protection
 

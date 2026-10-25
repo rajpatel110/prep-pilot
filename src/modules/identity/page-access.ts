@@ -36,7 +36,8 @@ export async function studentPageActor(
     );
   }
   if (actor.destination === "/verify-email") redirect("/verify-email");
-  if (actor.profile.role === "admin") redirect("/admin");
+  if (actor.profile.role === "admin" || actor.profile.role === "owner")
+    redirect("/admin");
   if (actor.destination === "/onboarding" && !allowIncomplete)
     redirect(
       `/onboarding?returnTo=${encodeURIComponent(studentReturn(returnTo) ?? "/content")}`,

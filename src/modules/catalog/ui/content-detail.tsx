@@ -151,7 +151,16 @@ export function ContentDetail({
             </section>
           ))}
           <h3>Attachments</h3>
-          <p>No attachments. Uploads are not available in this milestone.</p>
+          {item.attachments.length ? (
+            item.attachments.map((asset) => (
+              <p key={asset.id}>
+                {asset.displayName} · {asset.status} ·{" "}
+                {asset.sizeBytes ?? "pending"} bytes
+              </p>
+            ))
+          ) : (
+            <p>No attachments.</p>
+          )}
           <p className="library-help">
             This is saved-record inspection, not the student-view preview. Text
             is displayed as plain text; links are not executed.

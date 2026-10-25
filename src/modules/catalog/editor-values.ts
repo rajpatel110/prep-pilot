@@ -18,6 +18,7 @@ export type EditorValues = Record<(typeof editorTextFields)[number], string> & {
   estimatedMinutes: string;
   tags: string;
   reviewedAt: string;
+  assetIds: string[];
   companies: {
     companyId: "cognizant" | "ltm";
     association: "verified" | "student_reported";
@@ -49,6 +50,7 @@ export function editorValues(item: AdminContentDetail | null): EditorValues {
     estimatedMinutes: String(item?.estimatedMinutes ?? 15),
     tags: item?.tags.join(", ") ?? "",
     reviewedAt: localDate(item?.reviewedAt ?? null),
+    assetIds: [...(item?.assetIds ?? [])],
     companies:
       item?.companies.map((company) => ({
         ...company,
@@ -73,7 +75,7 @@ export function editorPayload(values: EditorValues) {
       ...company,
       reviewedAt: instant(company.reviewedAt),
     })),
-    assetIds: [],
+    assetIds: values.assetIds,
     prompt: values.prompt || null,
     body: values.body || null,
     explanation: values.explanation || null,

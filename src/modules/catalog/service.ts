@@ -17,6 +17,7 @@ import { parseCatalogInput } from "./validation";
 import { adminContentDto } from "./dto";
 import { advanceCatalog, requireCatalogSetup } from "./repository";
 import { catalogMutationError } from "./errors";
+import { validateAttachments } from "@/modules/files/references";
 import {
   archiveSchema,
   lifecycleSchema,
@@ -61,6 +62,12 @@ export async function createDraft(
     return await connection.transaction(async (session) => {
       await advanceCatalog(connection, session);
       await lockAdminProfile(connection, session, actor);
+      const attachments = await validateAttachments(
+        connection,
+        values.assetIds,
+        false,
+        session,
+      );
       const document = new models.content({
         ...values,
         _id: id,
@@ -75,7 +82,7 @@ export async function createDraft(
       const content = storedContentSchema.parse({
         ...document.toObject(),
         _id: id.toString(),
-        assetIds: [],
+        assetIds: document.assetIds.map(String),
       });
       await appendAudit(connection, session, {
         actorUserId: actor.session.user.id,
@@ -87,7 +94,7 @@ export async function createDraft(
         changedFields: Object.keys(values).sort(),
         requestId,
       });
-      return adminContentDto(content);
+      return adminContentDto(content, attachments);
     }, transactionOptions);
   } catch (error) {
     throw catalogMutationError(error);
@@ -174,13 +181,24 @@ export async function editDraft(
         _id: id,
         assetIds: document.assetIds.map(String),
       });
-      if (document.status === "published") requirePublication(candidate);
+      const attachments = await validateAttachments(
+        connection,
+        candidate.assetIds,
+        document.status === "published",
+        session,
+      );
+      if (document.status === "published")
+        requirePublication({
+          ...candidate,
+          readyAssets: attachments.filter((asset) => asset.status === "ready")
+            .length,
+        });
       document.$where = { revision: expectedRevision, status: priorStatus };
       await document.save({ session });
       const content = storedContentSchema.parse({
         ...document.toObject(),
         _id: id,
-        assetIds: [],
+        assetIds: document.assetIds.map(String),
       });
       await appendAudit(connection, session, {
         actorUserId: actor.session.user.id,
@@ -192,7 +210,7 @@ export async function editDraft(
         changedFields: changedFields.sort(),
         requestId,
       });
-      return adminContentDto(content);
+      return adminContentDto(content, attachments);
     }, transactionOptions);
   } catch (error) {
     throw catalogMutationError(error);
@@ -254,7 +272,18 @@ export async function transitionContent(
         _id: id,
         assetIds: document.assetIds.map(String),
       });
-      if (action === "publish") requirePublication(candidate);
+      const attachments = await validateAttachments(
+        connection,
+        candidate.assetIds,
+        action === "publish",
+        session,
+      );
+      if (action === "publish")
+        requirePublication({
+          ...candidate,
+          readyAssets: attachments.filter((asset) => asset.status === "ready")
+            .length,
+        });
       document.status = to;
       document.revision += 1;
       document.updatedBy = actor.session.user.id;
@@ -286,8 +315,9 @@ export async function transitionContent(
         storedContentSchema.parse({
           ...document.toObject(),
           _id: id,
-          assetIds: [],
+          assetIds: document.assetIds.map(String),
         }),
+        attachments,
       );
     }, transactionOptions);
   } catch (error) {

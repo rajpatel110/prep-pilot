@@ -2,6 +2,287 @@
 
 Updated: 25 October 2026 (Asia/Kolkata).
 
+## Owner-controlled administration: verified and ready for checkpoint
+
+Approved role-model amendment: student/admin/owner. Existing uncommitted R2 work,
+catalog-review files, diagnostics and next-env changes are preserved. R2 remains
+at its prior mock-verified checkpoint; no unfinished provider work was resumed.
+No normal database migration, real account promotion, email or catalog mutation
+was performed. No dependency or external service was added.
+
+Implemented:
+
+- Shared login routing and current domain-profile authorization now recognize
+  owner. Owner inherits existing admin content/file permissions; student-only
+  practice/planning writes remain student-only. Signup/preferences reject role
+  injection. Former admins return to dashboard or onboarding from saved preferences.
+- Owner-only `/admin/administrators` and `/api/v1/admin/administrators`: bounded
+  signed-cursor list, exact-email POST lookup, immutable-ID reconciliation read,
+  password reauthentication and revision-guarded student↔admin PATCH. All writes
+  use Origin/CSRF, strict schemas, rate limits and safe request-ID errors.
+- Supported Better Auth 1.7.12 server-only verifyPassword (installed code and
+  official documentation inspected). Five-minute session-bound confirmation is
+  stored as a session-ID digest with explicit expiry; current session remains
+  required. Five attempts/account/15 minutes. No password/hash/session-token store.
+- Owner eligibility is rechecked and profile-locked inside the role transaction.
+  Target role/stateRevision, audit (including previous/new role and reason) and
+  idempotent operation receipt commit together. Same-operation replay does not
+  duplicate target transitions/audits; changed payload or stale state conflicts.
+  New admin targets require canonical verified email even in EMAIL_MODE=test.
+- Additive migration 006 validates existing profiles and adds a partial unique
+  role=owner index, role pagination, reauth TTL and operation-identity indexes.
+  Explicit `admin:owner` preview/apply selects exact existing verified ID+email,
+  database/environment and expected revision; concurrent owners are DB-rejected.
+  Legacy direct admin grants are retired, not a bypass. Owner entries cannot be
+  demoted through these paths. No erasure path is exposed; any future operator
+  erasure must refuse owner. Recovery/transfer remains separate operator work.
+- Both Stitch Manage Admins screenshots and HTML were inspected (desktop
+  920938cba3284c91bae1cccca16948a3; mobile d07f434fe6b94d8a9be3b5e153052d5a).
+  New UI uses existing workspace/tokens/native modal styles, protected owner rows,
+  stacked mobile cards, lookup eligibility, password/final confirmation, reason,
+  loading/error/conflict states and explicit ambiguous-outcome reconciliation.
+  Prototype simulators, fake personnel/counts and extra destinations were omitted.
+
+Verification evidence:
+
+- All 76 unit tests passed, including new owner input/routing and expanded direct
+  owner/admin/student/live-mode guard coverage.
+- Isolated owner integration passed: actual disposable auth sessions, concurrent
+  unique-owner provisioning and operator preview/failure, audit rollback, supported
+  password confirmation/session binding/expiry/revocation, authorization/CSRF,
+  unverified-target rejection, grant/remove/replay/stale-concurrent protection,
+  stale acting-owner eligibility, authored content/history preservation, pagination
+  and rate limits. Its first run exposed a test attempt-count expectation error;
+  that expectation was corrected, not the application rate limit. Fixtures cleaned.
+- Final expanded owner integration passed after routing profile writes through
+  Identity's public administration primitives. It additionally covered native
+  signup/preference role-injection rejection, owner content/file administration,
+  cross-origin denial, actual auth-session expiry and duplicate-owner migration
+  refusal with records preserved. Main and conflict disposable databases removed.
+- Existing catalog/migration/provisioning regression passed, updated to exercise
+  the owner operator command rather than the retired direct-admin grant. Existing
+  direct auth/permission regressions passed in test and live modes. Mocked files
+  integration passed after the inherited-admin guard change. All disposable
+  databases were removed; these source integrations started no Next servers.
+- Full formatting, full lint, direct tsc --noEmit and diff-whitespace checks passed.
+  One final formatting check identified the expanded test fixture; formatting that
+  file resolved it. No validator, rate limit or security requirement was weakened.
+- User-run owner-milestone production build passed: compilation 21.4 seconds,
+  TypeScript 11.6 seconds, 20 static pages and build traces 14.1 seconds. This is
+  user-run evidence, not an agent build or proof that EPERM is resolved. No new
+  build or EPERM investigation was attempted during the compiled checkpoint.
+- Agent-run existing compiled authentication HTTP regression passed using that
+  artifact, including session revocation, CSRF/Origin and student/admin isolation.
+  Its disposable database was removed and owned test server stopped before the
+  owner-specific compiled fixture started.
+
+Compiled owner checkpoint actually run after that user build:
+
+- Owner-specific production HTTP checks passed: shared native login and routing,
+  owner content/files inheritance, anonymous/student/admin management denial,
+  exact lookup, strict fields, CSRF, wrong/correct password confirmation,
+  unverified-target and stale-state rejection, and a supported role mutation.
+  The fixture was corrected to accept Next's documented streamed meta redirect
+  (temporary redirects use a one-second refresh), not just HTTP 307. No application
+  redirect behaviour was changed or weakened.
+- Desktop 1280×720: protected owner row, eligible/unverified lookup, native modal
+  centering, initial Cancel focus, Escape dismissal and trigger-focus restoration
+  passed. The mobile viewport was measured at 390×844, document width 375, with
+  no horizontal overflow. Password/final-confirmation dialogs fit the viewport.
+- Actual mobile UI password confirmation preserved the helper selection and
+  required a separate final grant with a reason. Grant succeeded; that helper's
+  original session entered /admin with no Manage admins link. Owner cancellation
+  preserved access, then confirmed removal succeeded. The old helper admin tab
+  reloaded to onboarding. Backend postchecks confirmed role=student, revision=2,
+  exactly one grant/removal audit each, denied content/file admin APIs using the
+  original helper session, and zero catalog records created.
+- Mobile Tab reached the reason field; Escape restored focus to the removal
+  trigger. A cached owner UI using a no-longer-authorized session displayed access
+  denial and disabled further operations. Wrong-password feedback and cleared
+  password input were also observed; the selected helper remained intact.
+- Browser clipboard/masked-field transfer was unavailable to this automation.
+  The final isolated fixture used explicitly generated test-input credentials
+  through an opt-in temporary local file, not real account credentials or browser
+  secret extraction. Nothing was printed. Earlier fixture attempts were stopped
+  before helper mutation and cleaned up; their unfinished-journey assertions are
+  not counted as application failures or successful journey evidence.
+- The final fixture exited successfully and removed its own database, temporary
+  credential file and owned server. Test tabs were closed, transient credential
+  state cleared and viewport reset. The temporary file was explicitly confirmed
+  absent. Screenshot evidence is outside the repository in the Codex documents
+  directory. No real owner/admin/student accounts or provider services were changed.
+
+The screenshot exposed run-together owner-workspace navigation links. A focused
+source correction now scopes wrapping/gaps and 44px navigation targets to this
+page only. It changes no authorization, dialog or mutation behaviour. The above
+build/journey evidence predates that final styling correction. The final user-run
+production build now passed: compilation 9.7 seconds, TypeScript 6.0 seconds,
+20 static pages and build traces 14.4 seconds. The agent reused that artifact
+without rebuilding for a narrow layout-only disposable fixture checkpoint.
+Desktop measured 1280×720 and mobile measured 390×844 (document width 375).
+Navigation targets measured 44px high, with 16px horizontal gaps; the current-page
+label wrapped to a second row on mobile without horizontal overflow. Screenshots
+and Tab focus on Content library confirmed readable spacing and visible focus
+at both sizes. Prior functional evidence above is reused, not rerun.
+The layout-only fixture confirmed unchanged helper role/revision, no helper role
+audits and no catalog records; its disposable database and owned server were
+removed/stopped. Viewport was reset and the test tab closed. No real account,
+catalog or provider changes occurred. EPERM diagnosis remains paused.
+
+After the scoped navigation correction, focused lint, direct TypeScript checking,
+formatting, stylesheet syntax parsing and diff-whitespace checks passed. These
+source checks complement the now-completed user build and agent render checks.
+
+Owner provisioning, migration commands and the manual journey are documented in
+docs/admin/OPERATIONS.md; docs/admin/DESIGN.md records the inspected reference scope.
+General-user delivery remains unavailable pending a verified sending domain, so
+real helper verification/onboarding remains externally blocked. No commit/push/deploy.
+
+## R2 attachments: implemented and mock-verified; real-provider acceptance pending
+
+Files remain disabled by default. No R2 subscription, billing, bucket, credentials,
+normal database migration or real catalog/account mutation was performed. Existing
+catalog-review files, diagnostics and generated next-env changes are preserved.
+Missing enabled configuration fails closed; runtime has no mock mode or fallback.
+
+Implemented:
+
+- Server-only validated FILES_ENABLED/R2 settings and an injectable storage adapter
+  using pinned AWS SDK client/presigner 3.1156.0. Browser PUT signs Content-Type
+  only; real keys never reach clients. Presigning is local, not a provider test.
+- Strict FileAsset/storageQuota schemas and indexes; explicit additive migration
+  005 preserves records and quota singleton state, detects invalid existing data
+  and conflicting indexes, and never synchronizes indexes on application startup.
+- Guarded admin grant/status/list/finalize/preview/cleanup and student download
+  routes under /api/v1. Mutations require session-bound CSRF and Origin, durable
+  limits, explicit DTOs, safe errors and request IDs. Metadata reads remain
+  available when files are disabled. File capabilities also respect study gates.
+- Five-minute PUT, fifteen-minute finalization deadline, 60-second GET, 10 MiB
+  maximum, five attachments, full-size reservations, 100 ready/reserved objects
+  and 500 MiB ready/reserved bytes. Finalization uses finite leases, bounded
+  reads/signature checks/SHA-256, then writes the inspected bytes to an immutable
+  server-only candidate key before lease-guarded ready/quota/audit commit.
+- Provider calls stay outside retryable database callbacks. Late finalizers
+  cannot overwrite current metadata or convert quota twice. Invalid files retain
+  rejected metadata and release reservations once; ambiguous failures preserve
+  recoverable leases/candidate prefixes. Cleanup guards references under catalog
+  revisions, waits out active/abandoned work, deletes provider objects and then
+  atomically releases usage, marks deleted and audits. Batch partial outcomes and
+  retry eligibility are explicit. No file-metadata TTL deletion or hard content
+  deletion was added.
+- Catalog attachment arrays, complete DTO metadata, draft/published edits,
+  attachment-only resource publication and preview/download controls are connected.
+  Publication requires ready attachments; pending references may exist in drafts.
+  Catalog coverage tooling now checks supplied ready file metadata rather than
+  falsely rejecting every file-backed resource or assuming unknown assets ready.
+- Admin file management and editor controls cover selection/detachment, transfer,
+  finalization, status reconciliation, explicit retry, errors, cleanup, disabled
+  and ready states. Student detail uses authorized download-grant controls; signed
+  links stay in memory and expire. Opening a file records no study outcome.
+- Read-only files:accounting compares logical counters with retained asset records;
+  it never resets counters or repairs data. Physical R2 staging/orphan usage is
+  separate from logical quota; referenced assets are skipped by cleanup.
+
+Verification actually run:
+
+- Focused file/schema/signature/bounded-read and offline SDK-signing tests passed.
+  Offline signing confirmed Content-Type + host are the only PUT signed headers,
+  with 300/60-second expiries. No actual R2 operation occurred.
+- Mocked-storage integration passed on generated pp_files_<12 hex> databases:
+  anonymous/student/CSRF/Origin/unknown-field/disabled denials; real disposable
+  authenticated actors; grant → mock PUT → finalize → attach → publish → student
+  grant; draft/unrelated/archived download denial; admin preview and safe DTOs;
+  invalid/oversized bytes, missing uploads/expiry; idempotent finalization;
+  concurrent byte quota and object-count limits; provider write/delete failures;
+  audit/grant/ready-conversion rollback; cleanup database rollback after external
+  deletion and exactly-once retry accounting; stale leases/finalizers, candidate
+  orphan recovery, staging overwrite protection, attach-versus-delete races and
+  durable rate limiting. Migration reruns preserved singleton state. Disposable
+  databases were removed after successful runs and earlier failed iterations.
+- Tests exposed and corrected a stale-finalizer classification issue: lease
+  ownership is checked before quota conversion, so an old worker reports
+  UPLOAD_IN_PROGRESS rather than a false accounting failure. The stronger race
+  and cleanup rollback cases passed after correction.
+- Existing direct authentication/permission regression passed in test and live
+  modes on disposable databases, which were removed. No production server/build
+  was used by those regressions. Existing owner-inbox evidence is preserved.
+- Attachment UI static-render assertions passed for disabled capability states,
+  accepted formats, recovery/status/selection controls and absence of preissued
+  URLs. These are not interactive browser or mobile verification.
+- Direct tsc --noEmit (without Next type generation), full lint and full formatting
+  checks passed after the focused corrections. Final unit/diff outcomes are
+  recorded in the follow-up verification note when complete.
+
+Final source checkpoint: all 74 unit tests passed. Eight focused adaptation/coverage
+tests passed again after a type-only fixture correction; coverage now includes
+ready attachment-only resources and rejects missing file evidence. The final
+mocked files integration passed after the reference-guard refinement, and its
+disposable database was removed. Cleanup locks catalog commitSerial for reference
+serialization without advancing the semantic catalog revision for skipped or
+unreferenced-file cleanup; content mutations still advance content/catalog
+revisions through their existing transactions. The final tsc --noEmit, full lint,
+full formatting, attachment render assertions and diff-whitespace checks passed.
+No test server was started by these source-level integrations. A final rerun
+initially exited during configuration before fixture creation; after this turn's
+network permission was granted, the same regression completed successfully.
+SDK installation reported zero audit vulnerabilities; npm's installer used the
+system Node 22 and emitted the project's Node-24 engine warning. Verification
+commands explicitly used the bundled Node 24.22.1 executable; Node/npm were not
+upgraded. No compilation or EPERM diagnostic was attempted.
+
+Compiled checkpoint (25 October 2026):
+
+- User-run production build passed: webpack compilation 36.6 seconds, TypeScript
+  11.5 seconds, 17 static pages and build traces 15.5 seconds. This is user-run
+  evidence, not an agent-run build or proof that EPERM is resolved. The existing
+  artifact was reused without rebuilding; EPERM investigation stayed paused.
+- Agent-run production authentication HTTP regression passed: signup/duplicates,
+  input/Origin checks, persistent and revoked sessions, student/admin isolation,
+  profile concurrency, CSRF, disabled email and durable rate limits. Its disposable
+  database was removed and owned production server stopped before browser tests.
+- Agent-run compiled browser fixture used a separate pp_files_ui_<12 hex>
+  database, additive migrations, generated accounts and a test-only SDK preload.
+  All SDK operations were loopback/in-memory mocks, with no real-provider fallback.
+  Browser upload → finalize → ready metadata → draft attachment selection/save →
+  explicit publish confirmation → published student detail → authorized download
+  grant passed. An admin preview grant also rendered successfully. Published slug
+  immutability and disabled cleanup on the attached editor item were visible.
+- Desktop file manager/editor/student detail were exercised at 1280×720. Mobile
+  file manager and student detail were measured at actual 390×844: document widths
+  390 and 375 respectively, without horizontal overflow. Ready metadata, preview
+  and short-lived download controls remained readable. Tab moved between file
+  actions and from the student request button to the granted link. Publication
+  confirmation initially focused Cancel. These are focused checks, not exhaustive
+  mobile/a11y certification or real PDF viewer/provider-transfer verification.
+- The tiny original PDF fixture tests signature acceptance, not full PDF document
+  validity. Onboarding is not part of this regression: disposable student
+  preferences were prepared directly in the isolated fixture after a native date
+  input automation limitation. No normal account/profile/catalog was modified.
+- Fixture shutdown reported one ready asset and one disposable content record;
+  the whole disposable database was removed, the owned app/mock servers stopped,
+  test tabs closed and viewport override reset. Screenshot evidence is retained
+  outside the repository in the local Codex documents directory.
+- The reusable browser fixture now prepares schema-validated student preferences
+  automatically. Its subsequent --smoke startup/account-preparation/cleanup check
+  passed on another disposable database. Direct type checking, focused fixture
+  lint, formatting and diff-whitespace checks passed after these test/docs-only
+  additions; no application source changed and no new build was needed.
+
+Remaining verification/release gates:
+
+- Real R2 privacy, bucket-scoped permissions, CORS, signed transfers, lifecycle
+  expiration, conditional writes and provider cleanup remain unverified. Follow the single checklist
+  in docs/files/OPERATIONS.md only after explicit external-setup approval. Files
+  remain disabled by default. Mock success does not verify billing protection.
+- Format checks are not malware scanning. Quotas/rate limits are application
+  controls, not a provider spending cap. Staging URL reuse, copies, orphaned
+  candidates and other account usage may incur charges. No automated guarded
+  accounting repair or background worker was added.
+
+The single external setup/recovery/acceptance checklist is docs/files/OPERATIONS.md;
+README links there instead of duplicating setup. .env.example contains placeholders
+only. No commit, push, deployment or external service activation was performed.
+
 ## Email verification/recovery: implementation and verification checkpoint
 
 Owner-inbox manual checkpoint (25 October 2026): the user ran the existing
@@ -250,6 +531,96 @@ Important paths: `src/modules/identity/email-http.ts`, `email-schema.ts`,
 `scripts/migrations/004-email.ts`; new `/reset-password` route; shared AuthFrame;
 `tests/email*`; `docs/email/OPERATIONS.md` and `DESIGN.md`. No new dependencies.
 No commit, push, deployment, real-account promotion or catalog publication performed.
+
+## Latest checkpoint: first-batch editorial review prepared
+
+`docs/content/FIRST_BATCH_APPROVAL.md` contains all 29 selected items' full
+question/resource content, explanations, classifications, timing assessments,
+source/provenance and owner decisions, plus a practical single-draft walkthrough.
+This is agent editorial preparation, not human sign-off: all companies remain
+empty and every reviewedAt remains null. No records were created or published.
+
+The prior blanket duration recommendation is withdrawn. Fourteen items are
+candidates for owner review; **15 are timing-held** (nine aptitude micro-drills,
+five short CS questions and the four-element sorting trace). Their nominal JSON
+time is explicitly rejected for publication. They must be substantively reworked
+under later editorial approval or retained outside scheduled content, not padded
+to the existing 15-minute minimum. No schema, planner or publication-rule change
+was made to accommodate them. The candidate subset omits all aptitude topics and
+sorting, so full prerequisite/topic coverage of the 29 proposals is not an approved
+publication-coverage claim.
+
+Reduced eight first-batch coding estimates from 30 to 15–25 minutes based on their
+actual requested scope; these remain provisional, not measured durations. Corrected
+frequency-token bounds/cost assumptions, explicit tree child structure, BFS
+traversal-versus-sort complexity, pronoun tense-preserving rewrites and thread-stack
+isolation wording. Removed prescribed five-minute padding from four resource
+activities. Kept the JSON and subject companions aligned. The 29 now total 510
+nominal minutes, including held items; the 14 candidates total 270 proposed minutes.
+The full 50 total 1005 nominal minutes. Earlier count/time snapshots below are
+historical and do not override the current editorial holds.
+
+Reopened all three batch links: LeetCode Binary Search, PostgreSQL Transactions
+and MDN HTTP overview. Relevant page content was accessible; judge submission,
+provider accounts and human rights/content approval were not verified. Binary
+Search's nonempty-input constraint differs explicitly from PrepPilot's empty-input
+extension. No company provenance was inferred.
+
+The existing content-only validator was rerun because durations/learning text and
+companion files changed: strict schemas, intentional missing-review publication
+gate, 38 example assertions and twelve pure planner scenarios passed. Updated
+the hypothetical capacity tables rather than retaining the old 585-minute claim.
+Focused review-sheet consistency checks passed for all 29 titles/prompts/answers
+and sources; targeted formatting, validator lint and diff-whitespace checks passed.
+No full application suites, Next compilation, database access, migrations, imports,
+account promotions, service changes or EPERM diagnosis were performed.
+
+## Latest checkpoint: review-only real-content preparation
+
+The user reports Progress/Settings commit `96a6a2e` pushed. This new phase prepares
+content only; no seed/import/publish/database operation, dependency installation,
+external service change, commit, push or deployment was performed. EPERM
+investigation remains paused. Existing generated next-env changes and diagnostic
+scripts were preserved.
+
+`docs/content/README.md` links the strict JSON companion, three subject review
+packs, proposed first-batch slugs, coverage/validation report, solution ledger and
+read-only TypeScript validator. The PRD's explicit distribution is preserved:
+50 items = 20 DSA + 15 aptitude + 15 CS, across all 17 canonical topics. Topic
+allocation is documented editorial choice; no planning mappings, rules, thresholds
+or prerequisite edges changed. The pack has 38 easy / 12 medium, 41 questions /
+9 resources and 1080 proposed study minutes. All company/file arrays are empty;
+all review dates are null. Nothing is claimed as human-reviewed or company-specific.
+
+Agent opened/inspected six real external reference/practice pages and documented
+their topic relevance, canonical redirect, attribution and constraints in the pack.
+Questions use original PrepPilot wording/examples/solutions; references are linked
+and summarized, not copied question banks. A 50-row solution ledger separates
+agent reasoning from the validator's 38 numeric/algorithm assertions and future
+human approval. An underdetermined assignment explicitly asks whether it is unique
+and correctly lists its two schedules rather than inventing a unique answer.
+
+Agent-run local validation: 50/50 pass current strict draft and synthetic stored
+schemas, companion consistency and request limits. All 50 intentionally fail
+publication only on reviewedAt; supplying a historical valid date to in-memory
+clones removes that structural blocker without editing the proposals. No real
+publication or review event is implied. Twelve pure-planner scenarios (7/30 days,
+30/60/240 daily minutes, skill 1/3) pass deterministic input-order checks, dates,
+capacity, no-repeat and prerequisite assertions; company selections share the
+same foundation eligibility. Removing arrays blocks all four sorting/searching
+items; marking all material unavailable yields zero tasks. The recommended first
+29 easy items cover all topics and fit 585 minutes in a hypothetical 7-day,
+90-minute/day plan. The report lists actual shortages, not filled calendars.
+Repository format check, lint and direct `tsc --noEmit` passed after adding the
+review pack/validator; `git diff --check` passed. Direct TypeScript reused existing
+Next route types and did not run type generation or compilation.
+
+Human correctness/wording/rights review, realistic duration/difficulty calibration,
+Cognizant/LTM source material and broader DSA external-practice links remain
+editorial decisions. This is an 18-hour starter, not a full long/high-budget plan
+or comprehensive hiring syllabus. Enter genuinely reviewed items manually through
+the existing admin workflow later; this phase does not authorize those writes.
+No compilation or unrelated regression suite was repeated for content files.
 
 ## Latest checkpoint: compiled dialog verification complete
 

@@ -63,7 +63,7 @@ test("strict draft input permits incomplete bodies and defaults but rejects priv
     { source: "" },
     { source: "   " },
     { attribution: "x".repeat(2001) },
-    { assetIds: ["507f1f77bcf86cd799439011"] },
+    { assetIds: Array(6).fill("507f1f77bcf86cd799439011") },
     { assetIds: ["invalid"] },
     { reviewedAt: new Date(Date.now() + 60000).toISOString() },
     { reviewedAt: "2026-02-30T00:00:00Z" },
@@ -115,7 +115,7 @@ test("company associations have strict provenance, unique supported IDs and real
     );
 });
 
-test("Mongoose enforces complete document validation, revisions, attachment deferral and strict collections without connecting", async () => {
+test("Mongoose enforces complete document validation, revisions, attachment limits and strict collections without connecting", async () => {
   const connection = mongoose.createConnection();
   const models = catalogModels(connection);
   const input = {
@@ -135,7 +135,9 @@ test("Mongoose enforces complete document validation, revisions, attachment defe
     { revision: 0 },
     { revision: 1.5 },
     { revision: Number.MAX_SAFE_INTEGER + 1 },
-    { assetIds: [new mongoose.Types.ObjectId()] },
+    {
+      assetIds: Array.from({ length: 6 }, () => new mongoose.Types.ObjectId()),
+    },
     { topic: "unknown" },
     { prompt: "<script>" },
     { tags: ["duplicate", "duplicate"] },

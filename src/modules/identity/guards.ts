@@ -45,9 +45,15 @@ export function createAccessGuards<
   }
   async function requireAdmin(headers: Headers) {
     const actor = await requireStudyActor(headers);
-    if (actor.profile.role !== "admin")
+    if (actor.profile.role !== "admin" && actor.profile.role !== "owner")
       throw new HttpError(403, "FORBIDDEN", "Administrator access required.");
     return actor;
   }
-  return { requireActor, requireStudyActor, requireAdmin };
+  async function requireOwner(headers: Headers) {
+    const actor = await requireStudyActor(headers);
+    if (actor.profile.role !== "owner")
+      throw new HttpError(403, "FORBIDDEN", "Owner access required.");
+    return actor;
+  }
+  return { requireActor, requireStudyActor, requireAdmin, requireOwner };
 }

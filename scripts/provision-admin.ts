@@ -30,11 +30,11 @@ async function main() {
     console.log(
       result === "unchanged"
         ? "Existing administrator unchanged; no duplicate audit event."
-        : "Existing profile promoted and audited. No public role mutation is exposed.",
+        : "Use the owner-controlled administration workflow.",
     );
   } catch {
     console.error(
-      "Admin provisioning failed. Require an exact existing user ID, MONGODB_URI, EMAIL_MODE, --database <name> and --environment development|test. An active profile is required; live mode requires verification. No partial promotion is committed.",
+      "Direct admin grants are retired. Provision an owner with admin:owner, then use Manage admins. Existing owner/admin roles are never overwritten. No changes committed.",
     );
     process.exitCode = 1;
   } finally {

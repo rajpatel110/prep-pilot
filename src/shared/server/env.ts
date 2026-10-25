@@ -15,6 +15,20 @@ const schema = z.object({
   BETTER_AUTH_SECRET: z.string().min(32).optional(),
   CSRF_SECRET: z.string().min(32).optional(),
   RATE_LIMIT_SECRET: z.string().min(32).optional(),
+  FILES_ENABLED: z
+    .enum(["true", "false"])
+    .default("false")
+    .transform((value) => value === "true"),
+  R2_ACCOUNT_ID: z
+    .string()
+    .regex(/^[a-f0-9]{32}$/)
+    .optional(),
+  R2_BUCKET: z
+    .string()
+    .regex(/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/)
+    .optional(),
+  R2_ACCESS_KEY_ID: z.string().min(1).optional(),
+  R2_SECRET_ACCESS_KEY: z.string().min(1).optional(),
   EMAIL_MODE: z.enum(["test", "live"]).default("test"),
   EMAIL_DELIVERY_MODE: z
     .enum(["disabled", "owner_test", "live"])
@@ -50,6 +64,11 @@ export function getServerEnv(
 ) {
   const result = schema.safeParse({
     APP_URL: source.APP_URL,
+    FILES_ENABLED: source.FILES_ENABLED,
+    R2_ACCOUNT_ID: source.R2_ACCOUNT_ID || undefined,
+    R2_BUCKET: source.R2_BUCKET || undefined,
+    R2_ACCESS_KEY_ID: source.R2_ACCESS_KEY_ID || undefined,
+    R2_SECRET_ACCESS_KEY: source.R2_SECRET_ACCESS_KEY || undefined,
     AUTH_ENABLED: source.AUTH_ENABLED,
     MONGODB_URI: source.MONGODB_URI || undefined,
     MONGODB_DB_NAME: source.MONGODB_DB_NAME || undefined,
@@ -82,6 +101,17 @@ export function getServerEnv(
     );
   }
   const config = result.data;
+  if (
+    config.FILES_ENABLED &&
+    (!config.AUTH_ENABLED ||
+      !config.R2_ACCOUNT_ID ||
+      !config.R2_BUCKET ||
+      !config.R2_ACCESS_KEY_ID ||
+      !config.R2_SECRET_ACCESS_KEY)
+  )
+    throw new Error(
+      "Files require authentication and complete server-only R2 configuration.",
+    );
   if (config.EMAIL_DELIVERY_MODE !== "disabled") {
     const sender = config.RESEND_FROM_EMAIL ?? "";
     const address = sender.includes("<")

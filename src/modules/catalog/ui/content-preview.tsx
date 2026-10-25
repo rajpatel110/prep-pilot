@@ -1,4 +1,6 @@
 import { SafeMarkdown, safePreviewUrl } from "./safe-markdown";
+import type { FileDto } from "@/modules/files/schemas";
+import { AttachmentLink } from "@/modules/files/ui/attachments";
 
 export type PreviewContent = {
   title: string;
@@ -15,6 +17,7 @@ export type PreviewContent = {
   externalUrl?: string | null;
   source: string;
   attribution: string;
+  attachments?: FileDto[];
   companies: {
     companyId: string;
     association: string;
@@ -26,9 +29,11 @@ export type PreviewContent = {
 export function ContentPreview({
   content,
   local = false,
+  filesEnabled = false,
 }: {
   content: PreviewContent;
   local?: boolean;
+  filesEnabled?: boolean;
 }) {
   const url = safePreviewUrl(content.externalUrl ?? "");
   return (
@@ -86,6 +91,21 @@ export function ContentPreview({
         </details>
       )}
       <h3>Source and attribution</h3>
+      {!!content.attachments?.length && (
+        <section>
+          <h3>Saved attachments</h3>
+          {content.attachments.map((asset) => (
+            <div key={asset.id}>
+              <p>
+                {asset.displayName} · {asset.status}
+              </p>
+              {asset.status === "ready" && (
+                <AttachmentLink asset={asset} admin enabled={filesEnabled} />
+              )}
+            </div>
+          ))}
+        </section>
+      )}
       <p>{content.source || "No source yet"}</p>
       <p>{content.attribution || "No attribution notes"}</p>
       <h3>Company provenance</h3>

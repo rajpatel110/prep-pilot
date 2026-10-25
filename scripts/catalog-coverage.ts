@@ -33,12 +33,19 @@ async function main() {
             throw new Error(
               "Coverage scope exceeds 2000 records; no partial report produced.",
             );
+          const assets = await database
+            .collection("fileAssets")
+            .find({ status: "ready" }, { session, maxTimeMS: 10000 })
+            .limit(101)
+            .toArray();
+          if (assets.length > 100)
+            throw new Error("File coverage exceeds the application limit.");
           return {
             database: target.database,
             environment: target.environment,
             asOf: new Date().toISOString(),
             catalogRevision: state?.revision ?? null,
-            ...assessCoverage(records),
+            ...assessCoverage(records, assets),
           };
         },
         { readConcern: { level: "snapshot" } },

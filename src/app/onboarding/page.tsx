@@ -14,7 +14,7 @@ export default async function OnboardingPage({
   const params = await searchParams;
   const returnTo = studentReturn(params.returnTo) ?? "/dashboard";
   const actor = await studentPageActor(returnTo, true);
-  if (actor.destination === "/verify-email" || actor.profile.role === "admin")
+  if (actor.destination === "/verify-email" || actor.profile.role !== "student")
     redirect(actor.destination);
   if (actor.profile.preferences != null && params.edit !== "1")
     redirect(returnTo);

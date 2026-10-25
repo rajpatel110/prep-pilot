@@ -82,10 +82,6 @@ const assets = z
   .refine(
     (values) => new Set(values).size === values.length,
     "Attachment IDs must be unique.",
-  )
-  .refine(
-    (values) => values.length === 0,
-    "Attachments are not available in this milestone.",
   );
 const editable = {
   slug: boundedText(120).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),

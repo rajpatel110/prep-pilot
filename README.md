@@ -91,15 +91,15 @@ Application authenticated mutations use session-bound HMAC CSRF tokens from
 `/api/v1/security/csrf`, in addition to exact Origin and JSON checks. Native auth
 mutations retain Better Auth origin checks plus the route wrapper's checks.
 
-For a restricted admin, first register and sign in once, then obtain that exact
-existing auth user ID from your own Atlas console or authenticated `/api/v1/me`.
-Run `npm run admin:provision -- <user-id> --database <development-db-name> --environment development`
-locally. `EMAIL_MODE` must explicitly be `test` or `live`. This updates an active profile
-and writes an audit event transactionally. Live mode also requires verified email.
-Already-admin profiles remain unchanged without duplicate audit events. A failed
-audit insert rolls back the promotion and revision. There is no public promotion
-endpoint or role selector. Never exercise this command against a real account as
-part of a test; the integration suite uses disposable identities only.
+Owner-controlled administration replaces direct operator admin grants. Register,
+sign in and verify the intended owner's existing account first. Follow
+[owner setup and management](docs/admin/OPERATIONS.md) for exact Git Bash commands:
+explicit development/test database migration 006, read-only account preview, then
+revision-guarded owner provisioning. Nothing promotes the first signup or a name.
+Only the owner may grant/remove admin access through `/admin/administrators`.
+New admin grants require target verification even in demo mode. The legacy
+`admin:provision` command cannot grant access or overwrite an owner; existing
+admin/owner records are read-only no-ops. Tests use disposable accounts only.
 
 `npm test` exercises routing, strict content validation, direct permission guards,
 CSRF classification and safe error envelopes without a database. The React-server
@@ -127,10 +127,11 @@ not the complete scheduling template or prerequisite graph. Draft text may be
 incomplete. Markdown validation conservatively rejects HTML and unsafe link schemes;
 a future rendering/preview slice still needs a sanitised Markdown renderer.
 
-Attachment compatibility is retained through `assetIds` (domain ObjectIds), but
-**every nonempty attachment array is rejected** at the input and document layers.
-No asset is assumed ready and no R2 capability is enabled. Lifecycle transitions and
-publication requirements belong to later service milestones. Step 2 implements atomic
+The original foundation rejected all nonempty `assetIds`; the attachment milestone
+now permits up to five validated references and publishes only ready assets.
+Files remain disabled by default; see [attachment operations](docs/files/OPERATIONS.md).
+Lifecycle transitions and publication checks now use the existing service guards.
+Step 2 introduced atomic
 draft revisions and content/audit orchestration; raw query updates are not an approved write API.
 Mutation services validate complete candidate documents and use revision guards;
 Mongoose update validators alone do not validate `$inc` or cross-field invariants.
@@ -220,8 +221,8 @@ Live verification and password recovery remain **incomplete** in every configura
   singleton state, create indexes or run migrations automatically. Use the existing
   explicitly targeted setup command. No migration beyond Step 1's version 001 is
   added; this task does not apply setup to a long-lived database.
-- Only empty assetIds are accepted; responses contain empty assetIds/attachments
-  and attachmentCount=0. No file metadata or ready-state assets are invented.
+- That earlier draft-only slice accepted empty assetIds. Current file-aware DTOs
+  return actual metadata/counts; no provider readiness is fabricated.
 
 ```sh
 npm run test:admin-content
@@ -245,7 +246,7 @@ There is no undocumented slug filter or automatic creation retry.
 ## Guarded Content Library (Step 3)
 
 `/admin/content` is a server-guarded, read-only admin library. Open Administration
-after signing in with an operator-provisioned admin, then select **Open content
+after signing in as the owner or an owner-granted admin, then select **Open content
 library**. No account is automatically promoted. Existing database setup and
 authentication are required; no new service or credential is needed.
 
@@ -338,9 +339,9 @@ and that snapshot are returned, never the draft/archived body. The owning practi
 and planning modules provide read-only history lookup; this does not implement
 submissions, scheduling or the full student catalog UI.
 
-Attachments remain empty and nonempty assetIds are rejected. R2, live verification,
-password recovery, the full seed collection and study workflows are still deferred.
-No new external account, email or storage credential is required.
+The earlier empty-attachment restriction is superseded by the attachment milestone.
+Real R2 activation/acceptance and reviewed seed content remain external gates;
+see attachment operations and the email section for current capability limits.
 
 The existing admin integration suite now also exercises the full lifecycle,
 publication-valid edits, history isolation, revision races and lifecycle audit
@@ -478,6 +479,32 @@ isolated interactive fixture on port 3104 (same public test login as the student
 suite), or omit both flags to verify a successful current production artifact.
 Run sequentially, never alongside another project server. Include
 `npm.cmd run test:planning` after the existing production checks below.
+
+## Private attachment operations
+
+The R2 attachment workflow has server-side models/services, guarded routes and
+connected admin authoring/download UI. Files remain **disabled by default**;
+provider credentials are not configured or activated by implementation tests.
+See [the single attachment operations/setup checklist](docs/files/OPERATIONS.md)
+for exact environment names, private Standard bucket settings, scoped credentials,
+browser CORS, `staging/` expiration, quota limitations and real-provider acceptance.
+`npm.cmd run test:files` uses explicit mocked storage and a disposable database;
+it does not verify real bucket privacy, credentials, CORS or signed transfers.
+`npm.cmd run files:accounting -- --database NAME --environment test` is read-only.
+Migration 005 is explicit and additive; no normal database was migrated by tests.
+
+After a successful production build, the optional compiled-browser fixture runs
+with `node --env-file=.env.local --import tsx tests/files-browser-fixture.ts`.
+Use the repository's Node 24 executable. It creates only a generated
+`pp_files_ui_<12 hex>` database and serves the app on `127.0.0.1:3134`, mock
+transfers on port 3135 and disposable session links on port 3136. It requires these
+ports to be free and must not run alongside another Next dev/build/test command.
+The test-only preload replaces the external SDK client with loopback/in-memory
+storage; it is never imported by application code. Mock signatures/transfers do
+not validate R2 permissions, CORS, expiry enforcement or provider behaviour.
+Finish with a local POST to `http://127.0.0.1:3136/finish`; otherwise the fixture
+automatically stops and drops only its database after 15 minutes. `--smoke` checks
+fixture startup/account preparation and immediate cleanup without browser work.
 
 ## Repeatable local build and integration sequence
 
@@ -711,7 +738,8 @@ No `NEXT_PUBLIC_` variable is needed. Never add secrets to public configuration,
 committed environment files, logs or browser bundles.
 
 Database/auth configuration fails closed when enabled without its required settings.
-R2 integration remains future work. Resend transport is implemented, but email
+R2 application integration is implemented with mocked-storage checks; real-provider
+activation and acceptance remain outstanding. Resend transport is implemented, but email
 needs a verified sending domain for general recipients; R2 activation
 and service release gates remain outstanding. Free-tier availability is not a
 guarantee of zero billing.

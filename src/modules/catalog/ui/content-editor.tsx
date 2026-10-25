@@ -17,11 +17,14 @@ import {
 import { ContentPreview } from "./content-preview";
 import { LifecycleControls } from "./lifecycle-controls";
 import { catalogRequest, CatalogRequestError } from "./catalog-client";
+import { FileManager } from "@/modules/files/ui/file-manager";
 
 export function ContentEditor({
   initial,
+  filesEnabled = false,
 }: {
   initial: AdminContentDetail | null;
+  filesEnabled?: boolean;
 }) {
   const router = useRouter();
   const [saved, setSaved] = useState(initial);
@@ -243,8 +246,8 @@ export function ContentEditor({
       </nav>
       <p className="library-notice">
         {saved ? `${saved.status} · revision ${saved.revision}` : "New draft"} ·{" "}
-        {dirty ? "Unsaved changes" : "No unsaved changes"}. Text and HTTPS links
-        only; attachments are unavailable.
+        {dirty ? "Unsaved changes" : "No unsaved changes"}. Attachments are
+        saved with content changes; only ready files can be published.
         {saved?.status === "published"
           ? " Saved edits become visible to students immediately and must remain publication-ready."
           : ""}
@@ -387,15 +390,26 @@ export function ContentEditor({
       {preview ? (
         <ContentPreview
           local
+          filesEnabled={filesEnabled}
           content={{
             ...values,
             estimatedMinutes: Number(values.estimatedMinutes),
             status: saved?.status ?? "draft",
             revision: saved?.revision,
+            attachments:
+              saved?.attachments.filter((asset) =>
+                values.assetIds.includes(asset.id),
+              ) ?? [],
           }}
         />
       ) : (
         <form onSubmit={save}>
+          <FileManager
+            enabled={filesEnabled}
+            selected={values.assetIds}
+            onSelect={(ids) => change("assetIds", ids)}
+            disabled={busy || blocked || archived}
+          />
           <fieldset disabled={busy || archived}>
             <legend>Content metadata</legend>
             <div className="editor-grid">

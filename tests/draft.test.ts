@@ -33,7 +33,7 @@ test("draft patches require revisions without injecting create defaults or accep
     { expectedRevision: "1" },
     { expectedRevision: 1, title: null },
     { expectedRevision: 1, tags: null },
-    { expectedRevision: 1, assetIds: ["507f1f77bcf86cd799439011"] },
+    { expectedRevision: 1, assetIds: ["invalid"] },
   ])
     assert.equal(draftPatchSchema.safeParse(invalid).success, false);
   for (const field of [

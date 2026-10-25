@@ -4,6 +4,8 @@ import { studentPageActor } from "@/modules/identity/page-access";
 import { getStudentContent } from "@/modules/catalog/reads";
 import { studyReturn } from "@/modules/catalog/student-navigation";
 import { OutcomeForm } from "@/modules/practice/ui/outcome-form";
+import { AttachmentLink } from "@/modules/files/ui/attachments";
+import { serverConfig } from "@/shared/server/config";
 import {
   SafeMarkdown,
   safePreviewUrl,
@@ -207,6 +209,19 @@ export default async function ContentDetailPage({
                 (new tab)
               </a>
               <p className="student-external-url">Destination: {external}</p>
+            </section>
+          )}
+          {!!content.attachments.length && (
+            <section>
+              <h2>Attachments</h2>
+              {content.attachments.map((asset) => (
+                <AttachmentLink
+                  key={asset.id}
+                  asset={asset}
+                  contentId={id}
+                  enabled={serverConfig.FILES_ENABLED}
+                />
+              ))}
             </section>
           )}
           {content.explanation && (

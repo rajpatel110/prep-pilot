@@ -13,11 +13,20 @@ export default async function AdminPage() {
       <p>
         Administrator access confirmed. Inspect saved drafts, published material
         and archived content in the library. Create, edit, preview and publish
-        reviewed material; file operations remain unavailable.
+        reviewed material. File transfers remain disabled unless explicitly
+        configured.
       </p>
       <Link className="button button-primary" href="/admin/content">
         Open content library
       </Link>
+      <Link className="button" href="/admin/files">
+        Manage attachments
+      </Link>
+      {actor.profile.role === "owner" && (
+        <Link className="button" href="/admin/administrators">
+          Manage admins
+        </Link>
+      )}
     </Workspace>
   );
 }

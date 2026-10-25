@@ -1,6 +1,116 @@
 @import "tailwindcss";
 @import "../shared/ui/dialog.css";
 
+.owner-workspace-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+}
+.owner-workspace-nav a,
+.owner-workspace-nav [aria-current="page"] {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.5rem;
+}
+
+.admin-management {
+  display: grid;
+  gap: 2rem;
+  overflow-wrap: anywhere;
+}
+.admin-management section {
+  display: grid;
+  gap: 1rem;
+}
+.admin-account-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+}
+.admin-account-list li,
+.admin-lookup-result {
+  padding: 1.25rem;
+  border: 1px solid var(--color-border, #dce3db);
+  border-radius: 1rem;
+  background: #fff;
+}
+.admin-account-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.admin-account-summary {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+.admin-email {
+  overflow-wrap: anywhere;
+}
+.admin-owner-badge,
+.admin-feedback {
+  background: #eaf0e8;
+  color: #245443;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+.admin-lookup {
+  display: flex;
+  align-items: end;
+  gap: 1rem;
+}
+.admin-lookup label {
+  flex: 1;
+}
+.admin-management label {
+  display: grid;
+  gap: 0.5rem;
+}
+.admin-management input,
+.admin-management textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid #dce3db;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #202823;
+}
+.admin-management button {
+  min-height: 44px;
+  white-space: normal;
+}
+.admin-management dialog form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+@media (max-width: 767px) {
+  .admin-account-list li,
+  .admin-lookup {
+    display: grid;
+    align-items: stretch;
+  }
+  .admin-management .button {
+    width: 100%;
+  }
+}
+.attachment-item,
+.content-editor li {
+  overflow-wrap: anywhere;
+}
+.attachment-item .button,
+input[type="file"] {
+  max-width: 100%;
+  white-space: normal;
+}
+
 .auth-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -22,7 +22,7 @@ export async function lockAdminProfile(
       "ACCOUNT_UNAVAILABLE",
       "This account is unavailable.",
     );
-  if (profile.role !== "admin")
+  if (profile.role !== "admin" && profile.role !== "owner")
     throw new HttpError(403, "FORBIDDEN", "Administrator access required.");
   if (
     !Number.isSafeInteger(profile.stateRevision) ||
@@ -38,7 +38,7 @@ export async function lockAdminProfile(
     {
       _id: profile._id,
       lifecycle: "active",
-      role: "admin",
+      role: profile.role,
       stateRevision: profile.stateRevision,
     },
     { $inc: { stateRevision: 1 } },

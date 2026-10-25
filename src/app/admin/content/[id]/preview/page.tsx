@@ -7,6 +7,7 @@ import { getAdminContent } from "@/modules/catalog/reads";
 import { HttpError } from "@/shared/server/http";
 import { Workspace } from "@/shared/ui/workspace";
 import { ContentPreview } from "@/modules/catalog/ui/content-preview";
+import { serverConfig } from "@/shared/server/config";
 import "../../library.css";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,7 +34,10 @@ export default async function PreviewPage({
         <Link href="/admin/content">Content library</Link>
         <Link href={`/admin/content/${id}/edit`}>Open editor</Link>
       </nav>
-      <ContentPreview content={item} />
+      <ContentPreview
+        content={item}
+        filesEnabled={serverConfig.FILES_ENABLED}
+      />
     </Workspace>
   );
 }

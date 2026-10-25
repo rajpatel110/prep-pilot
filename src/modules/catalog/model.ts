@@ -52,7 +52,9 @@ export const contentItemSchema = new Schema(
       type: [Schema.Types.ObjectId],
       default: [],
       required: true,
-      validate: (values: unknown[]) => values.length === 0,
+      validate: (values: unknown[]) =>
+        values.length <= 5 &&
+        new Set(values.map(String)).size === values.length,
     },
     source: { type: String, required: true, maxlength: 2048 },
     attribution: { type: String, default: "", maxlength: 2000 },

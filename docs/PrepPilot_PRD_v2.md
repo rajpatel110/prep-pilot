@@ -20,7 +20,15 @@ This revision is the product baseline for Codex-assisted implementation. It repl
 
 Student: register, configure a goal, save a roadmap, practise through curated content, record an outcome, review progress and approve a useful revision or schedule adjustment.
 
-Admin: sign in with a separately provisioned role, create or edit content, upload supporting materials, publish reviewed resources and archive outdated items while preserving student history.
+Admin: sign in through the shared email/password login, create or edit content, upload supporting materials, publish reviewed resources and archive outdated items while preserving student history.
+
+Owner (approved 25 October 2026): one explicitly operator-provisioned account inherits
+admin access and alone grants/removes admin access for existing accounts. New grants
+require verified target email even in demo mode, recent session-bound password
+confirmation and explicit final confirmation. Owner cannot be demoted or erased
+through ordinary role/account paths. No invitations, usernames, bulk changes,
+public admin signup or ownership-transfer UI. Students land in onboarding/dashboard;
+admins and owner land in /admin. Demotion preserves authored content and study history.
 
 The initial audience is a portfolio demonstration and a small student pilot. A working rule-based scheduler is required; an LLM is not needed for the core product.
 
@@ -70,7 +78,7 @@ The System Architecture Document will specify library selection, folder structur
 
 ### P0 AUTH Secure account access
 
-Students can register with name, email and password, log in, refresh while authenticated and log out. Normalise email, reject duplicates and store only securely hashed passwords. Public signup always creates a student. Admin rights are provisioned through a restricted operator procedure and cannot be requested through signup or profile updates.
+Students can register with name, email and password, log in, refresh while authenticated and log out. Normalise email, reject duplicates and store only securely hashed passwords. Public signup always creates a student. Only the owner grants/removes admin rights; only initial owner establishment uses the restricted operator procedure. Roles cannot be requested through signup or ordinary profile updates.
 
 Use persistent sessions with HttpOnly cookies, Secure in production, an explicit SameSite policy, expiry and server-side revocation. Enforce CSRF protection for state-changing requests. A role change or revoked session must take effect on the next protected request; UI visibility is not authorisation.
 

@@ -11,6 +11,8 @@
     "test:integration": "node --env-file=.env.local --import tsx tests/auth-integration.ts",
     "test:email": "node --conditions=react-server --env-file=.env.local --import tsx tests/email-integration.ts",
     "test:email-auth": "node --conditions=react-server --env-file=.env.local --import tsx tests/email-auth-regressions.ts",
+    "test:files": "node --conditions=react-server --env-file=.env.local --import tsx tests/files-integration.ts",
+    "files:accounting": "node --env-file=.env.local --import tsx scripts/files-accounting.ts",
     "test:catalog": "node --conditions=react-server --env-file=.env.local --import tsx tests/catalog-integration.ts",
     "test:admin-content": "node --conditions=react-server --env-file=.env.local --import tsx tests/integration/admin-content.ts",
     "test:student": "node --conditions=react-server --env-file=.env.local --import tsx tests/integration/student-journey.ts",
@@ -19,6 +21,8 @@
     "auth:setup": "tsx scripts/setup-local-auth.ts",
     "db:setup": "node --env-file=.env.local --import tsx scripts/setup-database.ts",
     "admin:provision": "node --conditions=react-server --env-file=.env.local --import tsx scripts/provision-admin.ts",
+    "admin:owner": "node --conditions=react-server --env-file=.env.local --import tsx scripts/provision-owner.ts",
+    "test:administration": "node --conditions=react-server --env-file=.env.local --import tsx tests/administration-integration.ts",
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
@@ -28,6 +32,8 @@
     "format": "prettier . --write"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "3.1156.0",
+    "@aws-sdk/s3-request-presigner": "3.1156.0",
     "@better-auth/mongo-adapter": "1.7.12",
     "better-auth": "1.7.12",
     "mongodb": "7.7.0",

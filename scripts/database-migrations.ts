@@ -15,6 +15,14 @@ import { storedRevision } from "../src/modules/revisions/schemas";
 import { planningMigration, planningChecksum } from "./migrations/003-planning";
 import { proposalValue } from "../src/modules/planning/schemas";
 import { emailMigration, emailChecksum } from "./migrations/004-email";
+import { filesMigration, filesChecksum } from "./migrations/005-files";
+import { ownerMigration, ownerChecksum } from "./migrations/006-owner";
+import {
+  fileRecord,
+  quotaRecord,
+  LIMIT_BYTES,
+  LIMIT_COUNT,
+} from "../src/modules/files/schemas";
 
 const lockId = "__database_runner_lock__";
 const leaseMilliseconds = 5 * 60 * 1000;
@@ -336,6 +344,32 @@ async function runMigration(
         }
       }
     }
+    if (migrationId === ownerMigration.id) {
+      for await (const profile of db.collection("profiles").find({})) {
+        await renew();
+        if (
+          !["student", "admin", "owner"].includes(profile.role) ||
+          !["active", "deleting"].includes(profile.lifecycle) ||
+          !Number.isSafeInteger(profile.stateRevision) ||
+          profile.stateRevision < 0
+        )
+          throw new MigrationError("INVALID_EXISTING_PROFILE");
+      }
+    }
+    if (migrationId === filesMigration.id) {
+      for await (const asset of db.collection("fileAssets").find({})) {
+        await renew();
+        if (!fileRecord.safeParse({ ...asset, _id: String(asset._id) }).success)
+          throw new MigrationError("INVALID_EXISTING_FILE");
+      }
+      const quota = await db
+        .collection<NamedDocument>("storageQuota")
+        .findOne({ _id: "r2" });
+      if (quota && !quotaRecord.safeParse(quota).success)
+        throw new MigrationError("INVALID_STORAGE_QUOTA");
+      if (!quota && (await db.collection("fileAssets").countDocuments({})))
+        throw new MigrationError("MISSING_STORAGE_QUOTA");
+    }
     for (const [collection, definitions] of Object.entries(indexes)) {
       for (const { key, ...options } of definitions) {
         await renew();
@@ -346,6 +380,26 @@ async function runMigration(
     }
     await renew();
     const timestamp = new Date();
+    if (migrationId === filesMigration.id)
+      await fenced(async (session) => {
+        await db.collection<NamedDocument>("storageQuota").updateOne(
+          { _id: "r2" },
+          {
+            $setOnInsert: {
+              readyBytes: 0,
+              readyCount: 0,
+              reservedBytes: 0,
+              reservedCount: 0,
+              limitBytes: LIMIT_BYTES,
+              limitCount: LIMIT_COUNT,
+              schemaVersion: 1,
+              createdAt: timestamp,
+              updatedAt: timestamp,
+            },
+          },
+          { upsert: true, session },
+        );
+      });
     if (foundation && previous?.state !== "applied")
       await fenced(async (session) => {
         await db.collection<NamedDocument>("catalogState").updateOne(
@@ -457,6 +511,20 @@ export async function migrateDatabase(db: Db) {
     emailMigration.id,
     emailMigration.indexes,
     emailChecksum,
+    false,
+  );
+  await runMigration(
+    db,
+    filesMigration.id,
+    filesMigration.indexes,
+    filesChecksum,
+    false,
+  );
+  await runMigration(
+    db,
+    ownerMigration.id,
+    ownerMigration.indexes,
+    ownerChecksum,
     false,
   );
 }

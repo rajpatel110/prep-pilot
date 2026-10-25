@@ -55,6 +55,60 @@ export async function findCatalogDetail(connection: Connection, id: string) {
     : null;
 }
 
+export async function assetReferenced(
+  connection: Connection,
+  id: string,
+  session: ClientSession,
+) {
+  return !!(await catalogModels(connection)
+    .content.exists({ assetIds: id })
+    .session(session));
+}
+
+export async function lockAttachmentReferences(
+  connection: Connection,
+  session: ClientSession,
+) {
+  const model = catalogModels(connection).state;
+  const current = await model.findById("catalog").session(session).lean();
+  if (
+    !current ||
+    !catalogStateSchema.safeParse(current).success ||
+    current.commitSerial >= Number.MAX_SAFE_INTEGER
+  )
+    throw new HttpError(
+      503,
+      "DEPENDENCY_UNAVAILABLE",
+      "Catalog reference guard is unavailable.",
+    );
+  const result = await model.updateOne(
+    {
+      _id: "catalog",
+      revision: current.revision,
+      commitSerial: current.commitSerial,
+    },
+    { $inc: { commitSerial: 1 } },
+    { session, runValidators: true },
+  );
+  if (result.matchedCount !== 1)
+    throw new HttpError(
+      409,
+      "CONTENT_CONFLICT",
+      "Catalog references changed during cleanup.",
+    );
+}
+export async function publishedAttachment(
+  connection: Connection,
+  id: string,
+  assetId: string,
+) {
+  return !!(await catalogModels(connection).content.exists({
+    _id: id,
+    status: "published",
+    assetIds: assetId,
+  }));
+}
+
 export async function requireCatalogSetup(connection: Connection) {
   const migration = await connection
     .db!.collection<{ _id: string; state: string }>("schemaMigrations")

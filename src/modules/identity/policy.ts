@@ -1,5 +1,5 @@
 export type AccessProfile = {
-  role: "student" | "admin";
+  role: "student" | "admin" | "owner";
   lifecycle: "active" | "deleting";
   preferences: unknown | null;
 };
@@ -11,6 +11,6 @@ export function destination(
 ) {
   if (profile.lifecycle !== "active") return "/login";
   if (emailMode === "live" && !verified) return "/verify-email";
-  if (profile.role === "admin") return "/admin";
+  if (profile.role === "admin" || profile.role === "owner") return "/admin";
   return profile.preferences === null ? "/onboarding" : "/dashboard";
 }

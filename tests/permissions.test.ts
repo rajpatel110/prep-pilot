@@ -65,6 +65,10 @@ for (const emailMode of ["test", "live"] as const) {
     await assert.rejects(guards.requireAdmin(headers), { code: "FORBIDDEN" });
     profile.role = "admin";
     assert.equal((await guards.requireAdmin(headers)).destination, "/admin");
+    await assert.rejects(guards.requireOwner(headers), { code: "FORBIDDEN" });
+    profile.role = "owner";
+    assert.equal((await guards.requireOwner(headers)).destination, "/admin");
+    await guards.requireAdmin(headers);
     profile = { ...profile, role: "student" };
     await assert.rejects(guards.requireAdmin(headers), { code: "FORBIDDEN" });
     await guards.requireStudyActor(headers);

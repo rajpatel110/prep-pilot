@@ -6,6 +6,7 @@ import { getAdminContent } from "@/modules/catalog/reads";
 import { HttpError } from "@/shared/server/http";
 import { Workspace } from "@/shared/ui/workspace";
 import { ContentEditor } from "@/modules/catalog/ui/content-editor";
+import { serverConfig } from "@/shared/server/config";
 import "../../library.css";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -28,7 +29,11 @@ export default async function EditContentPage({
   }
   return (
     <Workspace name={actor.session.user.name} title="Edit content" wide>
-      <ContentEditor key={id} initial={item} />
+      <ContentEditor
+        key={id}
+        initial={item}
+        filesEnabled={serverConfig.FILES_ENABLED}
+      />
     </Workspace>
   );
 }

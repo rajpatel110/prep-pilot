@@ -20,6 +20,7 @@ import {
 } from "./dto";
 import { catalogQuerySchema, cursorBinding, queryObject } from "./read-query";
 import { inspectCatalogCursor, issueCatalogCursor } from "./cursor";
+import { attachmentMetadata } from "@/modules/files/references";
 
 function invalid(fields: Record<string, string[]>) {
   return new HttpError(
@@ -145,7 +146,10 @@ export async function getAdminContent(
     const document = await findCatalogDetail(connection, id);
     if (!document)
       throw new HttpError(404, "RESOURCE_NOT_FOUND", "Content was not found.");
-    return adminContentDto(document);
+    return adminContentDto(
+      document,
+      await attachmentMetadata(connection, document.assetIds),
+    );
   } catch (error) {
     throw readError(error);
   }
@@ -196,7 +200,11 @@ export async function getStudentContent(
     const connection = await getDomainConnection();
     await requireCatalogSetup(connection);
     const content = await findCatalogDetail(connection, id);
-    if (content?.status === "published") return studentContentDto(content);
+    if (content?.status === "published")
+      return studentContentDto(
+        content,
+        await attachmentMetadata(connection, content.assetIds),
+      );
     const attempt = historySnapshot.safeParse(
       await findAttemptContentSnapshot(actor.session.user.id, id),
     );

@@ -22,6 +22,7 @@ export function publicationFields(content: {
   externalUrl?: string | null | undefined;
   reviewedAt: Date | string | null;
   assetIds: unknown[];
+  readyAssets?: number;
 }) {
   const fields: Record<string, string[]> = {};
   if (
@@ -40,10 +41,16 @@ export function publicationFields(content: {
   if (
     content.type === "resource" &&
     !content.body?.trim() &&
-    !content.externalUrl
+    !content.externalUrl &&
+    !(content.readyAssets && content.readyAssets > 0)
   )
-    fields.body = ["A resource needs nonblank body text or an HTTPS URL."];
-  if (content.assetIds.length)
-    fields.assetIds = ["Attachments are not available yet."];
+    fields.body = [
+      "A resource needs nonblank body text, an HTTPS URL or a ready attachment.",
+    ];
+  if (
+    content.assetIds.length &&
+    content.readyAssets !== content.assetIds.length
+  )
+    fields.assetIds = ["All attachments must be ready before publication."];
   return fields;
 }

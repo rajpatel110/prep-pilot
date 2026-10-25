@@ -46,7 +46,7 @@ The design is ready to guide implementation. Field limits and operational retent
 
 ### Domain collections
 
-Identity: profiles. Catalog: contentItems and catalogState. Planning: plans and planPreviews. Practice: attempts and revisions. Files: fileAssets and storageQuota. Operations: rateBuckets, emailDeliveries, verificationClaims, adminAudit and schemaMigrations.
+Identity: profiles. Catalog: contentItems and catalogState. Planning: plans and planPreviews. Practice: attempts and revisions. Files: fileAssets and storageQuota. Operations: rateBuckets, emailDeliveries, verificationClaims, adminAudit, adminReauth, adminRoleOperations and schemaMigrations. Administration owns the new step-up/role-operation records; Identity remains the authoritative profile/auth interface.
 
 ### Authentication collections
 
@@ -65,7 +65,7 @@ Common domain fields: _id ObjectId R, schemaVersion Int R default 1, createdAt D
 | Field | Type and presence | Rules and meaning |
 | --- | --- | --- |
 | userId | String R | Opaque auth ID; immutable; unique. Never coerce it to ObjectId. |
-| role | Enum R | student or admin; default student; restricted operator changes only. |
+| role | Enum R | student, admin or owner; default student. Only owner-controlled admin transitions; explicit operator initial-owner provisioning. |
 | lifecycle | Enum R | active or deleting; default active. All protected services reject deleting accounts. |
 | preferences | Object N | Null until a valid onboarding submission. Planning requires non-null preferences. |
 | preferences.companies | String[] R | One or two unique IDs: cognizant, ltm. |
@@ -83,6 +83,38 @@ Common domain fields: _id ObjectId R, schemaVersion Int R default 1, createdAt D
 Create missing profiles with an upsert using $setOnInsert and the unique userId key. No fabricated preferences are supplied. Profile edits compare the expected stateRevision and increment it atomically; a stale match returns 409. Role/lifecycle changes invalidate outstanding previews by also advancing stateRevision.
 
 Display name and email remain in the auth user record. Read current role and lifecycle from profiles on protected requests. Email verification comes from the canonical auth state, subject to the system design’s live/test-mode gate. Profile creation is recoverable independently of auth signup; do not assume the two clients share a transaction.
+
+### Owner governance amendment — 25 October 2026
+
+Migration 006 adds profiles_one_owner: unique {role:1}, partial {role:"owner"},
+including inactive owners so deactivation cannot silently free ownership. It also
+adds profiles_admin_roles {role:1,_id:1} for bounded administrator pagination.
+No independently editable isOwner flag. Migration rejects invalid profiles or
+duplicate owners without deleting records or dropping indexes; normal startup
+does not synchronize indexes. Provisioning requires the applied migration/index.
+
+adminReauth: string _id SHA-256(session ID), userId string, confirmedAt Date,
+expiresAt Date. TTL expiresAt cleans records only; access checks always enforce
+expiry, five-minute maximum and current valid auth session. No passwords or session
+tokens. Failed password confirmation clears an existing proof for that session.
+
+adminRoleOperations: string _id actorUserId:operationId, actorUserId, operationId,
+fingerprint SHA-256 of canonical validated operation, account committed DTO snapshot,
+createdAt. Unique actorUserId+operationId. Retain without TTL for pilot idempotency;
+review retention before broader rollout. Same ID/different payload conflicts.
+
+Role change transaction: revalidate session/owner; lock acting owner profile, read
+proof/operation, conditionally update active target role/stateRevision, append
+adminAudit and insert operation receipt. Owner profile lock precedes target profile.
+No catalog/quota lock needed. Target revision advances exactly once; replay does
+not change target state or duplicate its audit. Existing actor guard advances its
+stateRevision to serialize eligibility-sensitive work, including a replay request.
+Audit adds optional previousRole/newRole for profile events; actor, target, reason,
+timestamp, requestId and revisions are recorded without secret values.
+
+Retain authored content, provenance, plans and study history on demotion. Owner
+cannot be changed by ordinary role APIs/scripts. Future erasure procedures must
+refuse owner; recovery/transfer is a separate, reviewed operator responsibility.
 
 ### Validation layers
 

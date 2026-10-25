@@ -13,7 +13,7 @@ import {
   rebaseEditor,
 } from "../src/modules/catalog/editor-values";
 
-test("publication requires usable learning content, review and no attachments", () => {
+test("publication requires usable learning content, review and ready attachments", () => {
   const base = { type: "question", reviewedAt: null, assetIds: [] };
   assert.deepEqual(Object.keys(publicationFields(base)).sort(), [
     "prompt",
@@ -33,6 +33,33 @@ test("publication requires usable learning content, review and no attachments", 
   assert.ok(
     publicationFields({ ...base, type: "resource", reviewedAt: new Date() })
       .body,
+  );
+  assert.deepEqual(
+    publicationFields({
+      ...base,
+      type: "resource",
+      reviewedAt: new Date(),
+      assetIds: ["507f1f77bcf86cd799439011"],
+      readyAssets: 1,
+    }),
+    {},
+  );
+  assert.ok(
+    publicationFields({
+      ...base,
+      type: "resource",
+      reviewedAt: new Date(),
+      assetIds: ["507f1f77bcf86cd799439011"],
+      readyAssets: 0,
+    }).assetIds,
+  );
+  assert.ok(
+    publicationFields({
+      ...base,
+      reviewedAt: new Date(),
+      assetIds: ["507f1f77bcf86cd799439011"],
+      readyAssets: 1,
+    }).prompt,
   );
   assert.deepEqual(
     publicationFields({

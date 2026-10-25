@@ -12,7 +12,7 @@ const profileSchema = new Schema(
     userId: { type: String, required: true, immutable: true },
     role: {
       type: String,
-      enum: ["student", "admin"],
+      enum: ["student", "admin", "owner"],
       default: "student",
       required: true,
     },

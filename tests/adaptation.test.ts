@@ -313,6 +313,40 @@ test("coverage includes valid shared foundations for both companies and reports 
   const broken = assessCoverage([{ ...record, prompt: "", reviewedAt: null }]);
   assert.equal(broken.eligible, 0);
   assert.ok(broken.rejected[0]!.fields.includes("reviewedAt"));
+  const assetId = "000000000000000000000002";
+  const resource = {
+    ...record,
+    type: "resource",
+    subject: "cs",
+    topic: "dbms",
+    prompt: "",
+    assetIds: [assetId],
+  };
+  assert.equal(assessCoverage([resource]).eligible, 0);
+  const ready = {
+    _id: assetId,
+    createdBy: "fixture",
+    displayName: "fixture.pdf",
+    stagingKey: `staging/${assetId}/fixture`,
+    finalKey: `final/${assetId}/fixture`,
+    declaredMime: "application/pdf",
+    declaredBytes: 1,
+    detectedMime: "application/pdf",
+    actualBytes: 1,
+    sha256: "a".repeat(64),
+    status: "ready",
+    expiresAt: now,
+    leaseId: null,
+    leaseUntil: null,
+    reservationBytes: 10485760,
+    reservationState: "committed",
+    readyAt: now,
+    deletedAt: null,
+    schemaVersion: 1,
+    createdAt: now,
+    updatedAt: now,
+  };
+  assert.equal(assessCoverage([resource], [ready]).eligible, 1);
 });
 
 test("completed revision cycles are retained exactly once during adjustment", () => {

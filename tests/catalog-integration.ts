@@ -157,7 +157,7 @@ async function main() {
       ...env,
       EMAIL_MODE: "live",
     });
-    stage = "admin provisioning and audit rollback";
+    stage = "owner provisioning and audit rollback";
 
     const userId = `disposable-${randomUUID()}`;
     await db.collection("user").insertOne({
@@ -180,8 +180,16 @@ async function main() {
       expected = 0,
     ) =>
       command(
-        "scripts/provision-admin.ts",
-        [id, ...args],
+        "scripts/provision-owner.ts",
+        [
+          id,
+          "--apply",
+          "--email",
+          "operator-test@example.com",
+          "--expected-revision",
+          "0",
+          ...args,
+        ],
         { ...env, ...overrides },
         expected,
       );
@@ -199,6 +207,12 @@ async function main() {
       .collection("profiles")
       .updateOne({ userId }, { $set: { lifecycle: "active" } });
     const profileBefore = await db.collection("profiles").findOne({ userId });
+    await db
+      .collection("user")
+      .updateOne(
+        { id: userId },
+        { $set: { email: "operator-test@example.com", emailVerified: true } },
+      );
     await db.command({
       collMod: "adminAudit",
       validator: { action: { $eq: "reject_disposable_audit" } },
@@ -219,7 +233,7 @@ async function main() {
     await provision();
     assert.equal(
       (await db.collection("profiles").findOne({ userId }))?.role,
-      "admin",
+      "owner",
     );
     const event = await db
       .collection("adminAudit")
@@ -364,7 +378,7 @@ async function main() {
       2,
     );
     console.log(
-      "PASS: explicit setup, migration repeatability/restart/checksum/lock/conflict preservation, strict catalog persistence/unique indexes, canonical permission guards, disposable admin provisioning/failures/audit rollback. Only disposable test databases were used.",
+      "PASS: explicit setup, migration repeatability/restart/checksum/lock/conflict preservation, strict catalog persistence/unique indexes, canonical permission guards, disposable owner provisioning/failures/audit rollback. Only disposable test databases were used.",
     );
   } finally {
     await connection?.close();

@@ -106,10 +106,47 @@ PATCH updates only supplied allowlisted fields; omitted values remain unchanged.
 | Public | No session required. Exact allowed Origin for writes, JSON and rate checks still apply. |
 | Actor | Valid database-backed session; current profile.lifecycle=active. May have incomplete preferences or unverified email. |
 | Study | Actor plus verified email when EMAIL_MODE=live. Unverified demo study access is allowed only in server-configured test mode. |
-| Admin | Study plus current profile.role=admin. Role is read on the server for each protected request. |
+| Admin | Study plus current profile.role=admin or owner. Role is read on the server for each protected request. |
+| Owner | Study plus current profile.role=owner. Required for all administrator-management endpoints. |
 | Owned resource | Query with both resource ID and trusted userId. Return 404 RESOURCE_NOT_FOUND for absent or another user’s record. |
 
 Resolve auth from cookies; do not accept Authorization bearer tokens for application v1. Cookies use HttpOnly, Secure in production, host-only scope and SameSite=Lax. Disable cached session authorisation so revocation and role changes take effect on the next protected request. UI route guards are navigation aids, not permission checks.
+
+### Owner-controlled administrator management — approved amendment
+
+All paths below are relative to /api/v1/admin/administrators. All writes require
+exact Origin, JSON and session-bound CSRF. No query parameters on writes/detail.
+All endpoints are owner-only, no-store, explicit DTOs and request IDs.
+
+| Method/path | Input | Result |
+| --- | --- | --- |
+| GET / | limit 1–50 (20 default), signed cursor | data account array; meta.page.nextCursor. Includes owner. |
+| POST /lookup | {email} exact normalized email | One existing account/profile, or 404 ACCOUNT_NOT_FOUND; no autocomplete. |
+| GET /:userId | Immutable identity | Current account state for reconciliation. |
+| POST /reauthenticate | {password}, max 128; not trimmed | Supported Better Auth verification; {status:"confirmed",expiresAt}. Five attempts/account/15 min. |
+| PATCH /:userId/role | {role,expectedRole,expectedStateRevision,operationId,reason} | {account,operationId,replayed}; student↔admin only. 20 attempts/owner/hour. |
+
+Account DTO: userId, name, email, emailVerified, role (student/admin/owner),
+lifecycle, stateRevision, eligible. eligible means active verified student.
+No credential/session/provider fields. Email lookup is limited to 30/owner/minute.
+reason is trimmed 1–500 characters; operationId is a UUID retained across retries;
+expectedStateRevision is a nonnegative safe integer that can advance.
+
+Password confirmation lasts at most five minutes and the current session expiry;
+an old session creation timestamp/client boolean is insufficient. Wrong password:
+403 REAUTHENTICATION_FAILED; absent/expired/other-session proof:
+403 REAUTHENTICATION_REQUIRED. Session revocation remains 401 UNAUTHENTICATED.
+Owner target: 403 OWNER_PROTECTED. Stale role/revision or reused operation ID with
+different payload: 409 STATE_CONFLICT. Unverified promotion: 409 EMAIL_NOT_VERIFIED,
+even in test mode. Inactive target: 409 ACCOUNT_UNAVAILABLE. Unknown/privileged
+fields: 422 VALIDATION_ERROR with safe field messages. Missing migration/index:
+503 DATABASE_SETUP_REQUIRED. Existing ordinary error/CSRF contracts remain intact.
+
+An identical committed operation replay produces no second transition/audit event;
+its returned account is the committed snapshot, not a claim about later changes.
+After ambiguous outcomes the UI reads the immutable target ID and shows current
+state; it does not automatically resend or infer success from a matching role.
+The user must explicitly reconfirm any further transition against fresh state.
 
 ### CSRF bootstrap
 
