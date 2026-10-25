@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 
 export function MobileMenu() {
   const detailsRef = useRef<HTMLDetailsElement>(null);
@@ -33,6 +34,9 @@ export function MobileMenu() {
         <a href="#faq" onClick={closeMenu}>
           FAQ
         </a>
+        <Link href="/#about" onClick={closeMenu}>
+          About
+        </Link>
         <a href="/login" onClick={closeMenu}>
           Sign in
         </a>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SignOut } from "./sign-out";
 import { StudentNavigation } from "./student-navigation";
+import { ThemeToggle } from "./theme-toggle";
 import "@/app/content/student.css";
 
 export function StudentShell({
@@ -20,7 +21,10 @@ export function StudentShell({
         </Link>
         {!onboarding && <StudentNavigation />}
         <span className="student-name">{name}</span>
-        <SignOut />
+        <div className="header-controls">
+          <ThemeToggle />
+          <SignOut />
+        </div>
       </header>
       <main id="main-content" className="student-main">
         {children}

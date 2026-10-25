@@ -22,12 +22,12 @@
 }
 .library-notice {
   padding: 16px;
-  background: #e9eee3;
+  background: var(--color-surface-filter);
   border-radius: 10px;
   line-height: 1.6;
 }
 .library {
-  background: white;
+  background: var(--color-surface);
   border: 1px solid var(--color-line);
   border-radius: 16px;
   margin-top: 28px;
@@ -38,7 +38,7 @@
   flex-wrap: wrap;
   gap: 6px;
   padding: 16px;
-  background: #eef1e9;
+  background: var(--color-surface-code);
 }
 .library-tabs button {
   padding: 12px 20px;
@@ -48,8 +48,8 @@
   cursor: pointer;
 }
 .library-tabs [aria-current] {
-  background: var(--color-forest);
-  color: white;
+  background: var(--color-action);
+  color: var(--color-on-action);
 }
 .library-filters {
   display: grid;
@@ -99,7 +99,7 @@
 }
 .library-table th {
   text-align: left;
-  background: #eef1e9;
+  background: var(--color-surface-code);
   padding: 16px;
 }
 .library-table th:first-child {
@@ -134,18 +134,18 @@
   display: inline-block;
   border-radius: 20px;
   padding: 6px 10px;
-  background: #eef1e9;
+  background: var(--color-surface-code);
   font-size: 13px;
   font-weight: 600;
   text-transform: capitalize;
 }
 .status-published {
-  background: #d5e8dc;
-  color: #214b37;
+  background: var(--color-surface-success);
+  color: var(--color-text-success);
 }
 .status-archived {
-  background: #e9e7e2;
-  color: #514d47;
+  background: var(--color-surface-archived);
+  color: var(--color-text-archived);
 }
 .library-capitalize {
   text-transform: capitalize;

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PageContainer } from "./page-container";
+import { ThemeToggle } from "./theme-toggle";
 export function AuthFrame({ children }: { children: React.ReactNode }) {
   return (
     <PageContainer>
@@ -7,7 +8,10 @@ export function AuthFrame({ children }: { children: React.ReactNode }) {
         <Link href="/" className="brand">
           PrepPilot
         </Link>
-        <Link href="/">← Back to home</Link>
+        <div className="header-controls">
+          <ThemeToggle />
+          <Link href="/">← Back to home</Link>
+        </div>
       </header>
       <main id="main-content" className="auth-layout">
         <aside className="auth-intro">

@@ -26,6 +26,10 @@ The sample-plan links show illustrative data only.
 
 ## Run locally
 
+Light/dark appearance follows the system initially and remembers an explicit
+choice in localStorage only. See [theme implementation and focused verification](docs/THEMING.md).
+No account/database setting, external service or additional dependency is needed.
+
 Use Node **24 LTS** (see `.nvmrc`) and npm **10.9.3**. With a Node version manager,
 select Node 24, then select the recorded npm version if necessary.
 

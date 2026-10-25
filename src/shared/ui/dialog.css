@@ -14,7 +14,7 @@
   overflow-wrap: anywhere;
 }
 .library-dialog::backdrop {
-  background: #20282399;
+  background: var(--color-backdrop);
 }
 .library-dialog h2 {
   font-size: 26px;

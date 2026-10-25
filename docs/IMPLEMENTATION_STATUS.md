@@ -1,6 +1,139 @@
 # PrepPilot implementation status
 
-Updated: 25 October 2026 (Asia/Kolkata).
+Updated: 26 October 2026 (Asia/Kolkata).
+
+## Application light/dark themes: implemented; representative browser checks passed
+
+26 October follow-up: user-run production build passed (6.1s compilation,
+7.6s TypeScript, page data 1721ms, 21 static pages in 733ms, traces/finalization
+8.4s). Agent reused that artifact without rebuilding or changing application
+source. tests/student-ui-fixture.ts migrated/populated only a random disposable
+pp_student_ui database; email/files stayed disabled and shared records untouched.
+
+Actual browser measurements were 1280×720 desktop and 390×844 mobile. Initial
+browser system preference was dark and the app resolved dark. Keyboard Enter
+switched to light with a 44px target and visible forest outline; explicit light
+survived reload despite the dark OS. Route changes through auth, student and admin
+preserved the selected theme, and both light/dark representative surfaces were
+inspected. Desktop homepage/student/admin and mobile auth/student/library/editor/
+About were checked. Sampled mobile documents were 375px or 390px wide within the
+390px viewport. No horizontal page overflow was observed in those samples.
+
+Dark native inputs, selected controls, notices, disabled file controls, admin table,
+detail/lifecycle dialogs and editor/local preview were readable. Archive was only
+opened and cancelled; nothing was archived or created through the UI. Settings
+75-minute unsaved input survived Escape with focus restored, then was discarded;
+saved preferences remained 60. Native required-title validation focused the empty
+field without saving. Mobile About closed its menu, kept the heading below the
+sticky header (201px versus 71px), and retained exact contact destinations/rel
+attributes; email Tab focus and both light/dark profile layouts passed.
+Captured browser warning/error logs were empty; no hydration warning was observed.
+
+Limits: no browser system-light/system-change or blocked-storage emulation was
+available; these behaviors are covered by the focused simulated-environment tests,
+not a live browser check. Reduced-motion is code-checked, not browser-emulated.
+No first-paint filmstrip was captured; zero-flash behavior is not proven. Browser
+sampling is not exhaustive coverage of every plan/history/progress/onboarding or
+provider/error combination. No new theme inconsistency was seen in sampled views;
+the previously documented same-hash About-after-resize edge remains unchanged.
+Fixture cleanup succeeded (0 attempts, 0 plans): generated database removed,
+owned server stopped, tab closed and viewport reset. No source change or rebuild
+was needed; remaining statements of pending browser checks below are historical.
+
+No prior theme infrastructure/dependency existed. Added one reusable ThemeToggle
+to homepage, auth frame, student/onboarding and shared admin workspace headers.
+The 44px button uses decorative moon/sun SVGs and opposite-mode accessible action
+names. Mobile controls stay outside the navigation disclosure. About copy, contact
+destinations and section order are preserved; its card now consumes shared tokens.
+
+Semantic palette in src/shared/ui/theme.css preserves light colors and defines
+green-charcoal dark backgrounds, raised surfaces, warm foregrounds, readable
+feedback/accents, native color-scheme and existing focus/reduced-motion behavior.
+Global, student, admin library/editor and shared dialog styles now use tokens,
+including code surfaces, selected states, badges, errors, borders and shadows.
+No inversion, blanket transition, new dependency or CSP relaxation.
+
+Root Next Script beforeInteractive loads the same-origin static /theme-init.js
+route. Only preppilot-theme is stored locally. System preference is followed until
+an explicit selection; blocked storage keeps selection in memory, and cross-tab
+changes synchronize. useSyncExternalStore supplies a deterministic hydration
+snapshot; the intentional root attribute mutation alone is suppressed. These are
+implementation properties, not measured first-paint/hydration browser evidence.
+See docs/THEMING.md for architecture and the disposable verification procedure.
+
+Agent-run verification: 5 focused theme tests passed (system light/dark and
+changes, explicit preference/reload resolution, invalid values, blocked storage,
+cross-tab updates/removal, and core text/button/feedback contrast >=4.5:1 in both
+palettes). Existing student UI render contract checks passed. Full lint, direct
+tsc --noEmit --incremental false, full format:check and diff whitespace passed.
+The single final production build attempt failed on EPERM mkdir at
+C:\PROJECTS\prep-pilot\.next\types\app\api\v1. No unchanged build retry,
+output cleanup, permission/security change or renewed EPERM diagnosis occurred.
+
+At the initial EPERM-blocked attempt, compiled-browser checks were pending and
+no fixture/server was started against the failed artifact. The later user-built
+artifact and representative browser results above supersede that pending state.
+System-change/storage-failure behavior still has automated coverage only;
+reduced-motion browser emulation and zero-flash measurement remain unverified.
+About re-click after resizing while already at #about does not always reposition.
+No full visual-coverage claim is made, and the earlier About-only checks were not
+substituted for the later theme verification. Shared records and provider settings
+were untouched. This checkpoint introduces no content release or deployment.
+
+## Homepage About addition: implemented; focused browser checks passed
+
+Latest user-run production build passed: compilation 4.8s, TypeScript 2.3s,
+page data 8.7s, 20 static pages in 679ms and finalization/traces 9.6s. The agent
+reused this artifact without rebuilding. Homepage-only production server on
+127.0.0.1:3160 ran with auth/files disabled; no database fixtures or writes were
+needed. Agent browser verification confirmed desktop 1280×720 and mobile
+390×844. Desktop About appears between FAQ and Sign in; mobile Enter opens the
+menu, Escape closes/restores summary focus, and About navigation from the root
+URL closes the menu and reaches the section. Settled heading top was 236px on
+desktop and 204px on mobile, below respective 85px/71px sticky headers. Mobile
+document width was 375px within the 390px viewport, without horizontal overflow.
+Profile text and email remained readable; contact Tab order and visible forest
+focus outlines passed. Exact destinations/rel/target attributes and nonfocusable
+card were inspected without opening third-party sites or launching email.
+Reduced-motion CSS is code-verified (no lift in reduce mode; transitions disabled),
+but actual reduced-motion emulation was unavailable in this browser capability.
+One repeat-About click while already at #about after viewport resizing did not
+reposition; fresh root-to-About navigation passed. No source change/rebuild was
+made for that observation. Owned server/tab stopped and viewport restored.
+No commit, push, deployment, provider changes or EPERM investigation.
+
+Follow-up: the user-run build compiled successfully in 11.7 seconds, then failed
+TypeScript on the two recorded content-validator errors. The validator now
+explicitly asserts the located approval section before reading it and widens the
+readonly numeric test tuple for indexOf. Runtime assertions are preserved, with no
+validator bypass or application change. Agent-run direct tsc --noEmit
+--incremental false, focused lint/formatting and the 10-candidate/31-assertion
+content check all passed after this correction. A complete production build and
+About browser verification are still pending; use the normal Git Bash build again.
+
+Added About between FAQ and Sign in in both homepage navigations, linking to
+/#about and preserving mobile close/Escape behavior. The new section follows the
+existing FAQ/closing panel and precedes the footer. It uses the supplied personal
+copy, RP initials, exact GitHub/LinkedIn/mailto destinations and readable wrapping
+email. Only links are interactive; external links have noopener/noreferrer and
+new-tab labels. Existing palette, radii and focus outline are reused. Restrained
+hover lift is limited to hover-capable, no-reduced-motion devices; the existing
+reduced-motion rule disables transitions. Existing 7rem document scroll padding
+plus section scroll margin protects the heading from the sticky header.
+
+Agent focused lint, formatting, whitespace and server-render assertions passed:
+two exact About destinations, correct section order/copy/contact attributes and
+nonfocusable card. Palette calculations for forest/charcoal/muted text against
+white/ivory/avatar backgrounds all exceeded 4.5:1. Direct TypeScript checking failed
+only on pre-existing docs/content/validate-release-review.ts errors (possibly
+undefined section at line 33; tuple indexOf argument at line 158); these unrelated
+uncommitted content-preparation changes were preserved, not repaired here.
+One production build failed with EPERM mkdir at
+C:\PROJECTS\prep-pilot\.next\server\app\api. No unchanged retry or diagnosis.
+Those initial pending build/browser checks are superseded by the latest evidence
+above; reduced-motion emulation remains a separate limitation. The prior UI
+browser evidence was not treated as coverage of About.
+No database access, provider changes, dependencies, commit, push or deployment.
 
 ## UI completion and shared-database reconciliation: focused verification complete
 

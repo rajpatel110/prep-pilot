@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MobileMenu } from "@/shared/ui/mobile-menu";
 import { PageContainer } from "@/shared/ui/page-container";
+import { ThemeToggle } from "@/shared/ui/theme-toggle";
 
 const steps = [
   [
@@ -82,12 +83,16 @@ export default function Home() {
               <a href="#how-it-works">How it works</a>
               <a href="#subjects">Subjects</a>
               <a href="#faq">FAQ</a>
+              <Link href="/#about">About</Link>
               <a href="/login">Sign in</a>
             </nav>
+            <div className="header-controls">
+              <ThemeToggle />
+              <MobileMenu />
+            </div>
             <a href="/signup" className="button button-small desktop-action">
               Get started ↗
             </a>
-            <MobileMenu />
           </div>
         </PageContainer>
       </header>
@@ -330,6 +335,73 @@ export default function Home() {
                 Create your account <span aria-hidden="true">↗</span>
               </a>
             </div>
+          </PageContainer>
+        </section>
+        <section
+          className="section about-section section-border"
+          id="about"
+          aria-labelledby="about-heading"
+        >
+          <PageContainer>
+            <div className="section-intro">
+              <p className="eyebrow">ABOUT THE BUILDER</p>
+              <h2 id="about-heading">Meet the builder behind PrepPilot.</h2>
+            </div>
+            <article
+              className="card builder-card"
+              aria-labelledby="builder-name"
+            >
+              <div className="builder-identity">
+                <span className="builder-avatar" aria-hidden="true">
+                  RP
+                </span>
+                <div>
+                  <h3 id="builder-name">Raj Patel</h3>
+                  <p>Final-year student · PrepPilot creator.</p>
+                </div>
+              </div>
+              <div className="builder-story">
+                <p className="builder-introduction">
+                  Hi, I’m Raj Patel, a final-year student building PrepPilot to
+                  make interview preparation more organised and approachable.
+                </p>
+                <p>
+                  I’m bringing DSA, aptitude and computer science fundamentals
+                  into one focused workspace, while developing my skills in
+                  full-stack development and building with AI-assisted tools.
+                </p>
+                <ul
+                  className="builder-links"
+                  aria-label="Connect with Raj Patel"
+                >
+                  <li>
+                    <a
+                      href="https://github.com/rajpatel110"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      GitHub <span aria-hidden="true">↗</span>
+                      <span className="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.linkedin.com/in/raj-patel-cse"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      LinkedIn <span aria-hidden="true">↗</span>
+                      <span className="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="mailto:341raj.patel@gmail.com">
+                      Email: 341raj.patel@gmail.com
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </article>
           </PageContainer>
         </section>
       </main>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PageContainer } from "./page-container";
 import { SignOut } from "./sign-out";
+import { ThemeToggle } from "./theme-toggle";
 export function Workspace({
   name,
   title,
@@ -18,7 +19,10 @@ export function Workspace({
         <Link className="brand" href="/">
           PrepPilot
         </Link>
-        <SignOut />
+        <div className="header-controls">
+          <ThemeToggle />
+          <SignOut />
+        </div>
       </header>
       <main id="main-content" className="section">
         <p className="eyebrow">Signed in as {name}</p>

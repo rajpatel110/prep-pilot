@@ -20,6 +20,7 @@ async function main() {
   let server: ChildProcess | undefined;
   let serverReady = false;
   let studentCookies: string[] = [];
+  let adminCookies: string[] = [];
   let finish = () => {};
   const bridge = createServer((request, response) => {
     response.setHeader("Cache-Control", "no-store");
@@ -33,6 +34,14 @@ async function main() {
       response.writeHead(302, {
         "Set-Cookie": studentCookies,
         Location: `${origin}/dashboard`,
+      });
+      response.end();
+      return;
+    }
+    if (request.url === "/admin") {
+      response.writeHead(302, {
+        "Set-Cookie": adminCookies,
+        Location: `${origin}/admin/content`,
       });
       response.end();
       return;
@@ -147,6 +156,7 @@ async function main() {
     }
     stage = "disposable identities and material";
     const admin = await signup("ui-author@example.invalid");
+    adminCookies = admin.cookies;
     await db
       .collection("profiles")
       .updateOne({ userId: admin.userId }, { $set: { role: "admin" } });
