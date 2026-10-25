@@ -1,16 +1,8 @@
-import Link from "next/link";
+import { EmailPanel } from "@/modules/identity/ui/email-panel";
+import { emailAvailability } from "@/modules/notifications/policy";
+import { serverConfig } from "@/shared/server/config";
 export default function ForgotPassword() {
   return (
-    <>
-      <h1>Password recovery</h1>
-      <p className="section-copy" role="status">
-        Password recovery is unavailable in this demo. Live email delivery has
-        not been configured. Your password cannot be reset through this page
-        yet.
-      </p>
-      <Link className="button" href="/login">
-        Back to sign in
-      </Link>
-    </>
+    <EmailPanel mode="forgot" availability={emailAvailability(serverConfig)} />
   );
 }

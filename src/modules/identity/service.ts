@@ -4,6 +4,7 @@ import { ensureProfile } from "./profile";
 import { createAccessGuards } from "./guards";
 import { serverConfig } from "@/shared/server/config";
 import { preferencesSchema } from "./preferences-schema";
+import { emailAllowed } from "@/modules/notifications/policy";
 
 export const { requireActor, requireStudyActor, requireAdmin } =
   createAccessGuards({
@@ -36,8 +37,8 @@ export function actorDto(actor: Awaited<ReturnType<typeof requireActor>>) {
     capabilities: {
       studyAccess:
         serverConfig.EMAIL_MODE === "test" || session.user.emailVerified,
-      verificationEmail: false,
-      passwordRecovery: false,
+      verificationEmail: emailAllowed(serverConfig, session.user.email),
+      passwordRecovery: emailAllowed(serverConfig, session.user.email),
       fileDownloads: false,
       adminUploads: false,
       emailMode: serverConfig.EMAIL_MODE,

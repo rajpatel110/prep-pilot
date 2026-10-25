@@ -16,6 +16,16 @@ const schema = z.object({
   CSRF_SECRET: z.string().min(32).optional(),
   RATE_LIMIT_SECRET: z.string().min(32).optional(),
   EMAIL_MODE: z.enum(["test", "live"]).default("test"),
+  EMAIL_DELIVERY_MODE: z
+    .enum(["disabled", "owner_test", "live"])
+    .default("disabled"),
+  EMAIL_TEST_RECIPIENT: z.string().trim().toLowerCase().email().optional(),
+  RESEND_API_KEY: z.string().optional(),
+  RESEND_FROM_EMAIL: z.string().max(320).optional(),
+  RESEND_SENDER_VERIFIED: z
+    .enum(["true", "false"])
+    .default("false")
+    .transform((value) => value === "true"),
   APP_URL: z
     .string()
     .url()
@@ -47,6 +57,11 @@ export function getServerEnv(
     CSRF_SECRET: source.CSRF_SECRET || undefined,
     RATE_LIMIT_SECRET: source.RATE_LIMIT_SECRET || undefined,
     EMAIL_MODE: source.EMAIL_MODE,
+    EMAIL_DELIVERY_MODE: source.EMAIL_DELIVERY_MODE,
+    EMAIL_TEST_RECIPIENT: source.EMAIL_TEST_RECIPIENT || undefined,
+    RESEND_API_KEY: source.RESEND_API_KEY || undefined,
+    RESEND_FROM_EMAIL: source.RESEND_FROM_EMAIL || undefined,
+    RESEND_SENDER_VERIFIED: source.RESEND_SENDER_VERIFIED,
   });
   if (!result.success) {
     // Field names only: do not include environment values in diagnostics.
@@ -66,5 +81,42 @@ export function getServerEnv(
       "Authentication configuration is incomplete. Configure MongoDB and independent authentication, CSRF and rate-limit secrets.",
     );
   }
-  return result.data;
+  const config = result.data;
+  if (config.EMAIL_DELIVERY_MODE !== "disabled") {
+    const sender = config.RESEND_FROM_EMAIL ?? "";
+    const address = sender.includes("<")
+      ? sender.match(/^[^<>\r\n]+<([^<>]+)>$/)?.[1]
+      : sender;
+    if (
+      !config.AUTH_ENABLED ||
+      !config.RESEND_API_KEY?.trim() ||
+      !z.email().safeParse(address).success ||
+      /[\r\n]/.test(sender)
+    )
+      throw new Error(
+        "Email delivery requires AUTH_ENABLED, RESEND_API_KEY and a valid RESEND_FROM_EMAIL.",
+      );
+    if (
+      config.EMAIL_DELIVERY_MODE === "owner_test" &&
+      (config.EMAIL_MODE !== "test" ||
+        !config.EMAIL_TEST_RECIPIENT ||
+        !["localhost", "127.0.0.1", "[::1]"].includes(
+          new URL(config.APP_URL).hostname,
+        ))
+    )
+      throw new Error(
+        "Owner-inbox testing requires EMAIL_MODE=test, EMAIL_TEST_RECIPIENT and a loopback APP_URL.",
+      );
+    if (
+      config.EMAIL_DELIVERY_MODE === "live" &&
+      (config.EMAIL_MODE !== "live" ||
+        !config.RESEND_SENDER_VERIFIED ||
+        /@(?:[^@]+\.)?resend\.dev$/i.test(address!) ||
+        !config.APP_URL.startsWith("https://"))
+    )
+      throw new Error(
+        "Live delivery requires EMAIL_MODE=live, HTTPS and an explicitly verified non-testing sender.",
+      );
+  }
+  return config;
 }

@@ -11,6 +11,7 @@ export default function SignupPage() {
         mode="signup"
         enabled={serverConfig.AUTH_ENABLED}
         emailMode={serverConfig.EMAIL_MODE}
+        deliveryMode={serverConfig.EMAIL_DELIVERY_MODE}
       />
     </>
   );

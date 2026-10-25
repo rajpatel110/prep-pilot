@@ -15,6 +15,7 @@ export default async function LoginPage({
         mode="login"
         enabled={serverConfig.AUTH_ENABLED}
         emailMode={serverConfig.EMAIL_MODE}
+        deliveryMode={serverConfig.EMAIL_DELIVERY_MODE}
         returnTo={returnTo}
       />
     </>

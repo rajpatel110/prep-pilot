@@ -570,8 +570,16 @@ export function OnboardingForm({
                   : "Email not verified"}
               </p>
               <p>
-                Sign out is available in the navigation. Account credentials
-                cannot be changed here.
+                Sign out is available in the navigation. Name and email editing
+                are not available here.
+              </p>
+              <p>
+                <Link href="/verify-email">Email verification status</Link>
+              </p>
+              <p>
+                <Link href="/forgot-password">Password recovery</Link>
+                {!initial.capabilities.passwordRecovery &&
+                  " — unavailable in this environment"}
               </p>
             </section>
           )}

@@ -46,5 +46,7 @@ export async function rateLimit(
       429,
       "RATE_LIMITED",
       "Too many requests. Please try again later.",
+      undefined,
+      Math.max(1, Math.ceil(((window + 1) * seconds * 1000 - now) / 1000)),
     );
 }

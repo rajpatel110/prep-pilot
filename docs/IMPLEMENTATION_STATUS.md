@@ -2,6 +2,255 @@
 
 Updated: 25 October 2026 (Asia/Kolkata).
 
+## Email verification/recovery: implementation and verification checkpoint
+
+Owner-inbox manual checkpoint (25 October 2026): the user ran the existing
+production artifact at http://127.0.0.1:3121 with owner-only delivery and an
+explicit disposable database. The user confirmed actual Gmail receipt of both
+verification and recovery emails, explicit verification success, password reset,
+previous-session revocation, old-password rejection, new-password acceptance and
+used-link rejection. These are user-run results, not agent-observed inbox actions
+or merely provider acceptance. General-user delivery remains unavailable pending
+a verified sending domain. Pasting a verification link into the already-open
+verification tab did not reveal confirmation; opening it in a new tab worked.
+No source fix or rebuild was performed during that manual checkpoint. The
+subsequent focused correction and its separate verification are recorded below.
+
+Same-tab follow-up: inspection confirmed EmailPanel captured the fragment only
+on mount, so an already-mounted page ignored later hash-only navigation. A small
+browser event helper now captures initial, hashchange and history/popstate links,
+scrubs fragments while preserving query/history state and unsubscribes on unmount.
+Each new fragment replaces the in-memory token and clears stale confirmation,
+error and password state; late responses from a superseded link cannot overwrite
+the current UI. Confirmed verification status is retained independently from
+the current link's outcome. Resend cooldown no longer disables explicit
+verification confirmation; server-side consume limits remain unchanged. Opening
+links never sends a confirmation request. Refresh still loses a scrubbed token;
+the user must reopen the original email. No tokens are persisted or logged.
+
+Agent-run focused verification: three isolated browser-event fixture tests passed
+for same-tab/second-link capture, fragment scrubbing, history navigation,
+unsubscribe, Strict Mode resubscription, refresh and invalid/oversized fragments.
+Six existing email configuration/schema/mocked-transport tests and email SSR
+render assertions also passed. No real email or database was used for these
+checks. These tests are not a compiled interactive-browser confirmation of the
+new UI. The subsequent user-run production build passed (Next 16.4.2 webpack:
+4.8-second compilation, 4.2-second TypeScript, 14 static pages and successful
+trace/finalization). This is user-run evidence, not an agent build or resolution
+of the paused EPERM issue. No application source changed afterward.
+
+Agent-run compiled-browser recheck reused that artifact with the existing
+isolated fixture and mocked Resend transport. On the already-mounted verification
+page, a captured mock email link revealed enabled explicit confirmation while
+the resend cooldown persisted, proving same-document handling rather than a
+fresh mount. The fragment was scrubbed and status stayed unverified before the
+explicit action. Replacing it with an invalid link and confirming produced the
+safe error; restoring the valid link cleared the old error/blocked state.
+Refreshing the scrubbed URL removed confirmation, and reopening the original
+link restored it. Keyboard confirmation succeeded and immediately showed Email
+verified. Reopening and confirming the spent link was rejected without reverting
+that verified status. One mock verification message was used; no real emails,
+normal accounts or catalog records were touched. No password-reset workflow or
+unrelated suite was repeated. Screenshot: local
+`preppilot-same-tab-verified-replay.png` (no token in the captured page).
+
+This follow-up ran at an actual 1280x720 viewport. The supported browser viewport
+override did not change measured innerWidth/innerHeight, even on a fresh tab;
+it remained 1280x720, so no new 390x844 pass is claimed. The override was reset
+and fixture browser tabs closed. Earlier actual 390x844 email-screen evidence
+remains valid for layout, but this changed same-tab behavior has not been
+reverified on mobile. The test-only fixture now exposes its captured mock link
+to the local browser privately for repeatable same-document navigation; its
+formatting and lint checks passed. No production rebuild is needed for this
+test-helper/documentation-only follow-up.
+The fixture exited successfully (code 0), confirmed emailVerified=true and one
+mock-accepted verification send, removed its disposable database and stopped
+its owned servers. Final documentation formatting and diff checks passed.
+The previously passed real owner-inbox workflow is preserved and not repeated.
+Agent-run lint, direct TypeScript `tsc --noEmit` (without Next type generation),
+full formatting check and final touched-file formatting/diff checks passed.
+The initial lint run caught synchronous readiness state in the new effect; a
+guarded hydration microtask corrected it and lint/type checking then passed.
+EPERM diagnosis remains paused; no agent compilation was attempted.
+
+Mobile same-tab gap closed (25 October 2026): the agent reused the successful
+user-run production build and existing isolated mocked-email fixture without
+compilation or real provider delivery. One supported viewport override applied
+successfully this time: measured innerWidth=390 and innerHeight=844 on the
+compiled verification page, including confirmation and error states. Document
+scrollWidth was 375–390, never exceeding the 390px viewport. Screenshots confirmed
+wrapped, readable messages and controls within the available width; the page
+remained vertically scrollable to all actions.
+
+On the already-mounted mobile page, opening the privately captured mock link
+revealed enabled explicit confirmation while retaining the resend cooldown;
+status remained unverified and the fragment was scrubbed. A replacement invalid
+link was explicitly submitted using the keyboard and showed the safe error.
+Restoring the valid link in the same tab cleared stale error/blocked state and
+re-enabled confirmation. Keyboard confirmation then succeeded and immediately
+showed Email verified and the success message. Token-free local screenshots:
+`preppilot-same-tab-mobile-error.png` and
+`preppilot-same-tab-mobile-confirmed.png`. The viewport override was reset and
+fixture tabs closed. Earlier desktop and user-run owner-inbox evidence is
+preserved; general-user delivery remains blocked pending a verified sender.
+No source changes, rebuild, unrelated suites, real-account/catalog mutations,
+EPERM diagnostics, commit, push or deployment were performed for this check.
+Cleanup completed through the fixture's built-in timeout because policy blocked
+early terminal input. The fixture exited with code 0, confirmed verified=true and
+one mock-accepted verification delivery, removed its disposable database and
+stopped its owned servers. Documentation formatting and diff checks passed.
+
+After user Ctrl+C, the agent observed no listener on port 3121, inspected only
+the two named disposable databases and removed them: pp_owner_mail_9c0ce0f10187
+(one expected test user, no catalog content) and pp_owner_mail_ (no users/content,
+from the failed initial setup). Normal development records and .env.local were
+not modified. Temporary cleanup tooling was removed. No suites, compilation or
+EPERM diagnostics were repeated; no commit, push or deployment occurred.
+
+This section supersedes historical statements below that email flows are entirely
+unimplemented. Source implementation is present; it is **not a public-email launch
+or a claim of inbox delivery**. Existing content-review work, diagnostic scripts
+and the pre-existing generated next-env change are preserved. No real catalog,
+admin/student account, local email mode or external service was changed.
+
+Implemented:
+
+- Strict application wrappers for verification request/explicit confirmation and
+  password-reset request/confirmation. Verification resend uses current actor,
+  session CSRF and Origin; public operations require exact Origin/JSON. Unknown
+  fields/callback destinations are rejected. Native public token bypasses remain
+  blocked. Safe errors retain request IDs and field messages; 429 uses the actual
+  rate-window Retry-After.
+- Better Auth 1.7.12 server methods, 60-minute verification JWTs, digest claims
+  before consumption, 30-minute native single-use reset tokens, transactional
+  credential write and all-session revocation, no automatic sign-in. A spent
+  verification claim remains spent after a downstream failure. Replay, expired
+  and invalid links share the documented generic error. Existing test/live
+  study gates, student signup and current-role/lifecycle checks are unchanged.
+- Server-only Resend transport, strict Mongoose metadata, additive migration 004,
+  persisted pending/accepted/failed/skipped_test outcomes and bounded Next after
+  delivery. Provider calls occur after commit, with stable issuance idempotency
+  and a maximum of three reserved attempts even for duplicate scheduled jobs.
+  No durable email queue or guaranteed eventual delivery. Accepted is provider
+  acknowledgment, not inbox receipt. Reset acknowledgments do not disclose account
+  existence or per-user provider errors.
+- Separate default-disabled EMAIL_DELIVERY_MODE; exact-recipient owner_test
+  opt-in requires loopback + EMAIL_MODE=test. Never redirects another user's
+  messages. General live delivery requires HTTPS, live access mode and explicit
+  verified non-testing sender attestation. Merely adding Resend credentials or
+  changing EMAIL_MODE does not make delivery operational. `.env.local` was not
+  edited. Resend's test sender is not application's test mode.
+- Real verification, forgot/reset and account links using the existing shared
+  auth layout and inspected Stitch HTML. Passive fragment links are stripped
+  from the address bar into memory only; no token in generated request URLs,
+  browser storage or rendered text. Confirmation, busy/error/request-accepted,
+  disabled and owner-only states are honest; password inputs survive recoverable
+  errors, and uncertain/invalid consumption requires reconciliation/fresh links,
+  not blind repeated submission. No-referrer/no-store/noindex callback headers.
+
+Agent-run evidence:
+
+- Six new policy/config/schema/transport unit tests and ten existing identity,
+  permission and CSRF/error regressions passed (16 total).
+- Disposable mocked-delivery integration passed: migration repeatability without
+  singleton changes, strict inputs/origin/CSRF, blocked native routes, passive GET,
+  retries/rejection, 60/30-minute expiry, concurrent verification single-use and
+  synchronized reset consumers in separate Node processes (one 200, one 400),
+  generic unknown/ineligible reset acknowledgments, no recipient redirection or
+  raw-link metadata, consumed verification failure/resend, account-write failure
+  rollback, all-session revocation and durable address/IP/consume limits. Tests
+  create unique prep_pilot_email_test_* databases and remove them afterward.
+- Existing direct canonical authentication/permission integration passed in test
+  and live modes using separate disposable prep_pilot_step1_test_* databases;
+  both were removed. No Next server or real emails were involved.
+- The existing production HTTP auth harness now explicitly disables sending in
+  its child environment rather than inheriting a real owner's local delivery
+  opt-in. Its original demo assertions are preserved. After the user-run build,
+  `npm.cmd run test:integration` passed against that production artifact; its
+  disposable database was removed and its owned server stopped.
+- Email screen server-render assertions passed for honest unavailable/owner-only
+  copy, passive confirmation and password labels/policy. This is not interactive
+  browser, mobile-layout or inbox-delivery evidence.
+- `npm.cmd run typecheck` (including Next typegen), lint, full formatting check
+  and `git diff --check` passed after the focused corrections. The initial
+  formatting check identified one touched profile helper; it was simplified and
+  reformatted. No diagnostic build was run. UI assertions were rerun after the
+  confirmation-state changes and passed.
+
+Production verification and remaining activation:
+
+- **User-run production build passed**: supplied Git Bash output shows Next
+  16.4.2 webpack compilation, TypeScript, static generation of 14 pages and build
+  trace/finalization success, including `/reset-password`. This is user evidence,
+  not a Codex-run build and not a resolution of the paused EPERM investigation.
+  The subsequent user-run build after the label correction also passed:
+  compilation 8.0 seconds, TypeScript 10.8 seconds, 14 static pages and successful
+  trace/finalization. No agent rebuild or diagnostic compilation was performed.
+- Reused that artifact for agent-run compiled-app browser checks with mocked
+  delivery and a unique disposable `prep_pilot_mail_ui_*` database. Desktop was
+  1280x720; actual mobile viewport was confirmed as **390x844**, with document
+  scrollWidth 375–390 and no horizontal page overflow. Checked keyboard resend,
+  visible busy/accepted/cooldown states, passive opening of a real library-issued
+  test verification link, fragment removal, explicit keyboard confirmation,
+  used/invalid-link error and disabled repeat confirmation. Recovery request
+  showed generic acceptance; mobile 429 feedback retained the entered email
+  (visually verified; the browser tool redacts field values in DOM snapshots).
+  Reset form had the documented 12–128 constraints, required-field focus,
+  keyboard password-visibility toggle and usable responsive layout. Callback
+  no-referrer/no-store/noindex headers passed compiled HTTP checks. Screenshots
+  are local verification evidence, not proof of actual provider delivery.
+  The disposable session was signed out, viewport override reset and automatic
+  fixture cleanup confirmed database removal and owned-server shutdown. Its
+  final safe summary confirmed emailVerified=true and four mock-accepted sends;
+  no real Resend request or browser password change occurred. Tool policy blocked
+  terminal input to the old harness; its servers/database nevertheless cleaned
+  up on timeout. The helper now pauses stdin after the hold to avoid an idle
+  console keeping the process alive after future automatic cleanup.
+- Browser verification found **one stale-label bug**: successful explicit
+  verification showed success while retaining the original unverified user prop.
+  A focused source correction in `ui/email-panel.tsx` now derives the label from
+  confirmed success as well as initial account status; it never optimistically
+  verifies a request. Static type, lint, formatting and render checks passed after
+  the fix. The subsequent user-run build and **targeted compiled confirmation
+  recheck passed**: opening the link remained passive/unverified, then explicit
+  keyboard confirmation showed both the success message and Email verified
+  immediately, without navigation or refresh. The stale unverified label was
+  absent. The same confirmed state passed at an actual 390x844 viewport with
+  scrollWidth 390. Screenshot: local `preppilot-email-confirmed-mobile.jpg`.
+  The disposable session was signed out and the viewport reset/tab closed.
+  Other functional and regression evidence was reused, not needlessly rerun.
+  Only test-harness/docs changed during this follow-up; application source was
+  unchanged after the successful user build. The focused helper now offers a
+  two-minute noninteractive cleanup window, avoiding terminal-input dependency.
+  That focused run exited successfully (code 0), confirmed emailVerified=true
+  and one mock-accepted verification send, removed its disposable database and
+  stopped its owned servers.
+- Browser password entry/reset submission remains a **manual handoff**; no new
+  credentials were entered through browser automation. Backend reset success,
+  expiry/reuse, cross-process consumption and session revocation are automatically
+  tested separately. Owner-inbox walkthrough covers actual interactive reset.
+- The browser helper initially selected a 41-byte database name and received Atlas
+  error 8000. Its name now stays within the documented 38-byte Free-cluster limit,
+  with an explicit byte-length guard; setup then succeeded. A filtered read
+  confirmed zero databases left under the rejected old prefix. This is a test
+  fixture correction, not an application/migration-rule or service change. See
+  [Atlas Free limits](https://www.mongodb.com/docs/atlas/reference/free-shared-limitations/).
+  No diagnostic build or EPERM investigation was resumed.
+- Owner-inbox delivery is **not manually verified**. No real Resend request was
+  made. Follow `docs/email/OPERATIONS.md` with a separate disposable owner-address
+  account/database; never reset existing admin/student fixtures.
+- General-user delivery remains **blocked pending an owned verified sender**.
+  No sending domain was purchased, verified or configured by the agent. Native
+  transactional flows require a MongoDB replica set/Atlas. Migration 004 was run
+  only on disposable test databases, not the development catalog. Operators must
+  explicitly select and migrate their development/test target before activation.
+
+Important paths: `src/modules/identity/email-http.ts`, `email-schema.ts`,
+`ui/email-panel.tsx`, `auth.ts`; `src/modules/notifications/`; migration
+`scripts/migrations/004-email.ts`; new `/reset-password` route; shared AuthFrame;
+`tests/email*`; `docs/email/OPERATIONS.md` and `DESIGN.md`. No new dependencies.
+No commit, push, deployment, real-account promotion or catalog publication performed.
+
 ## Latest checkpoint: compiled dialog verification complete
 
 The Progress/Settings milestone is ready for a checkpoint commit for its approved

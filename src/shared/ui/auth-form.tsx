@@ -7,11 +7,13 @@ export function AuthForm({
   mode,
   enabled,
   emailMode,
+  deliveryMode = "disabled",
   returnTo = null,
 }: {
   mode: "login" | "signup";
   enabled: boolean;
   emailMode: "test" | "live";
+  deliveryMode?: "disabled" | "owner_test" | "live";
   returnTo?: string | null;
 }) {
   const [visible, setVisible] = useState(false);
@@ -150,9 +152,13 @@ export function AuthForm({
         </Link>
       </p>
       <p className="small-note">
-        {emailMode === "test"
-          ? "Demo email mode: verification and password recovery are currently unavailable."
-          : "Email verification is required for study access. Delivery and password recovery are not configured yet."}
+        {deliveryMode === "owner_test"
+          ? "Local owner-inbox email testing only. General-user verification and recovery remain unavailable."
+          : deliveryMode === "live"
+            ? "Email verification is required for study access. Manage verification from your account."
+            : emailMode === "test"
+              ? "Demo email mode: verification and password recovery are currently unavailable."
+              : "Email verification is required for study access. Delivery and password recovery are not configured yet."}
       </p>
     </form>
   );

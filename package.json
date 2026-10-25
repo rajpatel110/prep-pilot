@@ -9,6 +9,8 @@
   "scripts": {
     "test": "node --conditions=react-server --import tsx --test tests/*.test.ts",
     "test:integration": "node --env-file=.env.local --import tsx tests/auth-integration.ts",
+    "test:email": "node --conditions=react-server --env-file=.env.local --import tsx tests/email-integration.ts",
+    "test:email-auth": "node --conditions=react-server --env-file=.env.local --import tsx tests/email-auth-regressions.ts",
     "test:catalog": "node --conditions=react-server --env-file=.env.local --import tsx tests/catalog-integration.ts",
     "test:admin-content": "node --conditions=react-server --env-file=.env.local --import tsx tests/integration/admin-content.ts",
     "test:student": "node --conditions=react-server --env-file=.env.local --import tsx tests/integration/student-journey.ts",

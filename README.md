@@ -69,12 +69,18 @@ screens. Live-mode unverified actors go to `/verify-email` before study access.
 `GET /api/v1/me` returns capabilities and a derived `destination`; admins retain
 the documented `open_dashboard` nextAction, with destination selecting `/admin`.
 
-Email delivery is **not implemented in this slice**. Test mode allows unverified
-student access and visibly disables verification/recovery. The application email
-wrappers validate input and return `503 EMAIL_DISABLED`; native token routes are
-blocked. Setting `EMAIL_MODE=live` does not enable delivery or bypass verification.
-Do not launch a live pilot until Resend, single-use email flows and recovery
-session-revocation acceptance tests are implemented and verified.
+Email verification and password recovery use Better Auth server methods and a
+server-only Resend transport. Sending is separately opt-in and disabled by default;
+existing credentials alone do not change demo behavior. `EMAIL_MODE=test` still
+allows unverified study access. `EMAIL_MODE=live` gates study/admin access but does
+not activate mail. Native public token routes remain blocked.
+
+See [email operations](docs/email/OPERATIONS.md) for exact owner-inbox opt-in,
+additive migration 004, single-use/expiry/privacy/retry rules and a disposable-account
+walkthrough. Resend's testing sender is **owner-inbox only**, not general-user live
+delivery and not the application's EMAIL_MODE. No sending domain was verified or
+purchased. Do not launch public email until an owned sender is verified. Automated
+delivery tests use mocks (`npm.cmd run test:email`), never real account credentials.
 
 Rate limits are MongoDB-backed and fail closed. This initial local foundation
 uses HMAC account buckets (10 login requests / 15 minutes; 5 signups / 15 minutes)
@@ -705,8 +711,8 @@ No `NEXT_PUBLIC_` variable is needed. Never add secrets to public configuration,
 committed environment files, logs or browser bundles.
 
 Database/auth configuration fails closed when enabled without its required settings.
-R2 and Resend integrations remain future work. Email needs a verified sending
-domain for real recipients; R2 activation
+R2 integration remains future work. Resend transport is implemented, but email
+needs a verified sending domain for general recipients; R2 activation
 and service release gates remain outstanding. Free-tier availability is not a
 guarantee of zero billing.
 

@@ -14,6 +14,7 @@ import { storedAttempt } from "../src/modules/practice/schemas";
 import { storedRevision } from "../src/modules/revisions/schemas";
 import { planningMigration, planningChecksum } from "./migrations/003-planning";
 import { proposalValue } from "../src/modules/planning/schemas";
+import { emailMigration, emailChecksum } from "./migrations/004-email";
 
 const lockId = "__database_runner_lock__";
 const leaseMilliseconds = 5 * 60 * 1000;
@@ -449,6 +450,13 @@ export async function migrateDatabase(db: Db) {
     planningMigration.id,
     planningMigration.indexes,
     planningChecksum,
+    false,
+  );
+  await runMigration(
+    db,
+    emailMigration.id,
+    emailMigration.indexes,
+    emailChecksum,
     false,
   );
 }

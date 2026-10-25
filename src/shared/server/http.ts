@@ -7,6 +7,7 @@ export class HttpError extends Error {
     public code: string,
     message: string,
     public fields?: Readonly<Record<string, readonly string[]>>,
+    public retryAfter?: number,
   ) {
     super(message);
   }
@@ -46,7 +47,9 @@ export function failure(error: unknown, requestId = randomUUID()) {
       headers: {
         "Cache-Control": "no-store",
         "X-Request-Id": requestId,
-        ...(known && error.status === 429 ? { "Retry-After": "900" } : {}),
+        ...(known && error.status === 429
+          ? { "Retry-After": String(error.retryAfter ?? 900) }
+          : {}),
       },
     },
   );

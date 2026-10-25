@@ -12,7 +12,7 @@ async function main() {
     await client.connect();
     await migrateDatabase(client.db(target.database));
     console.log(
-      `Migrations 001–003 verified in explicitly selected ${target.environment} database ${target.database}. Records and singleton state preserved.`,
+      `Migrations 001–004 verified in explicitly selected ${target.environment} database ${target.database}. Records and singleton state preserved.`,
     );
   } catch (error) {
     console.error(
