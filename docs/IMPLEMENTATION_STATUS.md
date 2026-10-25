@@ -2,6 +2,21 @@
 
 Updated: 26 October 2026 (Asia/Kolkata).
 
+## About portrait replacement
+
+Replaced the RP initials with the owner's supplied square portrait, copied
+unchanged to public/images/raj-patel.png. Next Image supplies optimized responsive
+sources with explicit 64×64 dimensions, Raj Patel alt text, existing rounded
+corners and object-fit cover. Other copy, links, theme tokens and layout remain
+unchanged. Focused lint/formatting and direct TypeScript checking passed. Agent
+server-render/PNG checks passed for the image, alt text, dimensions and removal
+of initials; these do not prove browser loading or responsive layout.
+One production build failed with EPERM mkdir at
+C:\PROJECTS\prep-pilot\.next\static\chunks\app\api\v1\admin. No retry or
+diagnosis; current compiled desktop/mobile image verification remains pending.
+Earlier About/theme browser evidence is retained, not claimed for the new image.
+No shared data or provider configuration was changed.
+
 ## Application light/dark themes: implemented; representative browser checks passed
 
 26 October follow-up: user-run production build passed (6.1s compilation,

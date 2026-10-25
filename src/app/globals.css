@@ -571,6 +571,8 @@ h2 {
   place-items: center;
   flex: 0 0 64px;
   height: 64px;
+  width: 64px;
+  object-fit: cover;
   border-radius: 18px;
   background: var(--color-surface-note);
   color: var(--color-forest);

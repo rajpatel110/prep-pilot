@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { MobileMenu } from "@/shared/ui/mobile-menu";
 import { PageContainer } from "@/shared/ui/page-container";
 import { ThemeToggle } from "@/shared/ui/theme-toggle";
@@ -352,9 +353,14 @@ export default function Home() {
               aria-labelledby="builder-name"
             >
               <div className="builder-identity">
-                <span className="builder-avatar" aria-hidden="true">
-                  RP
-                </span>
+                <Image
+                  className="builder-avatar"
+                  src="/images/raj-patel.png"
+                  alt="Raj Patel"
+                  width={64}
+                  height={64}
+                  sizes="64px"
+                />
                 <div>
                   <h3 id="builder-name">Raj Patel</h3>
                   <p>Final-year student · PrepPilot creator.</p>
