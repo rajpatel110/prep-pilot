@@ -83,6 +83,7 @@ async function main() {
           MONGODB_DB_NAME: database,
           EMAIL_MODE: "test",
           EMAIL_DELIVERY_MODE: "owner_test",
+          EMAIL_PROVIDER: "resend",
           EMAIL_TEST_RECIPIENT: "email-browser-owner@example.com",
           RESEND_API_KEY: "mock-browser-only",
           RESEND_FROM_EMAIL: "PrepPilot <onboarding@resend.dev>",

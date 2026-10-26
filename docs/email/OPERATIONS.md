@@ -1,5 +1,10 @@
 # Email verification and recovery
 
+Brevo provider and restricted two-inbox rollout: [BREVO.md](BREVO.md). That guide
+extends the original Resend configuration below. In live access mode, enabled
+delivery now initiates signup verification; demo/owner_test behavior stays manual.
+Provider acceptance, actual receipt and token confirmation remain separate evidence.
+
 Separation is deferred; local and hosted currently share `prep_pilot_dev`.
 Automated tests must use only disposable targets, never the shared database.
 The existing real owner was later

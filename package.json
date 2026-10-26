@@ -10,6 +10,8 @@
     "test": "node --conditions=react-server --import tsx --test tests/*.test.ts",
     "test:integration": "node --env-file=.env.local --import tsx tests/auth-integration.ts",
     "test:email": "node --conditions=react-server --env-file=.env.local --import tsx tests/email-integration.ts",
+    "test:brevo": "node --conditions=react-server --env-file=.env.local --import tsx tests/brevo-integration.ts",
+    "test:brevo-http": "node --conditions=react-server --env-file=.env.local --import tsx tests/brevo-http.ts",
     "test:email-auth": "node --conditions=react-server --env-file=.env.local --import tsx tests/email-auth-regressions.ts",
     "test:files": "node --conditions=react-server --env-file=.env.local --import tsx tests/files-integration.ts",
     "files:accounting": "node --env-file=.env.local --import tsx scripts/files-accounting.ts",

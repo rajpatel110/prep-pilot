@@ -1,6 +1,7 @@
 if (
   !process.env.MONGODB_DB_NAME?.startsWith("prep_pilot_mail_ui_") ||
   process.env.RESEND_API_KEY !== "mock-browser-only" ||
+  process.env.EMAIL_PROVIDER !== "resend" ||
   !process.send
 )
   throw new Error("Disposable browser fixture required");
@@ -22,5 +23,7 @@ globalThis.fetch = async (input, init) => {
     process.send!({ emailFixture: true, text: body.text });
     return Response.json({ id: "mock-browser-accepted" });
   }
+  if (url.startsWith("https://api.brevo.com/"))
+    throw new Error("Real provider delivery forbidden in browser fixture");
   return original(input, init);
 };

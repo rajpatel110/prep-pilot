@@ -199,7 +199,7 @@ Callback pages set Referrer-Policy: no-referrer, avoid third-party analytics and
 | Method and path | Input | Success and special failures |
 | --- | --- | --- |
 | GET /me | Actor; no query/body | 200 MeDTO. A missing domain profile is idempotently created with student role and preferences=null. |
-| PATCH /me/preferences | Actor + CSRF; complete preference fields plus expectedStateRevision | 200 MeDTO. 409 STATE_CONFLICT if revision changed; 422 VALIDATION_ERROR for invalid preferences. |
+| PATCH /me/preferences | Study + CSRF; complete preference fields plus expectedStateRevision | 200 MeDTO. 403 EMAIL_NOT_VERIFIED in live mode before mutation; 409 STATE_CONFLICT if revision changed; 422 VALIDATION_ERROR for invalid preferences. |
 
 ### Preference request
 

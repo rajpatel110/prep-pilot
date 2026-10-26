@@ -5,6 +5,7 @@ import { after } from "next/server";
 import { emailAllowed, type EmailConfiguration } from "./policy";
 import {
   resendTransport,
+  brevoTransport,
   DeliveryError,
   type EmailTransport,
 } from "./transport";
@@ -64,7 +65,13 @@ export function createEmailDispatcher(
   const { deliveries, claims } = emailModels(client, database);
   const schedule = options.schedule ?? after;
   const transport =
-    options.transport ?? resendTransport(config.RESEND_API_KEY ?? "");
+    options.transport ??
+    (config.EMAIL_PROVIDER === "brevo"
+      ? brevoTransport(config.BREVO_API_KEY ?? "", {
+          email: config.BREVO_SENDER_EMAIL ?? "",
+          name: config.BREVO_SENDER_NAME ?? "",
+        })
+      : resendTransport(config.RESEND_API_KEY ?? ""));
   const pause =
     options.pause ??
     ((ms) => new Promise((resolve) => setTimeout(resolve, ms)));
@@ -163,7 +170,10 @@ export function createEmailDispatcher(
     link.hash = new URLSearchParams({ token }).toString();
     const message = {
       to: user.email,
-      from: config.RESEND_FROM_EMAIL!,
+      from:
+        config.EMAIL_PROVIDER === "brevo"
+          ? `${config.BREVO_SENDER_NAME} <${config.BREVO_SENDER_EMAIL}>`
+          : config.RESEND_FROM_EMAIL!,
       idempotencyKey: operationKey,
       subject:
         type === "verification"
@@ -218,6 +228,19 @@ export function createEmailDispatcher(
                 },
               },
             );
+            if (
+              error instanceof DeliveryError &&
+              config.EMAIL_PROVIDER === "brevo"
+            )
+              console.error(
+                JSON.stringify({
+                  requestId,
+                  code: error.code,
+                  provider: "brevo",
+                  status: error.providerStatus,
+                  providerCode: error.providerCode,
+                }),
+              );
             return;
           }
         }

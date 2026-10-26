@@ -386,6 +386,14 @@ Vercel function request/response bodies are limited to 4.5 MB. Direct browser-to
 
 ## 13 Resend and verification lifecycle
 
+Approved 26 October 2026 extension: explicit Resend/Brevo provider selection uses
+the existing notifications abstraction. Brevo's verified Gmail mailbox is not an
+authenticated owned domain. Restricted-recipient delivery can be staged before
+explicit live access enforcement; see email/BREVO.md for exact configuration,
+bounded retry semantics and rollout gates. No hosted mode was changed. The older
+Resend domain prerequisites below remain specific to that provider, not a claim
+that this limited Brevo rollout has authenticated gmail.com or passed real delivery.
+
 ### Server-controlled modes
 
 EMAIL_MODE=test: general demo users stay visibly unverified; verification/recovery controls explain that live delivery is unavailable. Provider-supported messages may be tested only with the account owner’s permitted address. EMAIL_MODE=live: all study/admin access requires verified email, and existing unverified demo users must complete verification. Missing configuration fails closed; a provider failure never switches live mode to test.

@@ -1,6 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { isIP } from "node:net";
+import { emailClientSubject } from "@/shared/server/email-client";
+export { emailClientSubject } from "@/shared/server/email-client";
 import { getAuth } from "./auth";
 import { requireActor } from "./service";
 import { emailSchemas } from "./email-schema";
@@ -23,15 +24,6 @@ const invalid = () =>
     "TOKEN_INVALID_OR_EXPIRED",
     "This link is invalid, expired or already used. Request a new link.",
   );
-export function emailClientSubject(request: Request) {
-  const supplied = request.headers
-    .get("x-vercel-forwarded-for")
-    ?.split(",")[0]
-    ?.trim();
-  return process.env.VERCEL === "1" && supplied && isIP(supplied)
-    ? supplied
-    : "untrusted-or-local";
-}
 export function createIdentityEmailHttp(dependencies: {
   config: typeof serverConfig;
   auth: typeof getAuth;

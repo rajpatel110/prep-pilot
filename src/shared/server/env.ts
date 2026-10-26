@@ -33,8 +33,32 @@ const schema = z.object({
   R2_SECRET_ACCESS_KEY: z.string().min(1).optional(),
   EMAIL_MODE: z.enum(["test", "live"]).default("test"),
   EMAIL_DELIVERY_MODE: z
-    .enum(["disabled", "owner_test", "live"])
+    .enum(["disabled", "owner_test", "restricted", "live"])
     .default("disabled"),
+  EMAIL_PROVIDER: z.enum(["resend", "brevo"]).default("resend"),
+  EMAIL_TEST_RECIPIENTS: z
+    .string()
+    .default("")
+    .transform((value) =>
+      value
+        .split(",")
+        .map((entry) => entry.trim().toLowerCase())
+        .filter(Boolean),
+    )
+    .pipe(z.array(z.email()).max(10)),
+  BREVO_API_KEY: z.string().min(1).optional(),
+  BREVO_SENDER_EMAIL: z.string().trim().email().optional(),
+  BREVO_SENDER_NAME: z
+    .string()
+    .trim()
+    .min(1)
+    .max(100)
+    .regex(/^[^\r\n<>]+$/)
+    .optional(),
+  BREVO_SENDER_VERIFIED: z
+    .enum(["true", "false"])
+    .default("false")
+    .transform((value) => value === "true"),
   EMAIL_TEST_RECIPIENT: z.string().trim().toLowerCase().email().optional(),
   RESEND_API_KEY: z.string().optional(),
   RESEND_FROM_EMAIL: z.string().max(320).optional(),
@@ -80,6 +104,12 @@ export function getServerEnv(
     CSRF_SECRET: source.CSRF_SECRET || undefined,
     RATE_LIMIT_SECRET: source.RATE_LIMIT_SECRET || undefined,
     EMAIL_MODE: source.EMAIL_MODE,
+    EMAIL_PROVIDER: source.EMAIL_PROVIDER,
+    EMAIL_TEST_RECIPIENTS: source.EMAIL_TEST_RECIPIENTS,
+    BREVO_API_KEY: source.BREVO_API_KEY || undefined,
+    BREVO_SENDER_EMAIL: source.BREVO_SENDER_EMAIL || undefined,
+    BREVO_SENDER_NAME: source.BREVO_SENDER_NAME || undefined,
+    BREVO_SENDER_VERIFIED: source.BREVO_SENDER_VERIFIED,
     EMAIL_DELIVERY_MODE: source.EMAIL_DELIVERY_MODE,
     EMAIL_TEST_RECIPIENT: source.EMAIL_TEST_RECIPIENT || undefined,
     RESEND_API_KEY: source.RESEND_API_KEY || undefined,
@@ -119,18 +149,27 @@ export function getServerEnv(
       "Files require authentication and complete server-only R2 configuration.",
     );
   if (config.EMAIL_DELIVERY_MODE !== "disabled") {
-    const sender = config.RESEND_FROM_EMAIL ?? "";
+    const sender =
+      config.EMAIL_PROVIDER === "brevo"
+        ? (config.BREVO_SENDER_EMAIL ?? "")
+        : (config.RESEND_FROM_EMAIL ?? "");
     const address = sender.includes("<")
       ? sender.match(/^[^<>\r\n]+<([^<>]+)>$/)?.[1]
       : sender;
     if (
       !config.AUTH_ENABLED ||
-      !config.RESEND_API_KEY?.trim() ||
+      !(
+        config.EMAIL_PROVIDER === "brevo"
+          ? config.BREVO_API_KEY
+          : config.RESEND_API_KEY
+      )?.trim() ||
+      (config.EMAIL_PROVIDER === "brevo" &&
+        (!config.BREVO_SENDER_NAME || !config.BREVO_SENDER_VERIFIED)) ||
       !z.email().safeParse(address).success ||
       /[\r\n]/.test(sender)
     )
       throw new Error(
-        "Email delivery requires AUTH_ENABLED, RESEND_API_KEY and a valid RESEND_FROM_EMAIL.",
+        "Email delivery requires authentication and complete configuration for the selected provider, including Brevo sender verification when selected.",
       );
     if (
       config.EMAIL_DELIVERY_MODE === "owner_test" &&
@@ -144,10 +183,23 @@ export function getServerEnv(
         "Owner-inbox testing requires EMAIL_MODE=test, EMAIL_TEST_RECIPIENT and a loopback APP_URL.",
       );
     if (
+      config.EMAIL_DELIVERY_MODE === "restricted" &&
+      (config.EMAIL_PROVIDER !== "brevo" ||
+        !config.EMAIL_TEST_RECIPIENTS.length ||
+        (!config.APP_URL.startsWith("https://") &&
+          !["localhost", "127.0.0.1", "[::1]"].includes(
+            new URL(config.APP_URL).hostname,
+          )))
+    )
+      throw new Error(
+        "Restricted delivery requires Brevo, an explicit recipient allowlist and HTTPS or loopback origin.",
+      );
+    if (
       config.EMAIL_DELIVERY_MODE === "live" &&
       (config.EMAIL_MODE !== "live" ||
-        !config.RESEND_SENDER_VERIFIED ||
-        /@(?:[^@]+\.)?resend\.dev$/i.test(address!) ||
+        (config.EMAIL_PROVIDER === "resend" &&
+          (!config.RESEND_SENDER_VERIFIED ||
+            /@(?:[^@]+\.)?resend\.dev$/i.test(address!))) ||
         !config.APP_URL.startsWith("https://"))
     )
       throw new Error(

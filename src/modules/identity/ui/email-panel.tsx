@@ -197,6 +197,12 @@ export function EmailPanel({
           delivery is configured.
         </p>
       )}
+      {availability.deliveryMode === "restricted" && (
+        <p className="plan-note" role="status">
+          Delivery is limited to approved test inboxes. Messages are never
+          redirected. Request acceptance does not confirm inbox delivery.
+        </p>
+      )}
       {mode === "verification" && user && (
         <p>
           {user.email} —{" "}

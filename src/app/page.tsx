@@ -1,8 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MobileMenu } from "@/shared/ui/mobile-menu";
+import { HomeHeader } from "@/shared/ui/home-header";
 import { PageContainer } from "@/shared/ui/page-container";
-import { ThemeToggle } from "@/shared/ui/theme-toggle";
 
 const steps = [
   [
@@ -76,27 +75,7 @@ function Brand() {
 export default function Home() {
   return (
     <>
-      <header className="site-header">
-        <PageContainer>
-          <div className="header-row">
-            <Brand />
-            <nav aria-label="Main navigation" className="desktop-nav">
-              <a href="#how-it-works">How it works</a>
-              <a href="#subjects">Subjects</a>
-              <a href="#faq">FAQ</a>
-              <Link href="/#about">About</Link>
-              <a href="/login">Sign in</a>
-            </nav>
-            <div className="header-controls">
-              <ThemeToggle />
-              <MobileMenu />
-            </div>
-            <a href="/signup" className="button button-small desktop-action">
-              Get started ↗
-            </a>
-          </div>
-        </PageContainer>
-      </header>
+      <HomeHeader />
       <main id="main-content">
         <section className="hero section-border">
           <PageContainer>

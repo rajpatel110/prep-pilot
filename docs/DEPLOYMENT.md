@@ -7,6 +7,12 @@ not performed the proposed Atlas-user or local env setup. No changes to Atlas,
 
 ## Current operating rules
 
+Prepared Brevo integration does not change the currently disabled hosted email
+configuration. Follow [the staged Brevo runbook](email/BREVO.md) for restricted
+hosted delivery first, then explicit mandatory verification after receipt checks.
+The Gmail sender is mailbox-verified, not an authenticated owned domain. Keep
+APP_URL=https://prep-pilot-theta-tan.vercel.app and existing owner/data intact.
+
 - Hosted origin remains `https://prep-pilot-theta-tan.vercel.app`; local APP_URL
   must remain the exact local browser origin. Authentication and CSRF are unchanged.
 - Local runtime/builds accept the shared database without a confirmation flag.

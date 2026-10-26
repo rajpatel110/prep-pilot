@@ -18,6 +18,7 @@ async function main() {
     APP_URL: origin,
     MONGODB_DB_NAME: database,
     EMAIL_MODE: "test",
+    EMAIL_PROVIDER: "resend",
     EMAIL_DELIVERY_MODE: "owner_test",
     EMAIL_TEST_RECIPIENT: owner,
     RESEND_API_KEY: "mock-only",

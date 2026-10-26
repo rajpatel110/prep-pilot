@@ -89,7 +89,7 @@ screens. Live-mode unverified actors go to `/verify-email` before study access.
 the documented `open_dashboard` nextAction, with destination selecting `/admin`.
 
 Email verification and password recovery use Better Auth server methods and a
-server-only Resend transport. Sending is separately opt-in and disabled by default;
+server-only explicitly selected Resend or Brevo transport. Sending is separately opt-in and disabled by default;
 existing credentials alone do not change demo behavior. `EMAIL_MODE=test` still
 allows unverified study access. `EMAIL_MODE=live` gates study/admin access but does
 not activate mail. Native public token routes remain blocked.
@@ -98,7 +98,10 @@ See [email operations](docs/email/OPERATIONS.md) for exact owner-inbox opt-in,
 additive migration 004, single-use/expiry/privacy/retry rules and a disposable-account
 walkthrough. Resend's testing sender is **owner-inbox only**, not general-user live
 delivery and not the application's EMAIL_MODE. No sending domain was verified or
-purchased. Do not launch public email until an owned sender is verified. Automated
+purchased. For the approved verified-mailbox Brevo rollout without a purchased
+domain, use [Brevo setup and staged enforcement](docs/email/BREVO.md); sender
+verification is not domain authentication. Single-inbox Brevo verification/recovery
+passed according to the user; second-inbox and hosted delivery remain unverified. Automated
 delivery tests use mocks (`npm.cmd run test:email`), never real account credentials.
 
 Rate limits are MongoDB-backed and fail closed. This initial local foundation

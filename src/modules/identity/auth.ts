@@ -5,6 +5,8 @@ import { getAuthClient } from "@/shared/server/db";
 import { serverConfig } from "@/shared/server/config";
 import { HttpError } from "@/shared/server/http";
 import { createEmailDispatcher } from "@/modules/notifications/service";
+import { rateLimit } from "@/shared/server/rate-limit";
+import { emailClientSubject } from "@/shared/server/email-client";
 
 let instance: ReturnType<typeof buildAuth> | undefined;
 export function buildAuth(
@@ -40,9 +42,43 @@ export function buildAuth(
     emailVerification: {
       expiresIn: 3600,
       autoSignInAfterVerification: false,
-      sendOnSignUp: false,
+      sendOnSignUp:
+        config.EMAIL_MODE === "live" &&
+        config.EMAIL_DELIVERY_MODE !== "disabled",
       sendOnSignIn: false,
       sendVerificationEmail: async ({ user, token }, request) => {
+        if (
+          request &&
+          new URL(request.url).pathname.endsWith("/sign-up/email")
+        ) {
+          try {
+            await rateLimit(
+              "email-send-ip:verification/request",
+              emailClientSubject(request),
+              10,
+              3600,
+            );
+            await rateLimit(
+              "email-send-address:verification/request",
+              user.email.toLowerCase(),
+              3,
+              3600,
+            );
+            await dispatcher.queue(
+              "verification",
+              user,
+              token,
+              request.headers.get("x-preppilot-request-id") ?? undefined,
+            );
+          } catch {
+            console.error(
+              JSON.stringify({
+                code: "SIGNUP_VERIFICATION_REQUEST_UNAVAILABLE",
+              }),
+            );
+          }
+          return;
+        }
         await dispatcher.queue(
           "verification",
           user,

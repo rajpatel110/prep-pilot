@@ -3,7 +3,11 @@
 import { useRef } from "react";
 import Link from "next/link";
 
-export function MobileMenu() {
+export function MobileMenu({
+  signedIn = false,
+}: {
+  signedIn?: boolean | null;
+}) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
   const summaryRef = useRef<HTMLElement>(null);
 
@@ -37,12 +41,21 @@ export function MobileMenu() {
         <Link href="/#about" onClick={closeMenu}>
           About
         </Link>
-        <a href="/login" onClick={closeMenu}>
-          Sign in
+        <a
+          href={signedIn === false ? "/login" : "/account"}
+          onClick={closeMenu}
+        >
+          {signedIn === false
+            ? "Sign in"
+            : signedIn === true
+              ? "My account"
+              : "Open app"}
         </a>
-        <a href="/signup" onClick={closeMenu}>
-          Get started
-        </a>
+        {signedIn === false && (
+          <a href="/signup" onClick={closeMenu}>
+            Get started
+          </a>
+        )}
       </nav>
     </details>
   );

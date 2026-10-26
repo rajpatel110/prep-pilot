@@ -16,7 +16,7 @@ export function StudentShell({
   return (
     <div className="student-app">
       <header className="student-header">
-        <Link className="brand" href="/account">
+        <Link className="brand" href="/" aria-label="PrepPilot home">
           PrepPilot
         </Link>
         {!onboarding && <StudentNavigation />}

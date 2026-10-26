@@ -35,6 +35,15 @@ assert.match(verify, /Opening this page does not verify/);
 assert.match(verify, /60 minutes/);
 assert.ok(!verify.includes("verification confirmed"));
 assert.ok(!verify.includes("#token="));
+const restricted = renderToStaticMarkup(
+  createElement(EmailPanel, {
+    mode: "verification",
+    availability: { ...owner, deliveryMode: "restricted", emailMode: "live" },
+  }),
+);
+assert.match(restricted, /Delivery is limited to approved test inboxes/);
+assert.match(restricted, /Messages are never redirected/);
+assert.match(restricted, /Opening this page does not verify/);
 console.log(
   "PASS email screen render contracts: honest unavailable/owner-only states, passive verification, reset labels and password policy. Interactive/browser checks remain separate.",
 );

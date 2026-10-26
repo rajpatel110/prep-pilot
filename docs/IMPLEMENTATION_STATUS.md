@@ -2,6 +2,100 @@
 
 Updated: 26 October 2026 (Asia/Kolkata).
 
+## Navigation correction and single-inbox Brevo checkpoint
+
+User confirms successful controlled single-inbox verification, reset, old-password
+rejection, session revocation and reused-link rejection. This is user-reported
+evidence, not a new agent-run real-provider test. Second-inbox delivery is explicitly
+deferred; hosted email/settings remain unchanged. No shared records were tested.
+
+Student/onboarding PrepPilot logo now links to the homepage, matching other headers.
+Homepage desktop/mobile navigation reads current session status and offers My
+account/Continue for signed-in users, with /account preserving server-derived role
+and verification routing. Anonymous users retain Sign in/Get started. Pending or
+unavailable status offers Open app rather than asserting logout. Focus/pageshow
+refreshes status without writing preferences or storing session details locally.
+Reset does not need an additional revocation fix: the user confirmed the existing
+flow works. Other already-open pages still refresh on their next server request.
+
+Full formatting, lint, route type generation/TypeScript and a fresh agent-run
+production build passed after navigation changes. Earlier mocked Brevo/auth/reset
+regressions remain valid; no unrelated suite or EPERM diagnosis was repeated.
+
+Focused browser check: measured 1280x720, anonymous Sign in/Get started visible,
+no horizontal overflow; disposable onboarding logo successfully navigated home.
+Settled signed-in labels and the mobile interaction recheck could not be completed
+because browser automation timed out/reset. Do not count them as passed. The older
+student fixture failed during setup and cleaned up; the narrower navigation fixture
+used only pp_nav_ui disposable data, then removed its database and stopped its server.
+
+Checkpoint requested by user: Git staging failed creating .git/index.lock and
+writing .git/objects. A narrowly scoped metadata permission grant did not resolve
+the execution failure. No commit or push occurred in this agent session. An ignored
+operator helper .tools/checkpoint-brevo-navigation.ts stages only the email/navigation
+checkpoint (partial shared docs/scripts), leaves content/importer/generated/diagnostic
+work separate, commits on dev and performs a normal origin/dev push when user-run.
+
+## Brevo transactional delivery: implemented, real delivery pending
+
+Added explicit EMAIL_PROVIDER=resend|brevo with legacy Resend default and no
+provider fallback. Brevo uses native HTTPS fetch and separate validated API key,
+sender email/name and mailbox-verification attestation. That attestation does not
+authenticate gmail.com. Disabled/owner-test modes remain; new restricted mode
+allows exact controlled inboxes with test or live access policy for staged rollout.
+No environment file, hosted configuration, real account, role or catalog changed.
+
+Existing Better Auth link issuance, explicit single-use confirmation, 60/30-minute
+lifetimes and reset session revocation remain. Enabled live-mode signup now
+initiates verification using the existing callback and shared send limits.
+Unverified protected-page routing and study/admin/owner guards remain; preferences
+mutation now also uses requireStudyActor to match its protected page. Status,
+verification/resend, recovery and sign-out remain reachable. No OTP or automatic
+verification was added. Request acceptance is never presented as inbox delivery.
+
+Brevo sends only the intended recipient and uses stable UUID idempotency. Existing
+bounded retries apply to explicit 5xx; 4xx/quota, timeout/network and malformed
+acknowledgment stop without blind retries. Terminal errors log only request ID,
+safe category, HTTP status and allowlisted provider code; no raw provider body,
+address, credential or token. No contacts/list subscription APIs or new dependency.
+
+Agent-run checks passed: 15 focused adapter/config/permission/link tests; Brevo
+adapter tests rerun after safe error-diagnostic changes; render contracts including
+restricted-delivery messaging; mocked disposable Brevo signup to three intended
+addresses, passive link and explicit confirmation/reuse, live content API denial,
+preferences denial and verified disposable-owner access. Existing email integration
+passed expiry/reuse/concurrency, CSRF/origin, generic recovery, provider failure,
+durable limits, reset rollback and session revocation. Existing direct authentication
+regressions passed in test/live modes. Generated databases were removed and
+connections closed. Shared prep_pilot_dev was not used as a fixture.
+
+Normal tsx execution failed before tests with uv_os_get_passwd ENOMEM. Checks used
+installed esbuild (in-memory initially, then a temporary ignored CJS test loader
+preserving source filenames and subprocess fixtures); no auth assertion was weakened.
+Formatting, full lint and next typegen/TypeScript passed. Agent-run production
+build passed: compilation, TypeScript, all 21 static pages and build completion.
+No EPERM occurred in this attempt; this does not establish the historical cause
+or resolve the paused investigation. No manual rebuild is needed for this source.
+
+Compiled production HTTP check subsequently passed using mocked Brevo delivery:
+signup issuance, protected page redirects (including Next's streamed meta redirect),
+content/progress/admin API denial, passive verification page, explicit confirmation
+and replay rejection, and verified disposable owner admin/Manage admins access.
+The fixture database was removed and its owned server stopped. Earlier fixture
+attempts had signup 503s before rate-bucket writes (cause unproven) and an overly
+narrow redirect assertion. The final fixture waits for read-only auth readiness
+and checks the installed Next version's one-second streamed redirect. No automatic
+signup retry or application-security workaround was introduced. Browser clicks,
+real provider delivery and Vercel rollout remain separate unverified checks.
+
+Operator guide: docs/email/BREVO.md includes private local variables, generated
+disposable-database/two-inbox steps and staged Vercel configuration preserving
+https://prep-pilot-theta-tan.vercel.app. Sender verification and restricted key scope
+are user-reported. Brevo sending activation, real acceptance, actual inbox receipt
+and hosted enforcement remain unverified. Earlier Resend owner-inbox results are
+preserved but do not verify Brevo. No real email, deployment, commit, push or
+billing activation was performed. Pending company-content/importer work is preserved.
+
 ## About portrait replacement
 
 Replaced the RP initials with the owner's supplied square portrait, copied

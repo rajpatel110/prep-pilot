@@ -1,13 +1,13 @@
 import "server-only";
 import { HttpError } from "@/shared/server/http";
 import { profiles } from "./profile";
-import { actorDto, requireActor } from "./service";
+import { actorDto, requireStudyActor } from "./service";
 import { destination } from "./policy";
 import { serverConfig } from "@/shared/server/config";
 import { preferenceFields, preferencesInputSchema } from "./preferences-schema";
 
 export async function savePreferences(headers: Headers, input: unknown) {
-  const actor = await requireActor(headers);
+  const actor = await requireStudyActor(headers);
   const parsed = preferencesInputSchema.safeParse(input);
   if (!parsed.success)
     throw new HttpError(
@@ -34,7 +34,7 @@ export async function savePreferences(headers: Headers, input: unknown) {
     )
     .lean();
   if (!profile) {
-    await requireActor(headers);
+    await requireStudyActor(headers);
     throw new HttpError(
       409,
       "STATE_CONFLICT",
