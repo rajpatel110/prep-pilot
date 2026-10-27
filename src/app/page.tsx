@@ -1,65 +1,71 @@
 import Link from "next/link";
 import Image from "next/image";
 import { HomeHeader } from "@/shared/ui/home-header";
+import { HomeMotion } from "@/shared/ui/home-motion";
 import { PageContainer } from "@/shared/ui/page-container";
+import styles from "./home.module.css";
 
 const steps = [
   [
-    "Set your goals",
+    "Set your direction",
     "Choose your target companies, deadline and daily study time.",
     "30 minutes to 4 hours a day",
   ],
   [
-    "Practise with a plan",
-    "Work through a balanced mix of DSA, aptitude and CS fundamentals.",
-    "One manageable daily routine",
+    "Preview, then accept",
+    "See the eligible tasks, time totals and any work that cannot fit.",
+    "Your confirmation saves the plan",
   ],
   [
-    "Review and adjust",
-    "Record how practice went and review suggested revisions or schedule changes.",
-    "You approve every plan change",
+    "Practise and revisit",
+    "Record an outcome, complete tasks explicitly and return to your revision queue.",
+    "Practice and completion stay separate",
   ],
 ];
 const subjects = [
   [
     "</>",
     "DSA",
-    "Build problem-solving confidence with curated questions and external practice links.",
+    "Work through questions and explain the reasoning behind your solution.",
     ["Arrays", "Strings", "Searching and sorting"],
   ],
   [
     "∑",
     "Aptitude",
-    "Practise quantitative, logical and verbal reasoning with reviewed material.",
+    "Build quantitative, logical and verbal reasoning, one question at a time.",
     ["Percentages", "Logical reasoning", "Verbal ability"],
   ],
   [
     "◇",
     "CS fundamentals",
-    "Review core concepts and test your understanding with recall questions.",
+    "Connect core concepts with explanations and recall questions.",
     ["DBMS", "Operating systems", "Networking", "OOP"],
   ],
 ] as const;
 const questions = [
   [
     "Do I solve coding questions inside PrepPilot?",
-    "PrepPilot will link to external coding platforms. Return to record whether you solved independently, needed help or could not solve.",
+    "Read the question in PrepPilot or follow its practice link when provided. Solve it yourself, then record whether you solved independently, needed help or could not solve. PrepPilot does not run or automatically grade your code.",
   ],
   [
     "Can I choose how much time I study each day?",
-    "The planned workflow supports 30 minutes to 4 hours daily, in 15-minute steps. Practice and scheduled revisions share that budget.",
+    "Choose 30 minutes to 4 hours daily, in 15-minute steps. Individual content estimates can be shorter. Scheduled work stays within your daily budget; missing eligible content can leave time unused.",
   ],
   [
     "What happens if I miss a day?",
-    "PrepPilot will propose a revised schedule, showing work that cannot fit. You review changes and explicitly approve or defer work.",
+    "Your saved plan does not silently move to another day. Review a new plan preview to see what fits your remaining time before accepting a replacement plan.",
   ],
   [
     "Will my plan change automatically?",
-    "No. Suggestions show the reason, before-and-after tasks and time totals. Your saved schedule changes only after confirmation.",
+    "No. Review a plan preview and its time totals before confirming it. Recording a practice outcome updates your practice history and revision queue, but does not automatically mark a plan task complete.",
   ],
   [
     "Which areas and companies does it cover?",
-    "Initial coverage is planned for DSA, aptitude and CS fundamentals, with Cognizant and LTM preferences alongside shared foundations. These are not partnerships or hiring guarantees.",
+    "DSA, aptitude and CS fundamentals are the subject areas, with Cognizant and LTM planning preferences alongside shared foundations. The starter catalog is limited: some topics may have no eligible material. Company labels are not an official syllabus, endorsement or hiring guarantee.",
+  ],
+  [
+    "How do verification and password recovery work?",
+    "The hosted app requires email verification for protected access. Open your verification link and explicitly confirm your email. Password recovery also uses an emailed link. Request acceptance does not guarantee inbox delivery; check spam or request a new link if needed.",
   ],
 ];
 function Brand() {
@@ -76,22 +82,19 @@ export default function Home() {
   return (
     <>
       <HomeHeader />
-      <main id="main-content">
+      <main id="main-content" className={styles.home}>
+        <HomeMotion />
         <section className="hero section-border">
           <PageContainer>
             <div className="hero-grid">
               <div>
-                <p className="eyebrow pill">
-                  Placement preparation, with direction
-                </p>
                 <h1>
                   Placement prep.
                   <br />A clearer next step.
                 </h1>
                 <p className="hero-copy">
-                  Build a study plan for DSA, aptitude and CS fundamentals
-                  around your goals and available time. Track your practice and
-                  review suggested changes as you go.
+                  Plan DSA, aptitude and CS fundamentals around your time.
+                  Preview your schedule before you accept it.
                 </p>
                 <div className="actions">
                   <a className="button" href="/signup">
@@ -101,10 +104,6 @@ export default function Home() {
                     See a sample plan
                   </a>
                 </div>
-                <p className="small-note">
-                  Create an account, then explore your preparation workspace.
-                </p>
-                <p className="subject-line">DSA · Aptitude · CS fundamentals</p>
               </div>
               <article
                 className="card plan-card"
@@ -116,13 +115,15 @@ export default function Home() {
                   <span className="small-note">Illustrative example</span>
                 </div>
                 <h2 id="plan-title">Today’s plan</h2>
-                <p className="small-note">90 minutes planned</p>
+                <p className="small-note">
+                  27 estimated minutes / 30-minute daily budget
+                </p>
                 <ul className="task-list">
                   {[
-                    ["Arrays practice", "DSA", "Completed"],
-                    ["Quantitative aptitude", "Aptitude", "Pending"],
-                    ["DBMS revision", "CS fundamentals", "Pending"],
-                  ].map(([title, subject, status]) => (
+                    ["Arrays practice", "DSA", "15", "Completed"],
+                    ["Mixture practice", "Aptitude", "7", "Pending"],
+                    ["Logical reasoning", "Aptitude", "5", "Pending"],
+                  ].map(([title, subject, minutes, status]) => (
                     <li
                       className={`task ${status === "Completed" ? "completed" : ""}`}
                       key={title}
@@ -132,7 +133,9 @@ export default function Home() {
                       </span>
                       <div className="task-copy">
                         <p>{title}</p>
-                        <span>{subject} · 30 min</span>
+                        <span>
+                          {subject} · {minutes} min
+                        </span>
                       </div>
                       <span className="status">{status}</span>
                     </li>
@@ -146,7 +149,7 @@ export default function Home() {
                   1 of 3 tasks completed
                 </progress>
                 <p className="plan-note">
-                  A clear next task, with time set aside for revision.
+                  Sample data only. Your preview depends on eligible content.
                 </p>
               </article>
             </div>
@@ -154,39 +157,48 @@ export default function Home() {
         </section>
         <section className="section section-border" id="how-it-works">
           <PageContainer>
-            <div className="section-intro">
-              <p className="eyebrow">A structured path</p>
+            <div className="section-intro" data-home-reveal="text">
               <h2>From a goal to a manageable daily plan.</h2>
-              <p>
-                Choose your direction, follow your plan and review what needs to
-                change.
-              </p>
+              <p>Choose your direction. Review the plan. Take the next step.</p>
             </div>
-            <div className="three-grid">
+            <ol className={styles.workflow}>
               {steps.map(([title, text, note], index) => (
-                <article className="card feature-card" key={title}>
-                  <span className="step-number">{index + 1}</span>
-                  <h3>{title}</h3>
-                  <p>{text}</p>
-                  <p className="card-footnote">{note}</p>
-                </article>
+                <li key={title} data-home-reveal="item">
+                  <span className={styles.stepNumber} aria-hidden="true">
+                    0{index + 1}
+                  </span>
+                  <div>
+                    <h3>{title}</h3>
+                    <p>{text}</p>
+                    <p className={styles.stepNote}>{note}</p>
+                  </div>
+                </li>
               ))}
-            </div>
+            </ol>
           </PageContainer>
         </section>
         <section className="section section-border" id="subjects">
           <PageContainer>
-            <div className="section-intro">
-              <p className="eyebrow">Three subject pillars</p>
+            <div className="section-intro" data-home-reveal="text">
               <h2>Three areas. One organised plan.</h2>
+              <p>
+                Example topics below; availability varies across the starter
+                catalog.
+              </p>
             </div>
             <div className="three-grid">
               {subjects.map(([icon, title, text, topics]) => (
-                <article className="card feature-card" key={title}>
-                  <span className="subject-icon" aria-hidden="true">
-                    {icon}
-                  </span>
-                  <h3>{title}</h3>
+                <article
+                  className="card feature-card"
+                  key={title}
+                  data-home-reveal="item"
+                >
+                  <div className={styles.subjectHeading}>
+                    <span className="subject-icon" aria-hidden="true">
+                      {icon}
+                    </span>
+                    <h3>{title}</h3>
+                  </div>
                   <p>{text}</p>
                   <ul
                     className="topic-list"
@@ -201,79 +213,76 @@ export default function Home() {
             </div>
             <div className="coverage-note">
               <p>
-                Initial preparation coverage: Cognizant and LTM, alongside
+                Choose Cognizant, LTM or both as planning preferences, alongside
                 shared fundamentals.
               </p>
               <p className="small-note">
-                Company preferences guide preparation, without implying
-                partnerships or hiring guarantees.
+                Coverage is limited, not a complete company syllabus. Company
+                labels do not imply partnerships or hiring guarantees.
               </p>
             </div>
           </PageContainer>
         </section>
         <section className="section section-border">
           <PageContainer>
-            <div className="progress-grid">
+            <div className={styles.practiceStory}>
               <div>
-                <p className="eyebrow">Practice with perspective</p>
-                <h2>
+                <h2 data-home-reveal="text">
                   See your progress.
                   <br />
                   Understand your next step.
                 </h2>
                 <p className="section-copy">
-                  Your recorded practice helps identify what to revisit. Review
-                  the reason and proposed changes before updating your plan.
+                  A plan gives you a place to start. Your recorded outcomes help
+                  you see what to revisit in Dashboard, Progress and Revisions.
                 </p>
-                <p className="eyebrow metrics-label">
-                  Illustrative dashboard · Sample data
-                </p>
-                <div className="metrics">
-                  {[
-                    ["24", "Completed tasks"],
-                    ["18", "Recorded outcomes"],
-                    ["3", "Due revisions"],
-                  ].map(([value, label]) => (
-                    <div className="card metric" key={label}>
-                      <strong>{value}</strong>
-                      <span>{label}</span>
-                    </div>
-                  ))}
-                </div>
-                <p className="section-copy">
-                  Record independent solutions, questions where you needed help
-                  and topics to revisit. Task completion and practice outcomes
-                  stay separate.
-                </p>
+                <dl className={styles.outcomeKey}>
+                  <div>
+                    <dt>Practice outcome</dt>
+                    <dd>
+                      How the question went: independently, with help or not
+                      solved.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Task completion</dt>
+                    <dd>A separate action you control in your saved plan.</dd>
+                  </div>
+                </dl>
               </div>
-              <article className="card suggestion">
-                <div className="between">
-                  <span className="tag">Example suggestion</span>
-                  <span className="review-label">Requires your review</span>
-                </div>
-                <p className="eyebrow suggestion-topic">Focus topic</p>
-                <h3>Arrays</h3>
-                <p className="evidence">
-                  You needed help in two of your last three practice attempts in
-                  this topic.
+              <article
+                className={`card ${styles.exampleFlow}`}
+                aria-labelledby="workflow-example-title"
+              >
+                <p className={styles.exampleLabel}>
+                  Illustrative workflow / sample data
                 </p>
-                <p>
-                  Replace one pending 30-minute arrays task with a 30-minute
-                  fundamentals review.
-                </p>
-                <div className="change-row">
-                  <span>Before: Arrays practice</span>
-                  <span>30 min</span>
-                </div>
-                <div className="change-row proposed">
-                  <span>Proposed: Arrays fundamentals review</span>
-                  <span>30 min</span>
-                </div>
-                <p className="small-note">
-                  Daily planned time stays at 90 minutes.
-                </p>
+                <h3 id="workflow-example-title">Three deliberate steps.</h3>
+                <ol className={styles.exampleSteps}>
+                  <li>
+                    <h4>Preview the schedule</h4>
+                    <p>
+                      27 of 30 minutes planned. Inspect the tasks and unused
+                      time.
+                    </p>
+                  </li>
+                  <li>
+                    <h4>Explicitly accept</h4>
+                    <p>
+                      Confirm the preview to save the plan. Viewing it alone
+                      does not activate a plan.
+                    </p>
+                  </li>
+                  <li>
+                    <h4>Record a practice outcome</h4>
+                    <p>
+                      <strong>Arrays practice: solved with help.</strong> The
+                      outcome enters practice history and schedules a revision.
+                    </p>
+                  </li>
+                </ol>
                 <p className="plan-note">
-                  You decide whether to apply the change. This example does not
+                  Mark the task complete separately. This illustration does not
                   change a saved plan.
                 </p>
               </article>
@@ -282,8 +291,7 @@ export default function Home() {
         </section>
         <section className="section" id="faq">
           <PageContainer>
-            <div className="section-intro">
-              <p className="eyebrow">A little more clarity</p>
+            <div className="section-intro" data-home-reveal="text">
               <h2>A few things you might be wondering.</h2>
             </div>
             <div className="faq-list">
@@ -300,16 +308,14 @@ export default function Home() {
               ))}
             </div>
             <div className="closing-panel" id="availability">
-              <p className="eyebrow">Your next chapter</p>
               <h2>Give your preparation a clear next step.</h2>
               <p>
-                Bring your goals, daily practice and revision into one
-                manageable plan.
+                Preview and accept a plan, record your practice outcomes and
+                keep track of what to revisit.
               </p>
               <p className="availability-note">
-                Account access is available in demo mode. Saved study plans are
-                coming in a later milestone. Verification and recovery email are
-                unavailable.
+                Schedules use available eligible content. Missing topics can
+                leave time unused; PrepPilot does not invent tasks to fill it.
               </p>
               <a className="button" href="/signup">
                 Create your account <span aria-hidden="true">↗</span>
@@ -323,8 +329,8 @@ export default function Home() {
           aria-labelledby="about-heading"
         >
           <PageContainer>
-            <div className="section-intro">
-              <p className="eyebrow">ABOUT THE BUILDER</p>
+            <div className="section-intro" data-home-reveal="text">
+              <p className="eyebrow">About the builder</p>
               <h2 id="about-heading">Meet the builder behind PrepPilot.</h2>
             </div>
             <article

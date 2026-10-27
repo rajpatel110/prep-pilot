@@ -1,0 +1,312 @@
+.home [data-home-reveal="text"][data-revealing] {
+  animation: revealText 650ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.home [data-home-reveal="item"][data-revealing] > * {
+  animation: revealItem 650ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes revealText {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes revealItem {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home [data-home-reveal="text"][data-revealing],
+  .home [data-home-reveal="item"][data-revealing] > * {
+    animation: none;
+  }
+}
+
+.home :global(.hero) {
+  padding: 64px 0 72px;
+}
+
+.home :global(.hero-grid) {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 48px;
+}
+
+.home h1 {
+  margin-top: 0;
+}
+
+.home :global(.hero-copy) {
+  margin: 24px 0 28px;
+  max-width: 46ch;
+}
+
+.home :global(.section-intro) {
+  text-align: left;
+  margin: 0 0 32px;
+}
+
+.home :global(.section-intro) h2 {
+  margin-top: 0;
+}
+
+.home :global(.eyebrow) {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 13px;
+}
+
+.home :global(.plan-card .tag) {
+  background: var(--color-accent-surface);
+  color: var(--color-accent-text);
+}
+
+.home :global(.section-intro .eyebrow) {
+  margin-bottom: 12px;
+}
+
+.home :global(.task) {
+  border: 0;
+  border-bottom: 1px solid var(--color-border-divider);
+  border-radius: 0;
+  padding: 14px 8px;
+}
+
+.home :global(.task-list) {
+  gap: 0;
+  margin: 16px 0;
+}
+
+.home :global(.task-copy > span),
+.home :global(.progress-caption),
+.home :global(.tag),
+.home :global(.status),
+.home :global(.topic-list li) {
+  font-size: 12px;
+}
+
+.home :global(.feature-card) {
+  padding: 24px;
+}
+
+.subjectHeading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.subjectHeading :global(.subject-icon) {
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  background: transparent;
+}
+
+.home :global(.topic-list) {
+  padding-top: 20px;
+}
+
+.home :global(.coverage-note) {
+  text-align: left;
+  margin-top: 24px;
+  max-width: 75ch;
+}
+
+.workflow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+}
+
+.workflow li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+  border-top: 1px solid var(--color-line);
+  padding-top: 24px;
+}
+
+.stepNumber {
+  color: var(--color-forest);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.workflow p {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--color-muted);
+  line-height: 1.7;
+}
+
+.workflow .stepNote {
+  margin-top: 16px;
+  color: var(--color-forest);
+  font-size: 12px;
+}
+
+.practiceStory {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: center;
+}
+
+.outcomeKey {
+  margin: 28px 0 0;
+}
+
+.outcomeKey > div {
+  border-top: 1px solid var(--color-line);
+  padding: 16px 0;
+}
+
+.outcomeKey dt {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.outcomeKey dd {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-muted);
+}
+
+.exampleFlow {
+  padding: 28px;
+}
+
+.exampleLabel {
+  color: var(--color-forest);
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.exampleSteps {
+  margin: 24px 0 0;
+  padding-left: 22px;
+}
+
+.exampleSteps li {
+  padding: 0 0 20px 8px;
+}
+
+.exampleSteps li:last-child {
+  padding-bottom: 0;
+}
+
+.exampleSteps li::marker {
+  color: var(--color-forest);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.exampleSteps h4 {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.exampleSteps p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-muted);
+  margin-top: 6px;
+}
+
+.exampleSteps strong {
+  color: var(--color-charcoal);
+  font-weight: 600;
+}
+
+.home :global(.closing-panel) {
+  max-width: none;
+  text-align: left;
+  margin-top: 48px;
+  padding: 32px;
+}
+
+.home :global(.closing-panel h2) {
+  margin-top: 0;
+}
+
+.home :global(.closing-panel .availability-note) {
+  max-width: 70ch;
+  margin: 16px 0 24px;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .home :global(.hero) {
+    padding: 32px 0 44px;
+  }
+
+  .home :global(.hero-grid) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .home :global(.hero-copy) {
+    margin: 20px 0 24px;
+  }
+
+  .workflow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .workflow li {
+    padding-top: 20px;
+  }
+
+  .workflow p {
+    margin-top: 8px;
+  }
+
+  .workflow .stepNote {
+    margin-top: 8px;
+  }
+
+  .home :global(.feature-card) {
+    padding: 20px;
+  }
+
+  .home :global(.three-grid) {
+    gap: 12px;
+  }
+
+  .practiceStory {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .exampleFlow {
+    padding: 24px 20px;
+  }
+
+  .home :global(.closing-panel) {
+    padding: 24px;
+    margin-top: 32px;
+  }
+}

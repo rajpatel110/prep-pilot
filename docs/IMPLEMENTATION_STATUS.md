@@ -1,6 +1,248 @@
 # PrepPilot implementation status
 
-Updated: 27 October 2026 (Asia/Kolkata).
+Updated: 28 October 2026 (Asia/Kolkata).
+
+## Visual milestone checkpoint review — 28 October 2026
+
+Reviewed the homepage polish/reveal controller, scoped CSS, root font loading,
+shared palette and targeted student/admin control styles against the actual diff.
+No additional material regression was found within this scope; no source fix or
+new build was required. Reuse compiled build `qC4fdKmAxzG_-b92FpgTb` and the
+representative desktop/mobile light/dark evidence below. Existing authenticated
+fixture cleanup evidence remains applicable; no database access was needed for
+this checkpoint review. The earlier control-border contrast correction is included.
+
+Commit scope is visual implementation, focused tests and visual design/evidence
+documentation only. Content/importer work, unrelated identity/catalog changes,
+generated files and diagnostics remain separate. Reduced-motion and no-JavaScript
+fallbacks have automated/SSR evidence, not actual browser-mode verification.
+No measured zero-flash, font waterfall or CLS result is claimed. The known
+same-hash About re-click after resize limitation remains. A normal push of `dev`
+may trigger Vercel Production; a successful push alone is not deployment evidence.
+
+Final checkpoint rerun: 23 focused tests, scoped formatting/ESLint, project
+TypeScript and staged whitespace checks passed. A fresh fetch found no existing
+unpushed commits before this visual checkpoint. Scope includes completed visual
+work from earlier chats, not just the latest palette edits. No source changes
+were made during final review, so the verified compiled build was reused.
+
+## Graphite / cool-white / tangerine theme — compiled representative checks passed
+
+The approved replacement palette is centralised in `src/shared/ui/theme.css`.
+Neutral page/surface/text/action tokens now cover shared homepage, auth, student,
+admin, dialogs, forms and table styles. Compatibility aliases preserve existing
+consumer layouts. Brand mark, sample-plan tag and progress use selective orange;
+small accent text/focus use contrast-adjusted colours. Success, warning and error
+roles remain distinct. Form control boundaries are stronger than decorative
+borders. Instrument Sans uses the installed Next.js font loader once in the root
+layout; code remains monospace. No new dependency, CSP relaxation, theme provider,
+authentication behaviour or database change is introduced.
+
+Existing uncommitted homepage polish, reveal controller/tests, portrait/contacts
+and unrelated content/importer changes are preserved. The earlier compiled build
+does not verify this palette/font source change. A before screenshot was captured
+from the existing local homepage; the fresh-build results are recorded below.
+See `docs/VISUAL_THEME.md` for the current design specification.
+
+Agent-run checks: 23 focused theme/reveal tests passed, including WCAG text
+contrast (4.5:1), focus/control boundaries (3:1), matching system-dark fallback
+tokens, single font-loader declaration, persistence/storage failures and reveal
+fallbacks. Focused formatting, ESLint and project TypeScript checks passed.
+One low-contrast light control border found by the new check was darkened before
+the passing run.
+
+The user reported running the final build and starting the compiled server.
+Agent inspection confirmed build ID `qC4fdKmAxzG_-b92FpgTb` and the rendered
+Instrument Sans stack, light background rgb(246,247,249) and dark background
+rgb(17,19,22). No further source changes or rebuilds were needed. Connected
+Chrome checks covered homepage and signup in both themes at desktop and actual
+390×844; student dashboard and admin catalog in both themes at 1280×800 and
+390×844. The original homepage desktop capture was 1536×720. Screenshots were
+visually inspected, not merely generated. No horizontal overflow was detected.
+Mobile menu opened/collapsed, About navigation cleared the sticky header after
+scroll settled, and the three contact destinations remained correct. Enter
+operated the theme button with an orange focus ring; theme selection survived
+reload and route navigation. Signup's auth-disabled message/button remained honest.
+
+Authenticated checks reused `tests/student-ui-fixture.ts` with its random
+`pp_student_ui_*` database and generated accounts/material only. Student Settings
+unsaved input was preserved after Escape, focus returned to Cancel, and discard
+left without saving. The native dark shared dialog fitted desktop/mobile.
+Admin detail scrolling, published status green, dark filters/table and Escape
+focus restoration were checked without catalog edits. Captured warning/error
+logs were empty. The fixture reported zero attempts and plans, then confirmed
+database removal and its owned server stopped after POST /finish. Shared
+`prep_pilot_dev`, real accounts and catalog were not modified. An initial fixture
+connection attempt failed before database setup; it was rerun successfully after
+network access was granted.
+
+Before/after artifacts are under the Codex workspace: `graphite-before-desktop-light.png`,
+`graphite-after-desktop-light.png`, `graphite-after-desktop-dark.png`,
+`graphite-after-mobile-light.png` and `graphite-after-mobile-dark.png`.
+Remaining limits: no font-loading waterfall/CLS measurement, exhaustive screen/state
+sweep, actual browser reduced-motion or JavaScript-disabled run. Those reveal/theme
+fallbacks retain automated coverage; previous motion evidence is not retroactively
+promoted. The user's public localhost:3140 server is left running for their review.
+No commit, push or deployment.
+
+## Homepage reveal visibility tuning — compiled desktop motion confirmed
+
+After the user reported the effect was difficult to perceive at
+`http://127.0.0.1:3140/`, Codex confirmed their connected Chrome tab had reduced
+motion disabled (1536×720). The previous 450ms, strongly front-loaded ease could
+finish near the viewport edge. The revised source uses 650ms with a gentler
+ease-out, a 64px bottom observer inset, and at most 3px blur on small text groups.
+Movement remains 12px; controls, portrait, hero, default-visible fallback and
+reduced-motion bypass are unchanged. Linear's official homepage was inspected
+as a restrained reference, but its sampled headings did not demonstrate blur;
+this is not claimed to reproduce Linear's implementation.
+
+The compiled evidence below applies to the earlier parameters, not this tuning.
+All 16 focused reveal tests, focused Prettier/ESLint and project TypeScript
+checks passed after tuning. The user reported completing the fresh build and
+starting the production server. Codex sampled the rebuilt page in connected
+Chrome at 1536×720: active styles reported 0.65s duration, text blur up to
+2.82px during sampling, opacity progressing from near zero, and zero remaining
+active targets after completion. No horizontal overflow was present. This
+confirms the new effect runs in the user's browser; it is not a new mobile,
+reduced-motion or JavaScript-disabled browser pass. Those limitations remain.
+No database changes, commit, push or deployment were performed.
+
+## Homepage scroll reveal — compiled checks passed; two browser modes pending
+
+Added homepage-only progressive enhancement in `home-motion.tsx` and
+`home-reveal.ts`, with scoped CSS in `src/app/home.module.css`. A single
+IntersectionObserver starts finite 450ms ease-out animations once per target:
+12px upward settling, opacity, and 2px blur only on small heading/text groups.
+Workflow/subject items animate their children without blur; their card surfaces,
+all links/buttons, portrait, header and hero are excluded. No stagger, library,
+scroll handler, per-scroll React state or layout/height changes were introduced.
+Existing copy, destinations, IDs, theme and responsive layout remain unchanged.
+
+Server HTML and default CSS remain visible. Only an active animation changes
+opacity/transform/filter, and it has no retained hidden fill state. Initially
+visible/above-viewport groups are skipped. Missing observer APIs, reduced motion
+or initialization errors leave content visible. Reduced-motion CSS disables
+animation immediately; changes cancel ongoing/future reveals. Focus, direct or
+same-hash links and history restoration cancel/bypass motion. Observers and event
+listeners are cleaned up on unmount. Animation completion removes its marker.
+
+Agent-run 16 focused simulated-DOM/CSS tests passed, covering once-only entry,
+fast-scroll bypass, initial viewport/restoration, missing/failed initialization,
+reduced motion and changes, hash/same-hash/malformed-hash behavior, focus, history,
+control/image exclusion, hidden documents and cleanup. Focused formatting,
+homepage lint, final test-file lint and project
+`tsc --noEmit --incremental false` passed, including the final test additions.
+These do not establish browser rendering/performance.
+One fresh ordinary agent production build failed during webpack with Windows
+EPERM creating `.next/server/app/api/v1/admin/files/[id]/preview`. It executed and
+failed at filesystem creation, not a pre-execution approval rejection. No unchanged
+retry, diagnostic probe, cleanup or permissions/security change followed. The normal
+user-run Git Bash build fallback then passed: user supplied webpack, TypeScript,
+21-page generation and final optimization success. The new build ID is
+`OrqvMDPoOKlJdFyMJRF9b`; it has not been rebuilt. Starting the isolated no-write
+preview server was rejected before execution by tool policy; the user then ran
+`next start` on port 3140 with temporary auth/email/files-disabled settings.
+The prior polished
+homepage build `2hZM7QlssNrLMGnpT5gMl` predates motion and is not evidence for it.
+
+Agent compiled-browser verification reused the new build without source edits or
+recompilation. Actual 1280×800 and 390×844 light/dark normal and fast scrolling
+checks passed. Read-only live DOM sampling observed text opacity 0→1, translation
+12px→0 and blur 2px→0; item parents/card surfaces remained unblurred. No sampled
+link, button or portrait had an animation. All 11 candidate groups were below the
+hero. Initial active count was zero; returning through previously revealed content
+produced no repeated animation. Finished groups returned to opacity 1/filter none.
+
+Document height remained 4257px desktop and 5905px mobile throughout sampled
+animations; no horizontal overflow or persistent hidden content appeared. This
+establishes sampled stable layout, not a formal CLS/FPS or low-end-device jank
+benchmark. Desktop/mobile About navigation, a fresh direct `#about` load, keyboard
+contact focus and FAQ Enter interaction remained readable with no active reveal
+on the destination/control. Refresh partway down restored readable visible groups
+with no animation; back/forward navigation also left restored content readable.
+Captured warning/error logs were empty. A representative capture is
+`C:/Users/RAJPATEL/Documents/Codex/2026-10-23/usa/home-reveal-mobile-dark.jpg`.
+
+Read-only inspection of the compiled server HTML confirmed the homepage copy and
+candidate markers exist without active reveal attributes. Browser reduced-motion
+and actual JavaScript-disabled emulation remain unverified: the connected browser
+advertises viewport/visibility controls, not those modes. The 16 simulated tests,
+SSR inspection and CSS reduced-motion fallback are not relabelled as browser
+passes. A short Chrome DevTools checklist is in `student/HOMEPAGE_POLISH.md`.
+No browser automation monitoring scripts or app handlers were installed to measure
+motion; sampling only read current DOM/computed styles.
+
+Temporary tabs were closed and viewport overrides reset. The user-owned test
+server is left available for the two manual checks and should be stopped with
+Ctrl+C afterward; no agent shutdown is claimed.
+Earlier planning resource-completion and interrupted-check limitations remain.
+No database, account, content, external-service, commit/push/deploy changes.
+
+## Focused homepage polish — user-run build and compiled browser checks passed
+
+Implemented the approved focused study desk direction in `src/app/page.tsx` and
+homepage-scoped `src/app/home.module.css`. Preserved the headline, palette,
+typography, navigation/destinations, anchors, About portrait/text/contact links and
+existing theme initialization/persistence. No shared student/admin stylesheet or
+authentication behavior changed. Hallmark was used as critique only, not installed.
+
+Shorter hero copy brings a clearly illustrative 27/30-minute agenda closer on
+mobile. Compact numbered workflow and smaller subject cards reduce repetitive
+containers and uppercase labels. A truthful preview → explicitly accept → record
+practice illustration replaces hypothetical schedule replacement and sample metrics.
+Stale demo-only/plans-coming/email-unavailable claims are replaced with available
+plan/revision flows, explicit verification/password recovery, no guaranteed inbox
+delivery, limited catalog coverage and no official-company endorsement.
+
+Evidence basis: existing Production feb902c and recorded planning journey;
+hosted email rollout remains user-reported evidence, not a fresh delivery test.
+The earlier resource-completion gap and interrupted regression/check limitations
+below remain unchanged. No new email, database, publication or unrelated tests ran.
+
+Agent-run focused source formatting, homepage lint, project TypeScript
+(`tsc --noEmit --incremental false`) and scoped whitespace checks passed. Four
+before screenshots were captured from the deployed homepage at measured 1280×800
+and 390×844 in both themes. One ordinary agent-run `npm.cmd run build` failed during
+webpack compilation with Windows EPERM creating `.next/server/app/api`. No retry,
+cleanup, probe, permission/security change or EPERM diagnosis followed. The normal
+Git Bash `npm.cmd run build` fallback succeeded: the user supplied successful
+webpack compilation, TypeScript, generation of all 21 pages and final optimization.
+The resulting local build ID is `2hZM7QlssNrLMGnpT5gMl`. No rebuild followed.
+The agent's local test-server launch was rejected by execution policy before
+execution (not a Windows filesystem error). The user then started `next start` on
+127.0.0.1:3140 with terminal-only auth/email/files-disabled overrides; no `.env`
+or deployment settings changed.
+
+Agent compiled-browser checks completed on 28 October using that same build:
+four full-page after screenshots were compared with the before screenshots at
+actual 1280×800 and 390×844, light and dark. No horizontal overflow: document
+scroll widths were 1265/375 respectively, excluding the scrollbar. The compact
+workflow/subject cards and faithful sample sequence rendered readably; the mobile
+agenda began around 439px below the viewport top. Headline and actions remained
+visible on desktop. The portrait loaded in both themes; contact hrefs, new-tab
+notices and rel attributes matched the inventory. All ten prior authored IDs
+remained, without duplicates. Desktop section navigation, mobile About navigation
+and sample-plan anchor worked; measured headings/agenda cleared the sticky header.
+The mobile menu closed on navigation and Escape restored visibly focused Menu.
+FAQ expansion worked with Enter, exposing the corrected email explanation.
+
+Keyboard theme activation, action names, visible focus and a 44×44 theme target
+passed. Explicit light/dark choices persisted on reload; dark persisted across
+homepage → signup → login → homepage navigation. Eight sampled text/background
+pairs per theme exceeded 4.5:1 (minimum light 5.66:1, dark 6.33:1). This is sampled
+contrast evidence, not an exhaustive accessibility certification. Captured warning/
+error logs were empty. No source edits or rebuild followed browser verification.
+
+Auth was disabled only for this no-write preview, so the header correctly showed
+the existing Open app fallback. Authenticated role labels/flows were not retested;
+their implementation remains unchanged. Existing same-hash About re-click after
+resizing, system-change/storage-failure browser gaps, reduced-motion emulation and
+zero-flash measurement limitations are not claimed fixed by these checks. No
+fixtures or account/study records were created. The temporary tab was closed and
+viewport reset. The user-started server remains theirs to stop with Ctrl+C;
+agent shutdown is not claimed. No commit, push, deployment or shared data writes.
+See `student/HOMEPAGE_POLISH.md` for preserved destinations, rationale and evidence.
 
 ## Honest short-content estimates: implemented, user-run production build passed
 

@@ -78,7 +78,7 @@
   width: 100%;
   min-width: 0;
   padding: 0.75rem;
-  border: 1px solid var(--color-border-card);
+  border: 1px solid var(--color-border-input);
   border-radius: 0.5rem;
   background: var(--color-surface);
   color: var(--color-charcoal);
@@ -145,7 +145,7 @@ input[type="file"] {
   width: 100%;
   min-width: 0;
   padding: 13px;
-  border: 1px solid var(--color-line);
+  border: 1px solid var(--color-border-input);
   border-radius: 9px;
   background: var(--color-ivory);
   font-size: 16px;
@@ -218,12 +218,12 @@ input[type="file"] {
 }
 
 @theme {
-  --color-ivory: #f7f5ef;
-  --color-forest: #245443;
-  --color-charcoal: #202823;
-  --color-muted: #59645c;
-  --color-line: #d9dfd2;
-  --font-sans: Arial, Helvetica, sans-serif;
+  --color-ivory: var(--color-page);
+  --color-forest: var(--color-text);
+  --color-charcoal: var(--color-text);
+  --color-muted: #535b65;
+  --color-line: #d9dee5;
+  --font-sans: var(--font-instrument-sans), Arial, Helvetica, sans-serif;
 }
 
 body {
@@ -238,7 +238,7 @@ body {
   background: var(--color-selection);
 }
 :focus-visible {
-  outline: 3px solid var(--color-forest);
+  outline: 3px solid var(--color-focus);
   outline-offset: 5px;
 }
 .skip-link {
@@ -299,8 +299,8 @@ a {
   place-items: center;
   width: 30px;
   height: 30px;
-  background: var(--color-surface-note);
-  color: var(--color-forest);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
   border-radius: 8px;
 }
 .desktop-nav {
@@ -337,7 +337,7 @@ nav a:hover {
 }
 .button-secondary {
   background: var(--color-surface);
-  border-color: var(--color-line);
+  border-color: var(--color-border-input);
   color: var(--color-charcoal);
 }
 .button-secondary:hover {
@@ -458,8 +458,8 @@ h1 {
   color: var(--color-forest);
 }
 .completed .task-icon {
-  background: var(--color-action);
-  color: var(--color-on-action);
+  background: var(--color-success);
+  color: var(--color-surface);
   border-radius: 50%;
 }
 .task-copy {
@@ -484,7 +484,7 @@ h1 {
   background: var(--color-surface-badge);
 }
 .completed .status {
-  color: var(--color-forest);
+  color: var(--color-success);
 }
 .progress-caption {
   font-size: 11px;
@@ -500,16 +500,16 @@ progress {
   border-radius: 99px;
   overflow: hidden;
   background: var(--color-surface-note);
-  accent-color: var(--color-forest);
+  accent-color: var(--color-accent);
 }
 progress::-webkit-progress-bar {
   background: var(--color-surface-note);
 }
 progress::-webkit-progress-value {
-  background: var(--color-action);
+  background: var(--color-accent);
 }
 progress::-moz-progress-bar {
-  background: var(--color-action);
+  background: var(--color-accent);
 }
 .plan-note {
   margin-top: 18px;

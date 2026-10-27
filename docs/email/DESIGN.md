@@ -1,5 +1,9 @@
 # PrepPilot email and account security screens
 
+Current palette/typography: [Graphite visual theme](../VISUAL_THEME.md) supersedes
+the historical ivory/forest and system-font descriptions below. Auth behaviour
+and screen compositions remain unchanged.
+
 Read-only Stitch references in project `7439735129249105516`:
 
 - Email Verification: `dad0ec083f264d8c941f46ceb30b3c47`.

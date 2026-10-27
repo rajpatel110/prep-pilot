@@ -1,5 +1,9 @@
 # Design System: PrepPilot student workspace
 
+Current palette/typography: [Graphite visual theme](../VISUAL_THEME.md) supersedes
+the historical ivory/forest and system-font descriptions below. Layout and
+interaction guidance remains applicable.
+
 ## 1. Visual Theme & Atmosphere
 
 Balanced daily-study workspace, restrained motion and predictable hierarchy.

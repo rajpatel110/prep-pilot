@@ -1,5 +1,8 @@
 # Owner workspace design reference
 
+Current palette/typography: [Graphite visual theme](../VISUAL_THEME.md) supersedes
+the historical palette/font descriptions below; preserve these interaction rules.
+
 Use the existing PrepPilot design system, not a redesign: warm ivory #F7F5EF,
 forest #245443, charcoal #202823, muted #58635C, white surfaces and #DCE3DB borders.
 Retain existing application typography and shared native library-dialog styles.

@@ -112,11 +112,14 @@ test("theme tokens keep core text, feedback and button contrast accessible", () 
       return total + linear * [0.2126, 0.7152, 0.0722][index]!;
     }, 0);
   for (const palette of palettes) {
-    const tokens = Object.fromEntries(
+    const tokens: Record<string, string> = Object.fromEntries(
       [...palette[1]!.matchAll(/--color-([\w-]+): #([\da-f]{6});/g)].map(
         (match) => [match[1], match[2]],
       ),
     );
+    tokens.charcoal = tokens.text!;
+    tokens.ivory = tokens.page!;
+    tokens.forest = tokens.text!;
     for (const [foreground, background] of [
       ["charcoal", "ivory"],
       ["muted", "surface"],
@@ -125,6 +128,9 @@ test("theme tokens keep core text, feedback and button contrast accessible", () 
       ["warning", "ivory"],
       ["text-success", "surface-success"],
       ["on-action", "action"],
+      ["accent-text", "surface"],
+      ["accent-text", "accent-surface"],
+      ["on-accent", "accent"],
     ]) {
       const values = [
         luminance(tokens[foreground!]!),
@@ -135,5 +141,40 @@ test("theme tokens keep core text, feedback and button contrast accessible", () 
         `${foreground}/${background}`,
       );
     }
+    for (const foreground of ["border-input", "focus"]) {
+      for (const background of ["surface", "page", "surface-selected"]) {
+        const values = [
+          luminance(tokens[foreground]!),
+          luminance(tokens[background]!),
+        ].sort((left, right) => left - right);
+        assert.ok(
+          (values[1]! + 0.05) / (values[0]! + 0.05) >= 3,
+          `${foreground}/${background}`,
+        );
+      }
+    }
   }
+});
+
+test("system dark fallback matches the explicitly selected dark palette", () => {
+  const css = readFileSync("src/shared/ui/theme.css", "utf8");
+  const selected = css.match(/:root\[data-theme="dark"\] \{([^}]+)\}/)![1]!;
+  const system = css.match(/:root:not\(\[data-theme\]\) \{([^}]+)\}/)![1]!;
+  const declarations = (block: string) =>
+    block
+      .split(";")
+      .map((declaration) => declaration.trim())
+      .filter(Boolean);
+  assert.deepEqual(declarations(system), declarations(selected));
+});
+
+test("interface font loads once through Next without external runtime font CSS", () => {
+  const layout = readFileSync("src/app/layout.tsx", "utf8");
+  assert.equal((layout.match(/Instrument_Sans\(/g) ?? []).length, 1);
+  assert.match(layout, /next\/font\/google/);
+  assert.match(layout, /subsets: \["latin"\]/);
+  assert.match(layout, /display: "swap"/);
+  const css = readFileSync("src/app/globals.css", "utf8");
+  assert.match(css, /--font-sans: var\(--font-instrument-sans\)/);
+  assert.doesNotMatch(css, /fonts\.googleapis|fonts\.gstatic/);
 });
