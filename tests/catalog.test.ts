@@ -3,12 +3,15 @@ import assert from "node:assert/strict";
 import mongoose from "mongoose";
 import {
   draftInputSchema,
+  draftPatchSchema,
+  contentEstimate,
   storedContentSchema,
   catalogStateSchema,
 } from "../src/modules/catalog/schemas";
 import { catalogModels } from "../src/modules/catalog/model";
 import { auditInputSchema } from "../src/modules/administration/audit";
 import { randomUUID } from "node:crypto";
+import { importBatchSchema } from "../src/modules/catalog/import-schema";
 
 const draft = {
   slug: "array-basics",
@@ -21,6 +24,81 @@ const draft = {
   source: "Original exercise",
   attribution: "",
 };
+
+test("content estimates accept 1–60 whole minutes across create, patch, import and persistence", async () => {
+  const connection = mongoose.createConnection();
+  const { content } = catalogModels(connection);
+  try {
+    for (const minutes of [1, 5, 14, 15, 60]) {
+      const values = { ...draft, estimatedMinutes: minutes };
+      assert.equal(draftInputSchema.parse(values).estimatedMinutes, minutes);
+      assert.equal(
+        draftPatchSchema.parse({
+          estimatedMinutes: minutes,
+          expectedRevision: 1,
+        }).estimatedMinutes,
+        minutes,
+      );
+      assert.equal(
+        importBatchSchema.parse({
+          version: 1,
+          candidates: [
+            {
+              sourceRefs: [],
+              reportedCompanies: [],
+              editorialStatus: "pending_human_review",
+              concerns: [],
+              content: values,
+            },
+          ],
+        }).candidates[0]!.content.estimatedMinutes,
+        minutes,
+      );
+      await new content({
+        ...values,
+        createdBy: "admin",
+        updatedBy: "admin",
+      }).validate();
+    }
+    for (const minutes of [
+      0,
+      -1,
+      0.5,
+      1.5,
+      60.5,
+      61,
+      Infinity,
+      NaN,
+      "1",
+      null,
+    ]) {
+      assert.equal(contentEstimate.safeParse(minutes).success, false);
+      assert.equal(
+        draftInputSchema.safeParse({ ...draft, estimatedMinutes: minutes })
+          .success,
+        false,
+      );
+      assert.equal(
+        draftPatchSchema.safeParse({
+          estimatedMinutes: minutes,
+          expectedRevision: 1,
+        }).success,
+        false,
+      );
+      if (typeof minutes === "number")
+        await assert.rejects(
+          new content({
+            ...draft,
+            estimatedMinutes: minutes,
+            createdBy: "admin",
+            updatedBy: "admin",
+          }).validate(),
+        );
+    }
+  } finally {
+    await connection.close();
+  }
+});
 
 test("strict draft input permits incomplete bodies and defaults but rejects privileged, unsupported and unsafe fields", () => {
   const result = draftInputSchema.parse(draft);
@@ -53,7 +131,7 @@ test("strict draft input permits incomplete bodies and defaults but rejects priv
     { subject: "unknown" },
     { topic: "unknown" },
     { subject: "cs", topic: "arrays" },
-    { estimatedMinutes: 14 },
+    { estimatedMinutes: 0 },
     { estimatedMinutes: 61 },
     { estimatedMinutes: 15.5 },
     { estimatedMinutes: "15" },

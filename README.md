@@ -1,5 +1,10 @@
 # PrepPilot
 
+Content estimates support 1–60 whole minutes, independently of the unchanged
+30–240 minute daily budget (15-minute preference steps). Before saving shorter
+records in the shared database, deploy the compatible application to hosted and
+local runtimes. See [duration policy and rollout](docs/content/CONTENT_DURATION_POLICY.md).
+
 ## Hosted checkpoint: temporarily shared database
 
 Hosted app: <https://prep-pilot-theta-tan.vercel.app>. The existing hosted database

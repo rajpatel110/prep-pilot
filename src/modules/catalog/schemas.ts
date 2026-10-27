@@ -3,6 +3,7 @@ import { isCatalogTopic } from "@/config/catalog";
 
 export const safeCounter = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER);
 export const contentRevision = safeCounter.min(1);
+export const contentEstimate = z.number().int().min(1).max(60);
 export const domainId = z.string().regex(/^[a-f0-9]{24}$/);
 const notFuture = z
   .date()
@@ -90,7 +91,7 @@ const editable = {
   topic: boundedText(80),
   type: z.enum(["question", "resource"]),
   difficulty: z.enum(["easy", "medium", "hard"]),
-  estimatedMinutes: z.number().int().min(15).max(60),
+  estimatedMinutes: contentEstimate,
   source: boundedText(2048),
   attribution: boundedText(2000, 0),
   tags: tags.default([]),

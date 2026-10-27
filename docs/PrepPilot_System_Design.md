@@ -196,7 +196,7 @@ Application documents use ObjectId IDs, UTC timestamps and a schemaVersion. Auth
 | Collection | Essential fields and constraints |
 | --- | --- |
 | profiles | userId unique; role student\|admin; companies[]; deadline local date; dailyMinutes; skills {dsa, aptitude, cs}; timezone; activePlanId nullable; planVersion; stateRevision; attemptSequence. Reject role in user input. |
-| contentItems | slug unique; title; subject; type question\|resource; topic; difficulty easy\|medium\|hard; estimatedMinutes 15–60; companies[] with association provenance; prompt/body; externalUrl; explanation; assetIds[]; source, attribution, reviewedAt; status; revision. |
+| contentItems | slug unique; title; subject; type question\|resource; topic; difficulty easy\|medium\|hard; estimatedMinutes whole minutes 1–60, separate from daily study budget; companies[] with association provenance; prompt/body; externalUrl; explanation; assetIds[]; source, attribution, reviewedAt; status; revision. |
 | fileAssets | createdBy; stagingKey; finalKey; displayName; detectedMime; actualBytes; sha256; status uploading\|validating\|ready\|rejected\|deleting\|deleted; leaseUntil; expiresAt; referencedBy metadata optional. |
 | storageQuota | Singleton ready/reserved bytes and object counts; grant reservations expire through guarded cleanup; finalisation converts a reservation to actual usage. |
 | catalogState | Singleton with revision and commitSerial. Increment revision on any catalog edit affecting visibility, scheduling or file readiness. |

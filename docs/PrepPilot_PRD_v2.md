@@ -138,7 +138,7 @@ Generate plans using templates and deterministic backend rules. Aim for 50% DSA,
 
 Merge supported-company templates and deduplicate shared content. Company preferences guide preparation priorities; they are not guarantees of current hiring requirements. Select only published, available content. Expose content shortages and unscheduled work instead of inventing material.
 
-Each task references one content item and has a stable task ID, subject, topic, planned date, estimated minutes, priority, status and a human-readable reason. Retain 15–60 minute task estimates. Split long reading topics during curation; never silently shorten an estimate to fit a day.
+Each task references one content item and has a stable task ID, subject, topic, planned date, estimated minutes, priority, status and a human-readable reason. Content and task estimates are positive whole minutes from 1–60. Short useful questions are supported without padding. Item duration is separate from the unchanged 30–240 minute daily budget, selected in 15-minute increments. Split long reading topics during curation; never silently shorten or round up an estimate to fit a day. Estimates are editorial judgments, not measured timing unless separately evidenced.
 
 The daily budget includes new practice, revisions and carried-over work. Never exceed it. Pick a shorter eligible item when available or leave unused time. Do not repeat fresh practice merely to fill the calendar. Students explicitly complete tasks and may undo completion; saving an attempt does not silently complete every related task.
 

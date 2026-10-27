@@ -338,7 +338,7 @@ The 1/3/7-day precedence is defined in the PRD and database design. Recording an
 | Field | Contract |
 | --- | --- |
 | TaskDTO identifiers | taskId:UUID, contentId:ID, contentSnapshot:{title,subject,topic,type,contentRevision}. |
-| TaskDTO schedule | kind:fresh\|revision; revisionSourceSequence:int\|null; scheduledDate:LocalDate; estimatedMinutes:15–60; priority:due_revision\|overdue\|fresh. |
+| TaskDTO schedule | kind:fresh\|revision; revisionSourceSequence:int\|null; scheduledDate:LocalDate; estimatedMinutes:whole minutes 1–60; priority:due_revision\|overdue\|fresh. |
 | TaskDTO state | status:pending\|completed; completedAt:UTC\|null; reasonCode:string; reason:string; availability:available\|unavailable; overdue:boolean; supersededRevision:boolean. |
 | DeferredDTO | taskId:UUID, contentId:ID, kind, revisionSourceSequence:int\|null, estimatedMinutes, reasonCode. taskId supplies the acknowledgement identity. |
 | PlanSummaryDTO | id, version, status, windowStart, windowEnd, generatedAt, completedCount, taskCount. |
@@ -439,7 +439,7 @@ Never blindly apply a mutation response whose stateRevision is lower than the UI
 | Field | Contract |
 | --- | --- |
 | Required on create | slug, title, subject, type, topic, difficulty, estimatedMinutes, source, attribution. |
-| Identity and classification | slug: lowercase stable slug ≤120; title 1–160; subject enum; type question\|resource; configured topic ≤80; difficulty enum; estimatedMinutes integer 15–60. |
+| Identity and classification | slug: lowercase stable slug ≤120; title 1–160; subject enum; type question\|resource; configured topic ≤80; difficulty enum; estimatedMinutes integer 1–60, independent of daily-budget increments. |
 | Optional on create | tags defaults []; companies defaults []; assetIds defaults []; reviewedAt defaults null; prompt/body/explanation/externalUrl absent. |
 | tags and companies | ≤20 unique tags, each ≤40 characters. ≤2 associations: {companyId,association,source,reviewedAt}; company IDs unique. |
 | Text and URLs | prompt, body, explanation ≤12,000 characters each. externalUrl is HTTPS ≤2,048. source 1–2,048; attribution 0–2,000. Total JSON limit still applies. |

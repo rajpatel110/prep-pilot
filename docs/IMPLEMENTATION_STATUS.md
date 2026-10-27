@@ -1,6 +1,89 @@
 # PrepPilot implementation status
 
-Updated: 26 October 2026 (Asia/Kolkata).
+Updated: 27 October 2026 (Asia/Kolkata).
+
+## Honest short-content estimates: implemented, user-run production build passed
+
+Owner-approved duration contract now accepts 1–60 positive whole minutes per
+content/task estimate. The former 15-minute floor came from the original PRD and
+API/database task contracts; no measured pedagogical basis or scheduler quantum
+dependency was found. Daily preferences remain 30–240 minutes in 15-minute steps.
+No company mappings, prerequisites, eligibility, 50/25/25 allocation, scheduling
+priorities or tie-breaking rules were changed.
+
+Catalog create/PATCH/stored validation, Mongoose content, importer-shared schema,
+admin numeric minimum/help/safe errors, scheduled/deferred proposal validation,
+saved task model and task-completion parsing now consistently accept short items.
+`contentEstimate` is the shared Zod contract. Saved-plan Mongoose values also
+enforce whole minutes. No database validator/index requires migration; none was
+run. The engine already sums exact minutes, deduplicates material IDs, preserves
+retained task snapshots and caps scheduled/deferred tasks at 480 each. No rounding
+or generation algorithm change was needed. Rules version advances to
+deterministic-budget-3 so pending old previews become stale; accepted plans and
+practice history are not rewritten.
+
+Agent verification: 22 catalog/planning tests passed, including five new tests
+covering create/PATCH/import/model duration boundaries, 1/2/5-minute scheduling,
+exact estimates, input-order determinism, duplicates, daily caps, prerequisites,
+revision priority, retained historical estimates, 480-task/deferred bounds and
+unchanged daily-budget validation. Another 34 relevant catalog/client/read,
+draft/publication, company-content, adaptation, practice, preference and Progress
+tests passed. These checks used pure/in-memory/disconnected model fixtures, not
+the shared database. Full format:check, lint and typecheck passed (including
+successful Next route-type generation). No unrelated authentication/email suite
+was repeated.
+
+One Codex production build was attempted after those checks. It failed compiling
+with Windows EPERM on mkdir
+`C:\PROJECTS\prep-pilot\.next\types\app\api\v1\me\preferences`.
+No retry, cleanup/probe, permission change or EPERM investigation followed.
+The user subsequently supplied a successful Git Bash production build on
+27 October 2026: Next.js 16.4.2/Webpack compiled in 6.6 seconds, TypeScript
+finished in 6.6 seconds, all 21 static pages generated, and trace collection and
+page optimization completed. This is user-run evidence for the current duration
+change, not a successful Codex build or proof that EPERM is resolved. No rebuild
+or completed suite was repeated after that report.
+
+Release continuation reused build a6OB3uX-cmzUTJdVCYfZo with `next start` on port
+3123 and a newly generated prep_pilot_duration_test_* database. Focused compiled
+HTTP checks passed: admin create/PATCH persisted 1/5/7-minute content, invalid
+0/-1/0.5/61/string estimates returned safe 422 without revision/audit writes,
+student list/detail preserved durations, and plan preview scheduled 1/5/7 exactly
+within 30 minutes while deferring a 60-minute item. No duplicate tasks or attempts
+were created. The repeatable harness is tests/short-duration-release.ts.
+
+Compiled browser checks passed: admin minimum/maximum/step were 1/60/1, native
+zero-minute rejection worked, a two-minute save survived reload, student cards
+displayed 2/5/7 minutes, and the UI preview displayed 14/30 minutes and the
+60-minute CAPACITY deferral. No plan was accepted or practice submitted. Only
+disposable identities/records were used. The fixture tab was closed; after an
+app interruption the known disposable database was explicitly cleaned and no
+listener remained on port 3123. New harness formatting/lint/TypeScript checks
+passed; no app rebuild or unrelated suite was repeated.
+
+Commit/push and provider deployment checks are authorized for this release;
+shared short-record edits/publication remain prohibited in this task. No shared
+catalog/account/study mutation occurred.
+
+Proposed aptitude estimates are mixture 7 minutes and DAG 5 minutes, unmeasured
+editorial judgments. Their correctness/capacity checks stand, but this task did
+not save shorter values, review dates or publish either shared draft. The old
+15-minute policy no longer disqualifies them once the new app is deployed.
+See docs/content/CONTENT_DURATION_POLICY.md for required deploy-first sequencing,
+stale local-server avoidance and rollback caveats. Current live state remains
+the prior five published questions/two drafts; no shared records were read or
+written by these duration checks. Original content/import packs stay unchanged.
+
+Changed areas: src/modules/catalog schemas/model/validation/editor;
+src/modules/planning schemas/task-model/task-completion; src/config/planning;
+tests/catalog.test.ts, tests/planning.test.ts and the compiled release harness;
+PRD/API/Database/System Design, planning configuration, README and content policy.
+Git inspection succeeds with an explicit --work-tree after scoped filesystem
+permission. The checkpoint excludes pending importer commands/services, email
+changes, generated next-env.d.ts and diagnostics. The pure import-schema module
+is a required dependency of duration/import validation tests, not activation of
+the importer. README/status staging is limited to duration sections; unrelated
+working-tree documentation and content-review packs are preserved separately.
 
 ## Navigation correction and single-inbox Brevo checkpoint
 

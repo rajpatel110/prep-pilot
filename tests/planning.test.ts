@@ -11,7 +11,14 @@ import {
   templateVersion,
 } from "../src/config/planning";
 import { studyDate } from "../src/modules/identity/preferences-schema";
-import { proposalValue } from "../src/modules/planning/schemas";
+import {
+  proposalValue,
+  taskValue,
+  deferredValue,
+} from "../src/modules/planning/schemas";
+import { planTaskModel } from "../src/modules/planning/task-model";
+import mongoose from "mongoose";
+import { randomUUID } from "node:crypto";
 import { activatePlanPointer } from "../src/modules/identity/plan-state";
 import { Types, type Connection, type ClientSession } from "mongoose";
 const preferences = {
@@ -44,6 +51,185 @@ const base = {
   attemptedIds: [],
   idFor,
 };
+
+test("short estimates remain exact, deterministic and unique within the daily budget", () => {
+  const materials = Array.from({ length: 180 }, (_, index) =>
+    item(
+      String(index).padStart(24, "0"),
+      "aptitude",
+      "quantitative",
+      [1, 2, 5][index % 3]!,
+    ),
+  );
+  const input = {
+    ...base,
+    preferences: { ...preferences, dailyMinutes: 30, deadline: "2026-10-30" },
+    materials,
+  };
+  const plan = generatePlan(input);
+  assert.deepEqual(
+    plan,
+    generatePlan({ ...input, materials: [...materials].reverse() }),
+  );
+  assert.deepEqual(
+    plan,
+    generatePlan({ ...input, materials: [...materials, ...materials] }),
+  );
+  const all = [...plan.tasks, ...plan.deferred];
+  assert.equal(all.length, materials.length);
+  assert.equal(new Set(all.map((task) => task.taskId)).size, all.length);
+  assert.equal(new Set(all.map((task) => task.contentId)).size, all.length);
+  for (const task of all)
+    assert.equal(
+      task.estimatedMinutes,
+      materials.find((material) => material.id === task.contentId)!
+        .estimatedMinutes,
+    );
+  assert.ok(plan.tasks.some((task) => task.estimatedMinutes === 1));
+  assert.ok(plan.deferred.some((task) => task.reasonCode === "CAPACITY"));
+  for (const date of new Set(plan.tasks.map((task) => task.scheduledDate)))
+    assert.ok(
+      plan.tasks
+        .filter((task) => task.scheduledDate === date)
+        .reduce((sum, task) => sum + task.estimatedMinutes, 0) <= 30,
+    );
+});
+
+test("one-minute content remains bounded by task/deferred limits, not budget division", () => {
+  const materials = Array.from({ length: 500 }, (_, index) =>
+    item(String(index), "dsa", "arrays", 1),
+  );
+  const plan = generatePlan({ ...base, materials });
+  assert.equal(plan.tasks.length, 480);
+  assert.equal(plan.deferred.length, 20);
+  assert.ok(plan.deferred.every((task) => task.reasonCode === "CAPACITY"));
+  assert.throws(
+    () =>
+      generatePlan({
+        ...base,
+        materials: Array.from({ length: 961 }, (_, index) =>
+          item(String(index), "dsa", "arrays", 1),
+        ),
+      }),
+    /PLAN_SCOPE_TOO_LARGE/,
+  );
+});
+
+test("short work preserves prerequisite eligibility, revision priority and saved historical estimates", () => {
+  const materials = [
+    item("arrays", "dsa", "arrays", 1),
+    item("sorting", "dsa", "sorting", 2),
+    item("recall", "cs", "dbms", 3),
+  ];
+  const cycles = [
+    { contentId: "recall", lastAttemptSequence: 1, dueDate: base.today },
+  ];
+  const first = generatePlan({ ...base, materials, cycles });
+  assert.equal(first.tasks[0]!.kind, "revision");
+  assert.equal(first.tasks[0]!.estimatedMinutes, 3);
+  assert.ok(
+    first.tasks.findIndex((task) => task.contentId === "arrays") <
+      first.tasks.findIndex((task) => task.contentId === "sorting"),
+  );
+  assert.equal(
+    generatePlan({ ...base, materials: [materials[1]!] }).deferred[0]!
+      .reasonCode,
+    "PREREQUISITE_UNAVAILABLE",
+  );
+  const active = structuredClone(first);
+  active.tasks[0]!.status = "completed";
+  active.tasks[0]!.completedAt = "2026-10-24T00:00:00.000Z";
+  active.tasks[0]!.estimatedMinutes = 20;
+  active.tasks[1]!.estimatedMinutes = 25;
+  const before = structuredClone(active);
+  const replacement = generatePlan({
+    ...base,
+    kind: "reschedule",
+    active,
+    materials,
+    cycles,
+  });
+  assert.deepEqual(active, before);
+  assert.deepEqual(
+    replacement.tasks.find((task) => task.taskId === active.tasks[0]!.taskId),
+    active.tasks[0],
+  );
+  assert.equal(
+    replacement.tasks.find((task) => task.taskId === active.tasks[1]!.taskId)!
+      .estimatedMinutes,
+    25,
+  );
+  assert.equal(
+    new Set(replacement.tasks.map((task) => task.taskId)).size,
+    replacement.tasks.length,
+  );
+});
+
+test("short task/proposal/deferred and Mongoose plan boundaries preserve daily-budget rules", async () => {
+  const connection = mongoose.createConnection();
+  try {
+    const Model = planTaskModel(connection);
+    for (const minutes of [1, 5, 14, 15, 60]) {
+      const proposal = generatePlan({
+        ...base,
+        materials: [item("507f1f77bcf86cd799439011", "dsa", "arrays", minutes)],
+        idFor: () => randomUUID(),
+      });
+      assert.equal(proposalValue.safeParse(proposal).success, true);
+      const task = proposal.tasks[0]!;
+      assert.equal(taskValue.safeParse(task).success, true);
+      assert.equal(
+        deferredValue.safeParse({
+          taskId: task.taskId,
+          contentId: task.contentId,
+          kind: "fresh",
+          estimatedMinutes: minutes,
+          reasonCode: "CAPACITY",
+        }).success,
+        true,
+      );
+      const document = new Model({
+        userId: "fixture",
+        version: 1,
+        sourcePreviewId: new Types.ObjectId(),
+        generatedAt: new Date(),
+        ...proposal,
+      });
+      await document.validate();
+      for (const invalid of [0, -1, 0.5, 1.5, 61]) {
+        assert.equal(
+          taskValue.safeParse({ ...task, estimatedMinutes: invalid }).success,
+          false,
+        );
+        assert.equal(
+          deferredValue.safeParse({
+            taskId: task.taskId,
+            contentId: task.contentId,
+            kind: "fresh",
+            estimatedMinutes: invalid,
+            reasonCode: "CAPACITY",
+          }).success,
+          false,
+        );
+        document.tasks[0]!.estimatedMinutes = invalid;
+        await assert.rejects(document.validate());
+      }
+    }
+    for (const dailyMinutes of [1, 29, 31, 241])
+      assert.equal(
+        proposalValue.safeParse({
+          ...generatePlan(base),
+          budgetSnapshot: {
+            dailyMinutes,
+            preferences: { ...preferences, dailyMinutes },
+          },
+        }).success,
+        false,
+      );
+  } finally {
+    await connection.close();
+  }
+});
 
 test("identity owns guarded pointer activation on the supplied study transaction", async () => {
   const calls: unknown[][] = [];

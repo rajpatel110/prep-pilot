@@ -127,7 +127,7 @@ Zod validates boundary DTOs and rejects unknown fields. Mongoose validates docum
 | slug; seedKey | String R; String O | Lowercase stable slug, max 120; seedKey max 120 when seeded. Both unique, with a partial index for seedKey. |
 | title; subject; topic | String R | Title 1–160; subject dsa\|aptitude\|cs; topic is a configured stable ID, max 80. |
 | type; difficulty | Enums R | question\|resource; easy\|medium\|hard. |
-| estimatedMinutes | Int R | 15–60 inclusive. Saved task estimates are copied, not read dynamically. |
+| estimatedMinutes | Int R | 1–60 inclusive whole minutes. Saved task estimates are copied, not read dynamically. |
 | tags | String[] R | Default []; at most 20 unique tags, each at most 40 characters. |
 | companies | Object[] R | Default [] for foundations; at most 2, unique by companyId. Fields below. |
 | prompt; body; explanation | String O | Each at most 12,000 characters. Sanitised Markdown; no raw HTML. All requests also obey 64 KiB JSON limit. |
@@ -175,7 +175,7 @@ _id = "catalog"; revision Int default 0; commitSerial Int default 0; common time
 | taskId; contentId | UUID R; ObjectId R | Stable task identity across retained versions; referenced content item. |
 | contentSnapshot | Object R | title ≤160, subject, topic ≤80, type, contentRevision ≥1; historical display facts. |
 | kind; revisionSourceSequence | Enum R; Int O | fresh\|revision. Revision tasks require the source attempt sequence; fresh tasks omit it. |
-| scheduledDate; estimatedMinutes | LocalDate R; Int R | Inside plan window; estimate 15–60. All task minutes count against that date’s budget. |
+| scheduledDate; estimatedMinutes | LocalDate R; Int R | Inside plan window; estimate 1–60 whole minutes. All task minutes count against that date’s budget, without rounding. |
 | priority | Enum R | due_revision\|overdue\|fresh; server-calculated. |
 | status; completedAt | Enum R; Date N | pending\|completed; completedAt non-null exactly when completed. |
 | reasonCode; reason | String R | Allowlisted reason code; human explanation up to 280 characters. |

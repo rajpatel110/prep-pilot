@@ -485,7 +485,7 @@ export function ContentEditor({
                 Estimated minutes
                 <input
                   type="number"
-                  min={15}
+                  min={1}
                   max={60}
                   step={1}
                   required
@@ -496,6 +496,10 @@ export function ContentEditor({
                   {...inputProps("estimatedMinutes")}
                 />
                 {inputError("estimatedMinutes")}
+                <p className="library-metadata">
+                  Estimate 1–60 whole minutes honestly; this is not the
+                  student’s daily budget or measured timing.
+                </p>
               </label>
               <label>
                 Tags (comma separated)

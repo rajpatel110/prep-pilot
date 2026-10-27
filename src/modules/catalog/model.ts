@@ -38,7 +38,7 @@ export const contentItemSchema = new Schema(
     estimatedMinutes: {
       type: Number,
       required: true,
-      min: 15,
+      min: 1,
       max: 60,
       validate: Number.isSafeInteger,
     },

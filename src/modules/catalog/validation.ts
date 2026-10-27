@@ -10,7 +10,7 @@ const messages: Record<string, string> = {
   topic: "Choose a configured topic for this subject.",
   type: "Choose question or resource.",
   difficulty: "Choose easy, medium or hard.",
-  estimatedMinutes: "Use a whole number from 15 to 60.",
+  estimatedMinutes: "Use a whole number from 1 to 60.",
   source: "Enter nonblank provenance of at most 2048 characters.",
   attribution:
     "Supply attribution text of at most 2000 characters; empty is allowed.",

@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { contentSnapshot } from "@/modules/practice/schemas";
-import { domainId, safeCounter } from "@/modules/catalog/schemas";
+import {
+  contentEstimate,
+  domainId,
+  safeCounter,
+} from "@/modules/catalog/schemas";
 import { preferencesSchema } from "@/modules/identity/preferences-schema";
 export const taskValue = z
   .strictObject({
@@ -10,7 +14,7 @@ export const taskValue = z
     kind: z.enum(["fresh", "revision"]),
     revisionSourceSequence: safeCounter.min(1).optional(),
     scheduledDate: z.iso.date(),
-    estimatedMinutes: z.number().int().min(15).max(60),
+    estimatedMinutes: contentEstimate,
     priority: z.enum(["due_revision", "overdue", "fresh"]),
     status: z.enum(["pending", "completed"]),
     completedAt: z.iso.datetime().nullable(),
@@ -28,7 +32,7 @@ export const deferredValue = z.strictObject({
   contentId: domainId,
   kind: z.enum(["fresh", "revision"]),
   revisionSourceSequence: safeCounter.min(1).optional(),
-  estimatedMinutes: z.number().int().min(15).max(60),
+  estimatedMinutes: contentEstimate,
   reasonCode: z.enum([
     "CONTENT_UNAVAILABLE",
     "CAPACITY",

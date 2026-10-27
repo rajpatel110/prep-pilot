@@ -24,7 +24,13 @@ const task = new Schema(
     kind: { type: String, required: true, enum: ["fresh", "revision"] },
     revisionSourceSequence: { type: Number },
     scheduledDate: { type: String, required: true },
-    estimatedMinutes: { type: Number, required: true, min: 15, max: 60 },
+    estimatedMinutes: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 60,
+      validate: Number.isSafeInteger,
+    },
     priority: {
       type: String,
       required: true,

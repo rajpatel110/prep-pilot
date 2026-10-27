@@ -2,7 +2,11 @@ import "server-only";
 import { z } from "zod";
 import { getDomainConnection } from "@/shared/server/db";
 import { HttpError } from "@/shared/server/http";
-import { domainId, safeCounter } from "@/modules/catalog/schemas";
+import {
+  contentEstimate,
+  domainId,
+  safeCounter,
+} from "@/modules/catalog/schemas";
 import { contentSnapshot, parseStudyInput } from "@/modules/practice/schemas";
 import {
   requirePracticeActor,
@@ -30,7 +34,7 @@ const taskSchema = z
     kind: z.enum(["fresh", "revision"]),
     revisionSourceSequence: safeCounter.min(1).optional(),
     scheduledDate: z.iso.date(),
-    estimatedMinutes: z.number().int().min(15).max(60),
+    estimatedMinutes: contentEstimate,
     priority: z.enum(["due_revision", "overdue", "fresh"]),
     status: z.enum(["pending", "completed"]),
     completedAt: z.date().nullable(),

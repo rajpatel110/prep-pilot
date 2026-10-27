@@ -1,6 +1,6 @@
 import { catalogTopics, type CatalogSubject } from "./catalog";
 import { createHash } from "node:crypto";
-export const rulesVersion = "deterministic-budget-2";
+export const rulesVersion = "deterministic-budget-3";
 export const subjects: CatalogSubject[] = ["dsa", "aptitude", "cs"];
 export const companyTemplates = {
   cognizant: catalogTopics,

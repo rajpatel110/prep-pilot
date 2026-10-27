@@ -1,5 +1,15 @@
 # Editorial planning configuration v1
 
+Duration-domain update (27 October 2026): `deterministic-budget-3` accepts content,
+scheduled and deferred estimates of 1–60 whole minutes. Earlier version 2 behavior
+below remains intact: no priority, template, prerequisite or allocation change.
+Old pending previews become stale through the existing rules-version check;
+accepted plans/history are not rewritten. Daily preferences remain 30–240 minutes
+in 15-minute increments. The engine sums exact task minutes, generates at most
+one fresh task per eligible material ID, caps scheduled/deferred tasks at 480 each,
+and rejects excess deferred scope rather than truncating. No 15-minute rounding
+or repeated generation to fill unused budget is introduced.
+
 This is PrepPilot editorial configuration, not a sourced or official company
 syllabus. Both Cognizant and LTM include every existing canonical foundation
 topic. Published associations select relevant additional material, but absence
