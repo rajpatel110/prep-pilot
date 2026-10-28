@@ -8,6 +8,7 @@ import {
   type Preferences,
 } from "@/modules/identity/preferences-schema";
 import type { dashboard, readPlan, readPreview } from "../service";
+import { subjectMix, comparisonDays } from "../presentation";
 type Dashboard = Awaited<ReturnType<typeof dashboard>>;
 type Plan = NonNullable<Awaited<ReturnType<typeof readPlan>>["plan"]>;
 type Preview = Awaited<ReturnType<typeof readPreview>>;
@@ -68,7 +69,7 @@ export function GeneratePlan({
         {busy
           ? "Generating proposal…"
           : kind === "preferences"
-            ? "Preview a plan with saved preferences"
+            ? "Review my plan"
             : kind === "initial"
               ? "Preview my study plan"
               : kind === "adapt"
@@ -200,7 +201,7 @@ export function TaskRows({
             {task.status} · {task.kind}
             {task.overdue ? " · Overdue" : ""}
           </p>
-          <p>{task.reason}</p>
+          {task.reasonCode !== "FOUNDATION" && <p>{task.reason}</p>}
           <TaskActions
             task={task}
             planId={planId}
@@ -276,6 +277,9 @@ export function PlanView({ plan }: { plan: Plan }) {
   );
 }
 export function PreviewView({ preview }: { preview: Preview }) {
+  const mix = subjectMix(preview.proposal.tasks);
+  const initialPlan = preview.basePlanId === null;
+  const days = comparisonDays(preview.dailyTotals, initialPlan);
   const router = useRouter(),
     guard = useRef(false);
   const [busy, setBusy] = useState(false),
@@ -315,8 +319,8 @@ export function PreviewView({ preview }: { preview: Preview }) {
             : "Your proposed study plan"}
         </h1>
         <p>
-          {preview.proposal.windowStart} – {preview.proposal.windowEnd} ·
-          Asia/Kolkata
+          {preview.proposal.windowStart} – {preview.proposal.windowEnd} · Times
+          shown in IST
         </p>
         <p>
           Expires{" "}
@@ -376,40 +380,68 @@ export function PreviewView({ preview }: { preview: Preview }) {
         </section>
       )}
       <section className="student-card">
-        <h2>Subject coverage</h2>
+        <h2>Your plan’s subject mix</h2>
         <p>
-          Editorial target: DSA 50%, aptitude 25%, CS fundamentals 25%. Discrete
-          durations, revisions and shortages can change actual shares.
+          Percentages are of {mix.total} scheduled estimated minutes, not your
+          confidence scores or the full study budget.
         </p>
-        {(["dsa", "aptitude", "cs"] as const).map((subject) => {
-          const selected = preview.proposal.tasks.filter(
-            (task) => task.contentSnapshot.subject === subject,
-          );
-          return (
-            <p key={subject}>
-              {subject.toUpperCase()}: {selected.length} tasks ·{" "}
-              {selected.reduce((sum, task) => sum + task.estimatedMinutes, 0)}{" "}
-              estimated minutes
-              {!selected.length
-                ? " · No eligible work scheduled; coverage is not guaranteed."
-                : ""}
-            </p>
-          );
-        })}
-      </section>
-      <section className="student-card">
-        <h2>Daily budget comparison</h2>
-        {preview.dailyTotals.map((day) => (
-          <p key={day.date}>
-            {day.date}: {day.beforeMinutes} → {day.afterMinutes} planned min /{" "}
-            {day.budgetMinutes} budget
+        {mix.subjects.map(({ subject, count, minutes, percent }) => (
+          <p key={subject}>
+            {subject.toUpperCase()}: {count} tasks · {minutes} estimated minutes
+            ·{" "}
+            {percent === null
+              ? "No scheduled minutes; percentage not applicable"
+              : `${percent}%`}
           </p>
         ))}
-        <p>
-          {preview.diff.addedTaskIds.length} added ·{" "}
-          {preview.diff.removedTaskIds.length} removed ·{" "}
-          {preview.diff.moved.length} moved. Completed work is retained.
-        </p>
+        <details>
+          <summary>How subjects are selected</summary>
+          <p>
+            Current confidence sets the fresh-question difficulty ceiling: 1–2
+            easy, 3 up to medium, 4–5 up to hard. It does not change the
+            baseline editorial allocation of DSA 50%, aptitude 25%, CS
+            fundamentals 25%. Available content, exact durations and prioritised
+            revisions can change the actual mix.
+          </p>
+        </details>
+      </section>
+      <section className="student-card">
+        <h2>
+          {initialPlan
+            ? "Proposed daily schedule"
+            : "Previous versus proposed schedule"}
+        </h2>
+        {days.map((day) => (
+          <p key={day.date}>
+            {day.date}:{" "}
+            {initialPlan ? "" : `Previous ${day.beforeMinutes} min → Proposed `}
+            {day.afterMinutes
+              ? `${day.afterMinutes} planned min`
+              : "No tasks scheduled"}{" "}
+            / {day.budgetMinutes} min daily budget
+          </p>
+        ))}
+        {!initialPlan && !days.length && (
+          <p>No daily-minute changes. Task-level changes are shown below.</p>
+        )}
+        {!initialPlan && (
+          <p>
+            {preview.diff.addedTaskIds.length} added ·{" "}
+            {preview.diff.removedTaskIds.length} removed ·{" "}
+            {preview.diff.moved.length} moved. Completed work is retained.
+          </p>
+        )}
+        {preview.dailyTotals.some(
+          (day) => day.afterMinutes < day.budgetMinutes,
+        ) && (
+          <p>
+            Some time is unused. The planner schedules each eligible fresh item
+            once; it does not repeat questions to fill days. Your company
+            selection, confidence difficulty ceiling, prerequisites and exact
+            item durations limit what can fit. See any deferred reasons below;
+            empty days are not designated rest days.
+          </p>
+        )}
       </section>
       <TaskRows
         tasks={preview.proposal.tasks}

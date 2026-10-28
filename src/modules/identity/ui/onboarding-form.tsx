@@ -111,13 +111,12 @@ export function OnboardingForm({
       );
       setBaseline(JSON.stringify(values));
       setRevision(response.data.stateRevision);
-      if (settings) {
-        setSaved(response.data);
-        setMessage("Preferences saved. Your current plan is unchanged.");
-      } else {
-        router.replace(returnTo);
-        router.refresh();
-      }
+      setSaved(response.data);
+      setMessage(
+        response.data.activePlanId
+          ? "Preferences saved. Your current plan stays unchanged until you accept a replacement."
+          : "Your preparation setup is saved. Review a suggested plan based on your goals and available time.",
+      );
     } catch (error) {
       setMessage(
         error instanceof Error
@@ -204,12 +203,12 @@ export function OnboardingForm({
           </h1>
           <p className="student-lead">
             {settings
-              ? "Update your preparation goals and starting self-assessment. Changes apply to future proposals, never automatically to your current plan."
+              ? "Update your goals and current confidence. Review a new plan before making schedule changes."
               : step === 1
                 ? "Choose your target companies. Your preparation also includes shared placement foundations."
                 : step === 2
                   ? "Choose a daily commitment that fits your schedule."
-                  : "An honest starting point, not a test. Rate each subject from 1 (new) to 5 (very confident)."}
+                  : "Choose your current confidence in each subject, from 1 (new) to 5 (very confident). This is not a test."}
           </p>
           {message && (
             <div className="student-notice" role="status">
@@ -357,14 +356,17 @@ export function OnboardingForm({
                       of at most 30 days when you generate a proposal.
                     </p>
                   </div>
-                  <p className="student-notice">
-                    Your study timezone is India Standard Time (Asia/Kolkata).
-                    No schedule or email reminders are created here.
-                  </p>
+                  <p className="student-notice">Times shown in IST.</p>
                 </div>
               )}
               {(settings || step === 3) && (
                 <div className="student-stack">
+                  <p>
+                    Current confidence sets the hardest fresh questions to
+                    include: 1–2 includes easy, 3 adds medium, and 4–5 adds
+                    hard. Easier work remains eligible. It does not change the
+                    subject allocation.
+                  </p>
                   {(Object.keys(subjects) as (keyof typeof subjects)[]).map(
                     (subject) => (
                       <fieldset
@@ -372,7 +374,7 @@ export function OnboardingForm({
                         className="student-card skill-options"
                         aria-describedby="pref-skills-error"
                       >
-                        <legend>{subjects[subject]}</legend>
+                        <legend>Current confidence: {subjects[subject]}</legend>
                         <div>
                           {ratings.map((rating, index) => (
                             <label
@@ -473,14 +475,12 @@ export function OnboardingForm({
                 before saving new preferences.
               </p>
             )}
-          {settings && saved && !dirty && !blocked && (
+          {saved && !dirty && !blocked && (
             <section aria-label="Saved preference planning options">
-              <h2>Review a new proposal</h2>
+              <h2>Your next step</h2>
               <p>
-                Your active plan has not changed. A replacement keeps its
-                existing window end; an updated target date applies to a new
-                preparation window. A proposal changes nothing until you
-                explicitly accept it.
+                Inspect the selected tasks and time totals before accepting. If
+                you have a current plan, it stays unchanged until acceptance.
               </p>
               <GeneratePlan revision={saved.stateRevision} kind="preferences" />
             </section>
@@ -609,12 +609,13 @@ export function OnboardingForm({
             Preferences are saved only when you finish. No placement prediction
             or plan is generated.
           </p>
-          {initial.capabilities.emailMode === "test" && (
-            <p>
-              Demo email mode: verification and password recovery remain
-              unavailable.
-            </p>
-          )}
+          {!initial.capabilities.verificationEmail &&
+            !initial.capabilities.passwordRecovery && (
+              <p>
+                Verification email and password recovery are unavailable in this
+                environment.
+              </p>
+            )}
         </aside>
       </div>
     </>

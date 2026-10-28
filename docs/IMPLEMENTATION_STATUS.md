@@ -2,6 +2,58 @@
 
 Updated: 28 October 2026 (Asia/Kolkata).
 
+## Student journey usability — final build and focused compiled checks passed
+
+Paused content batching. Reproduced the same-origin signed-in homepage CTA opening
+signup in the disposable compiled fixture. Corrected both CTA destinations and auth
+page session routing, retaining safe returns and existing verification/role guards.
+Added a guarded plan-review entry using the existing preview/explicit-accept pipeline.
+Saved preferences now have a clear next step; confidence/daily mix/empty-date copy
+is clarified without changing planner weights, budgets, prerequisites or history.
+
+Verification had an unconditional unverified heading plus no return-tab account
+invalidation. The heading follows confirmed status; return/confirmation notifications
+request authoritative server refresh, not client verification flags or URL proof.
+Progress summary/history now stream independently under separate Suspense boundaries,
+with navigation and non-zero-placeholder loading/partial-failure states preserved.
+
+Local baseline streamed Progress metrics: first 1839 ms, repeats 1996/1559 ms;
+loading shell 212/23/27 ms, respectively. This does not reproduce hosted 4–5 seconds
+or establish a provider cause. Final warm local reads streamed actual metrics in
+1241/1314/1072 ms and the loading shell in 29/25/21 ms. These are not a controlled
+cold benchmark or hosted performance guarantee. Shared DB was untouched.
+See `docs/student/JOURNEY_USABILITY.md` for trace, scope and limitations.
+
+Agent checks: 34 focused identity/preferences/planning/email-link/presentation
+tests passed. Scoped ESLint, formatting and project TypeScript passed after fixing
+two lint issues (Next Link usage and JSX construction outside a data-read catch).
+Agent production build was blocked by EPERM creating `.next/types/app/plans/[id]`;
+no diagnosis/probes were resumed. The user-run final production build passed
+(`N9cAvnugoxMBZVQJ3VPaQ`), including TypeScript. Compiled disposable HTTP checks
+passed for safe routing, setup, explicit acceptance, practice versus completion,
+Progress metrics and replacement preservation. Browser checks covered Settings
+save feedback, plan CTA/preview, Progress, keyboard focus and both themes at
+1280×800 and 390×844 without horizontal overflow. Mock confirmation refreshed a
+previously open verification tab to Email verified using authoritative state.
+First-time wizard verification is now complete on fresh desktop and mobile accounts.
+The native calendar selected 17 November 2026, the preparation brief reflected it,
+Save and continue succeeded, and Review my plan generated the matching preview.
+The date persisted through Settings navigation and reload on each account. Actual
+viewports were 1280×800 and 390×844; mobile had no horizontal overflow. The prior
+text-fill automation did not update React state; native calendar interaction worked.
+No application source correction or rebuild was required. The existing student UI
+fixture now supplies separate first-time desktop/mobile accounts.
+Baseline/final study fixtures reported database/server cleanup (final: one plan,
+one attempt). Cleanup reconciliation found `prep_pilot_mail_ui_34abb6c8a8d3` with
+the sole expected mock account, created at 2026-10-28T06:30:06.952Z, matching the
+prior fixture launch/ready log window (06:29:35–06:30:08 UTC). Exact-name, account,
+timestamp and zero plan/attempt guards passed; only that database was removed and
+its absence confirmed. Both new onboarding fixture runs also reported database and
+server cleanup with zero plans/attempts. Hosted latency, injected partial-read
+failures and compiled owner-specific routing remain unverified. Resource completion
+and prior interrupted checks are not retroactively marked passed. The user authorized
+a scoped commit and normal push; deployment status must be checked separately.
+
 ## Visual milestone checkpoint review — 28 October 2026
 
 Reviewed the homepage polish/reveal controller, scoped CSS, root font loading,

@@ -4,6 +4,10 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { emailAvailability } from "@/modules/notifications/policy";
 import { SignOut } from "@/shared/ui/sign-out";
 import { watchEmailLink } from "./email-link";
+import {
+  AccountRefresh,
+  announceAccountChange,
+} from "@/shared/ui/account-refresh";
 
 export function EmailPanel({
   mode,
@@ -54,6 +58,7 @@ export function EmailPanel({
     return () => window.clearTimeout(timer);
   }, [cooldown]);
   const enabled = availability.passwordRecovery;
+  const emailVerified = user ? user.verified : verified;
   async function perform(
     operation: string,
     body: object,
@@ -120,7 +125,10 @@ export function EmailPanel({
         return;
       }
       if (operation.endsWith("/confirm")) {
-        if (mode === "verification") setVerified(true);
+        if (mode === "verification") {
+          setVerified(true);
+          announceAccountChange();
+        }
         setDone(true);
         setToken("");
         setPassword("");
@@ -128,10 +136,11 @@ export function EmailPanel({
         setMessage(
           mode === "reset"
             ? "Password reset confirmed. Previous sessions have been revoked. Sign in with your new password."
-            : "Email verification confirmed. Sign in to continue.",
+            : "Email verification confirmed. Continue to your account.",
         );
       } else if (result.data.status === "already_verified") {
         setVerified(true);
+        announceAccountChange();
         setDone(true);
         setMessage("Your email is already verified.");
       } else {
@@ -166,17 +175,22 @@ export function EmailPanel({
   }
   return (
     <div className="auth-form" aria-busy={busy}>
+      {mode === "verification" && <AccountRefresh />}
       <p className="eyebrow">Account security</p>
       <h1>
         {mode === "verification"
-          ? "Verify your email"
+          ? emailVerified
+            ? "Email verified"
+            : "Verify your email"
           : mode === "forgot"
             ? "Forgot your password?"
             : "Choose a new password"}
       </h1>
       <p className="section-copy">
         {mode === "verification"
-          ? "Opening this page does not verify your email. Confirm explicitly using the button below. Verification links expire in 60 minutes."
+          ? emailVerified
+            ? "Your account’s email verification is confirmed. Continue to your account."
+            : "Opening this page does not verify your email. Confirm explicitly using the button below. Verification links expire in 60 minutes."
           : mode === "forgot"
             ? "Request a secure link to reset your password. Reset links expire in 30 minutes."
             : "Use 12–128 characters. Spaces are preserved. Resetting signs out all your existing sessions."}
@@ -206,7 +220,7 @@ export function EmailPanel({
       {mode === "verification" && user && (
         <p>
           {user.email} —{" "}
-          {user.verified || verified ? "Email verified" : "Email not verified"}
+          {emailVerified ? "Email verified" : "Email not verified"}
         </p>
       )}
       {message && (

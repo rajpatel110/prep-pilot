@@ -5,6 +5,21 @@ import { requireActor } from "./service";
 import { HttpError } from "@/shared/server/http";
 import { studentReturn } from "./student-routing";
 
+export async function redirectSignedInAuth(returnTo: string | null) {
+  let actor;
+  try {
+    actor = await requireActor(await headers());
+  } catch (error) {
+    if (error instanceof HttpError && error.status === 401) return;
+    throw error;
+  }
+  redirect(
+    actor.destination === "/dashboard"
+      ? (studentReturn(returnTo) ?? "/dashboard")
+      : actor.destination,
+  );
+}
+
 export async function pageActor(expected?: string) {
   let actor;
   try {

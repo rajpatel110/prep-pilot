@@ -6,7 +6,8 @@ export function studentReturn(value: unknown): string | null {
   )
     return null;
   try {
-    if (value === "/account?view=settings") return value;
+    if (value === "/account?view=settings" || value === "/plans/review")
+      return value;
     const url = new URL(value, "https://preppilot.invalid");
     if (
       url.origin !== "https://preppilot.invalid" ||

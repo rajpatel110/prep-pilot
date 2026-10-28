@@ -21,6 +21,8 @@ async function main() {
   let serverReady = false;
   let studentCookies: string[] = [];
   let adminCookies: string[] = [];
+  let onboardingDesktopCookies: string[] = [];
+  let onboardingMobileCookies: string[] = [];
   let finish = () => {};
   const bridge = createServer((request, response) => {
     response.setHeader("Cache-Control", "no-store");
@@ -34,6 +36,20 @@ async function main() {
       response.writeHead(302, {
         "Set-Cookie": studentCookies,
         Location: `${origin}/dashboard`,
+      });
+      response.end();
+      return;
+    }
+    if (
+      request.url === "/onboarding-desktop" ||
+      request.url === "/onboarding-mobile"
+    ) {
+      response.writeHead(302, {
+        "Set-Cookie":
+          request.url === "/onboarding-desktop"
+            ? onboardingDesktopCookies
+            : onboardingMobileCookies,
+        Location: `${origin}/onboarding`,
       });
       response.end();
       return;
@@ -222,6 +238,12 @@ async function main() {
       ).status,
       200,
     );
+    onboardingDesktopCookies = (
+      await signup("onboarding-desktop@example.invalid")
+    ).cookies;
+    onboardingMobileCookies = (
+      await signup("onboarding-mobile@example.invalid")
+    ).cookies;
     await new Promise<void>((resolve) =>
       bridge.listen(3152, "127.0.0.1", resolve),
     );

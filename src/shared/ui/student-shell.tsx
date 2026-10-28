@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SignOut } from "./sign-out";
 import { StudentNavigation } from "./student-navigation";
 import { ThemeToggle } from "./theme-toggle";
+import { AccountRefresh } from "./account-refresh";
 import "@/app/content/student.css";
 
 export function StudentShell({
@@ -15,6 +16,7 @@ export function StudentShell({
 }) {
   return (
     <div className="student-app">
+      <AccountRefresh />
       <header className="student-header">
         <Link className="brand" href="/" aria-label="PrepPilot home">
           PrepPilot
@@ -30,8 +32,7 @@ export function StudentShell({
         {children}
       </main>
       <footer className="student-footer">
-        PrepPilot · Structured placement preparation · Study timezone:
-        Asia/Kolkata
+        PrepPilot · Structured placement preparation · Times shown in IST
       </footer>
     </div>
   );

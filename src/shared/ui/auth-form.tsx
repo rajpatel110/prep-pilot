@@ -147,7 +147,9 @@ export function AuthForm({
       </button>
       <p className="small-note">
         {signup ? "Already have an account?" : "New to PrepPilot?"}{" "}
-        <Link href={signup ? "/login" : "/signup"}>
+        <Link
+          href={`${signup ? "/login" : "/signup"}${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ""}`}
+        >
           {signup ? "Sign in" : "Create an account"}
         </Link>
       </p>

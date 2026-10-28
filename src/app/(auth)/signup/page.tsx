@@ -1,6 +1,14 @@
 import { AuthForm } from "@/shared/ui/auth-form";
 import { serverConfig } from "@/shared/server/config";
-export default function SignupPage() {
+import { studentReturn } from "@/modules/identity/student-routing";
+import { redirectSignedInAuth } from "@/modules/identity/page-access";
+export default async function SignupPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const returnTo = studentReturn((await searchParams).returnTo);
+  if (serverConfig.AUTH_ENABLED) await redirectSignedInAuth(returnTo);
   return (
     <>
       <h1>Create your account</h1>
@@ -12,6 +20,7 @@ export default function SignupPage() {
         enabled={serverConfig.AUTH_ENABLED}
         emailMode={serverConfig.EMAIL_MODE}
         deliveryMode={serverConfig.EMAIL_DELIVERY_MODE}
+        returnTo={returnTo}
       />
     </>
   );

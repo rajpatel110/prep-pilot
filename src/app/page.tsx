@@ -97,9 +97,13 @@ export default function Home() {
                   Preview your schedule before you accept it.
                 </p>
                 <div className="actions">
-                  <a className="button" href="/signup">
+                  <Link
+                    className="button"
+                    href="/plans/review"
+                    prefetch={false}
+                  >
                     Create my study plan <span aria-hidden="true">↗</span>
-                  </a>
+                  </Link>
                   <a className="button button-secondary" href="#sample-plan">
                     See a sample plan
                   </a>
@@ -317,9 +321,9 @@ export default function Home() {
                 Schedules use available eligible content. Missing topics can
                 leave time unused; PrepPilot does not invent tasks to fill it.
               </p>
-              <a className="button" href="/signup">
-                Create your account <span aria-hidden="true">↗</span>
-              </a>
+              <Link className="button" href="/plans/review" prefetch={false}>
+                Review my plan <span aria-hidden="true">↗</span>
+              </Link>
             </div>
           </PageContainer>
         </section>
