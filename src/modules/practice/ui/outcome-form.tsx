@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { apiRequest, ApiRequestError } from "@/shared/ui/api-client";
 import type { AttemptInput } from "../schemas";
 import { prepareSubmission, restoreSubmission } from "../submission";
+import { refreshStudyAfterAttempt } from "../refresh-study";
 const labels = {
   independent: "Solved independently",
   needed_help: "Solved with help",
@@ -114,20 +115,14 @@ export function OutcomeForm({
           ? "Original saved receipt recovered. No duplicate attempt was created. Check refreshed history and revisions for the latest state."
           : "Outcome recorded. No plan task was automatically completed.",
       );
-      try {
-        const history = await apiRequest(
-          `/api/v1/attempts?contentId=${contentId}&limit=1`,
-        );
-        setLatest(history.data[0]?.attemptSequence ?? null);
-        await apiRequest("/api/v1/revisions?dueOnly=false");
-        await apiRequest("/api/v1/plans/current");
-        await apiRequest("/api/v1/dashboard");
-      } catch {
+      router.refresh();
+      const refreshed = await refreshStudyAfterAttempt(contentId);
+      setLatest(refreshed.latest);
+      if (refreshed.failed) {
         setMessage(
           "The outcome is saved, but refreshing study views failed. Refresh history, revisions or the dashboard; do not resubmit this saved attempt.",
         );
       }
-      router.refresh();
     } catch (error) {
       setMessage(
         error instanceof Error
@@ -141,6 +136,7 @@ export function OutcomeForm({
     }
   }
   function startNew() {
+    if (busyRef.current) return;
     try {
       sessionStorage.removeItem(key);
     } catch {
@@ -266,8 +262,14 @@ export function OutcomeForm({
                 <Link href={`/attempts?contentId=${contentId}`}>
                   View saved history
                 </Link>
-                <button className="button button-outline" onClick={startNew}>
-                  Start a later practice attempt
+                <button
+                  className="button button-outline"
+                  disabled={busy}
+                  onClick={startNew}
+                >
+                  {busy
+                    ? "Refreshing study state…"
+                    : "Start a later practice attempt"}
                 </button>
               </div>
             </div>

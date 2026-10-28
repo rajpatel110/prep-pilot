@@ -159,10 +159,7 @@ test("verification labels use the current server user, not another link or event
     "src/modules/identity/ui/email-panel.tsx",
     "utf8",
   );
-  assert.match(
-    source,
-    /const emailVerified = user \? user\.verified : verified/,
-  );
+  assert.match(source, /verificationConfirmedForView\(\s*user\?\.verified,/);
   assert.match(source, /announceAccountChange\(\)/);
   assert.match(source, /<AccountRefresh/);
   assert.match(source, /Confirm email verification/);

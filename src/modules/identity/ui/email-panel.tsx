@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { emailAvailability } from "@/modules/notifications/policy";
 import { SignOut } from "@/shared/ui/sign-out";
-import { watchEmailLink } from "./email-link";
+import { watchEmailLink, verificationConfirmedForView } from "./email-link";
 import {
   AccountRefresh,
   announceAccountChange,
@@ -19,6 +19,7 @@ export function EmailPanel({
   user?: { email: string; verified: boolean; canRequest: boolean } | undefined;
 }) {
   const linkRevision = useRef(0);
+  const [currentRevision, setCurrentRevision] = useState(0);
   const [token, setToken] = useState("");
   const [ready, setReady] = useState(false);
   const [email, setEmail] = useState("");
@@ -27,7 +28,9 @@ export function EmailPanel({
   const [visible, setVisible] = useState(false);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
-  const [verified, setVerified] = useState(false);
+  const [confirmedRevision, setConfirmedRevision] = useState<number | null>(
+    null,
+  );
   const [confirmationBlocked, setConfirmationBlocked] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -36,6 +39,7 @@ export function EmailPanel({
     let active = true;
     const unsubscribe = watchEmailLink(window, (value) => {
       linkRevision.current += 1;
+      setCurrentRevision(linkRevision.current);
       setToken(value);
       setDone(false);
       setConfirmationBlocked(false);
@@ -58,7 +62,11 @@ export function EmailPanel({
     return () => window.clearTimeout(timer);
   }, [cooldown]);
   const enabled = availability.passwordRecovery;
-  const emailVerified = user ? user.verified : verified;
+  const emailVerified = verificationConfirmedForView(
+    user?.verified,
+    confirmedRevision,
+    currentRevision,
+  );
   async function perform(
     operation: string,
     body: object,
@@ -126,7 +134,7 @@ export function EmailPanel({
       }
       if (operation.endsWith("/confirm")) {
         if (mode === "verification") {
-          setVerified(true);
+          setConfirmedRevision(revision);
           announceAccountChange();
         }
         setDone(true);
@@ -139,7 +147,7 @@ export function EmailPanel({
             : "Email verification confirmed. Continue to your account.",
         );
       } else if (result.data.status === "already_verified") {
-        setVerified(true);
+        setConfirmedRevision(revision);
         announceAccountChange();
         setDone(true);
         setMessage("Your email is already verified.");

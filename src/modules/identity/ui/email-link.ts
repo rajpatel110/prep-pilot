@@ -1,3 +1,11 @@
+export function verificationConfirmedForView(
+  serverVerified: boolean | undefined,
+  confirmedRevision: number | null,
+  currentRevision: number,
+) {
+  return serverVerified ?? confirmedRevision === currentRevision;
+}
+
 export function watchEmailLink(
   browser: Pick<
     Window,

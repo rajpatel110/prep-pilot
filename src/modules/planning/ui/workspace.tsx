@@ -9,6 +9,7 @@ import {
 } from "@/modules/identity/preferences-schema";
 import type { dashboard, readPlan, readPreview } from "../service";
 import { subjectMix, comparisonDays } from "../presentation";
+import { acceptPreview } from "../accept-preview";
 type Dashboard = Awaited<ReturnType<typeof dashboard>>;
 type Plan = NonNullable<Awaited<ReturnType<typeof readPlan>>["plan"]>;
 type Preview = Awaited<ReturnType<typeof readPreview>>;
@@ -285,20 +286,21 @@ export function PreviewView({ preview }: { preview: Preview }) {
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   const [ack, setAck] = useState<string[]>([]);
+  const [confirmedPlanId, setConfirmedPlanId] = useState<string | null>(null);
+  const acceptedPlanId = confirmedPlanId ?? preview.confirmedPlanId;
+  const [refreshWarning, setRefreshWarning] = useState(false);
   async function accept() {
-    if (guard.current) return;
+    if (guard.current || acceptedPlanId) return;
     guard.current = true;
     setBusy(true);
     setError("");
     try {
-      const result = await apiRequest(
-        `/api/v1/plan-previews/${preview.id}/confirm`,
-        "POST",
-        { acknowledgedDeferredIds: ack },
-      );
-      await apiRequest("/api/v1/plans/current");
-      router.push(`/plans/${result.data.plan.id}`);
-      router.refresh();
+      const result = await acceptPreview(preview.id, ack, (planId) => {
+        setConfirmedPlanId(planId);
+        router.push(`/plans/${planId}`);
+        router.refresh();
+      });
+      setRefreshWarning(!result.refreshed);
     } catch (error) {
       setError(
         errorText(error) +
@@ -312,7 +314,9 @@ export function PreviewView({ preview }: { preview: Preview }) {
   return (
     <>
       <header className="student-card">
-        <p className="eyebrow">Review · not an active plan</p>
+        <p className="eyebrow">
+          {acceptedPlanId ? "Accepted proposal" : "Review · not an active plan"}
+        </p>
         <h1>
           {preview.kind === "adapt"
             ? "Review your suggested changes"
@@ -483,8 +487,14 @@ export function PreviewView({ preview }: { preview: Preview }) {
       </section>
       <section className="student-card">
         {error && <p role="alert">{error}</p>}
-        {preview.state === "confirmed" ? (
-          <Link className="button" href={`/plans/${preview.confirmedPlanId}`}>
+        {refreshWarning && (
+          <p role="status">
+            Your plan was accepted. Open the saved plan to load its latest
+            state.
+          </p>
+        )}
+        {acceptedPlanId ? (
+          <Link className="button" href={`/plans/${acceptedPlanId}`}>
             Open accepted plan
           </Link>
         ) : (
@@ -505,9 +515,11 @@ export function PreviewView({ preview }: { preview: Preview }) {
           </button>
         )}
         <Link className="button button-outline" href="/dashboard">
-          {preview.kind === "adapt"
-            ? "Keep current plan"
-            : "Return without accepting"}
+          {acceptedPlanId
+            ? "Back to dashboard"
+            : preview.kind === "adapt"
+              ? "Keep current plan"
+              : "Return without accepting"}
         </Link>
       </section>
       {error && (

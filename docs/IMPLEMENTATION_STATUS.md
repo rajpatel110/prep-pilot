@@ -2,6 +2,51 @@
 
 Updated: 28 October 2026 (Asia/Kolkata).
 
+## Independent student review — focused fixes and final compiled checks
+
+Reviewed the connected journey against current contracts and prior evidence, without
+repeating the full suite. Baseline local HEAD and remote `dev` matched `e052a9e`.
+GitHub's Vercel status reported that commit deployed successfully; the current
+Production alias commit was not independently verified. Hosted performance remains
+unmeasured. No shared accounts, catalog or study records were modified.
+
+Fixed three confirmed client recovery issues: a successful plan acceptance no longer
+looks failed when a subsequent read fails; independent post-practice reads run
+concurrently and cannot overwrite a newly started attempt; anonymous verification
+success is scoped to the confirmed link rather than surviving a replacement link.
+Accepted preview reloads use an accurate label. Existing guards, idempotency,
+explicit acceptance/completion and scheduling policy are unchanged.
+
+Eighteen focused recovery/link/presentation tests, scoped formatting/lint and project
+TypeScript passed. After the agent build hit EPERM, the user-run final production
+build passed (`0Jz3fC5sSIhzG9AcBmLP4`); diagnosis stayed paused and the build was reused.
+Final disposable HTTP checks passed for resource completion/undo, reading metrics
+separate from attempts/revisions, CSRF, stale writes, cross-user isolation and
+accepted-preview reload. Desktop/mobile browser checks covered preview/keyboard
+acceptance, resource completion, question outcome receipt, separate task completion,
+later-attempt reset, focus and theme switching/persistence without mobile overflow.
+The mock-email browser check confirmed anonymously, then replaced the link in the
+same tab: stale success cleared, explicit confirmation remained required, and
+invalid/used links were rejected. No real email was sent.
+
+Local warm Progress metrics arrived in 1193/1167/1479 ms, with loading shells in
+37/17/23 ms. These are streamed-response measurements, not browser paint or hosted
+performance. The browser reached the Progress loading shell; its final metrics
+inspection was interrupted by fixture expiry and is not marked passed. Final
+study-fixture cleanup succeeded (one attempt, two plans). Email-fixture automatic
+cleanup did not report completion; terminal input/process inspection was blocked.
+Read-only checks identified only `prep_pilot_mail_ui_1b2f215f42db` for cleanup, but
+port 3119 still responded, so the guarded cleanup script correctly refused deletion.
+Stopping that fixture and confirming its exact database removal remains necessary.
+Prior interrupted baseline checks retain their limitations. Minor resource self-link/copy
+cleanup, a consumed-fragment
+browser-reporting observation and broader session/owner matrices remain follow-ups.
+See `docs/student/INDEPENDENT_REVIEW.md` for findings, severity, reproduction,
+root causes, evidence and remaining limits. The review performed no real email,
+shared-database migration or deployment. The owner subsequently authorized a scoped
+checkpoint commit and normal push; unrelated content/importer work remains separate.
+This authorization does not resolve the recorded fixture-cleanup limitation.
+
 ## Student journey usability — final build and focused compiled checks passed
 
 Paused content batching. Reproduced the same-origin signed-in homepage CTA opening
