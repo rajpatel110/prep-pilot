@@ -9,13 +9,18 @@ export async function lockAdminProfile(
   session: ClientSession,
   actor: Awaited<ReturnType<typeof requireAdmin>>,
 ) {
+  return lockAdminUser(connection, session, actor.session.user.id);
+}
+
+export async function lockAdminUser(
+  connection: Connection,
+  session: ClientSession,
+  userId: string,
+) {
   if (!session.inTransaction())
     throw new Error("An admin mutation requires a domain transaction.");
   const model = profileModel(connection);
-  const profile = await model
-    .findOne({ userId: actor.session.user.id })
-    .session(session)
-    .lean();
+  const profile = await model.findOne({ userId }).session(session).lean();
   if (!profile || profile.lifecycle !== "active")
     throw new HttpError(
       403,

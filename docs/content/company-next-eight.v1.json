@@ -1,0 +1,205 @@
+{
+  "version": 1,
+  "candidates": [
+    {
+      "sourceRefs": ["LTM-035"],
+      "reportedCompanies": ["ltm"],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Editorial constraints, examples, solutions and duration require human review and timing calibration."
+      ],
+      "content": {
+        "slug": "reported-bubble-sort-implementation",
+        "title": "Bubble sort with stable duplicates",
+        "subject": "dsa",
+        "topic": "sorting",
+        "type": "question",
+        "difficulty": "easy",
+        "estimatedMinutes": 25,
+        "source": "Candidate-reported interview question, confirmed by the contributor; not an official company publication. References: LTM-035.",
+        "attribution": "AI-assisted PrepPilot editorial adaptation; original source wording preserved separately. Not human-reviewed.",
+        "tags": ["company-batch-v1", "interview-adaptation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Editorial adaptation, not the exact interview specification.\n\nReturn an ascending copy of an integer array using adjacent swaps and an early-stop flag. Length 0–1000; values −10000 through 10000. Trace [3,1,2,1], and explain empty, singleton and already sorted inputs. Do not mutate the input.",
+        "explanation": "Passes: [1,2,1,3], then [1,1,2,3], then no swaps. Swap only when the left value is greater; equal values do not cross, so the algorithm is stable. Empty/singleton need no comparisons. Best case O(n), worst O(n²); the copy uses O(n) space."
+      }
+    },
+    {
+      "sourceRefs": ["COG-093"],
+      "reportedCompanies": ["cognizant"],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Editorial constraints, examples, solutions and duration require human review and timing calibration."
+      ],
+      "content": {
+        "slug": "reported-longest-unique-window",
+        "title": "Longest substring without repeated ASCII characters",
+        "subject": "dsa",
+        "topic": "strings",
+        "type": "question",
+        "difficulty": "medium",
+        "estimatedMinutes": 30,
+        "source": "Candidate-reported interview question, confirmed by the contributor; not an official company publication. References: COG-093.",
+        "attribution": "AI-assisted PrepPilot editorial adaptation; original source wording preserved separately. Not human-reviewed.",
+        "tags": ["company-batch-v1", "interview-adaptation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Editorial adaptation, not the exact interview specification.\n\nReturn (length,start) of the longest contiguous substring with no repeated characters; choose earliest start on ties. ASCII length 0–2000; spaces and case matter. Empty input returns (0,0). Trace abba, abcabcbb and aaaa; give a linear-time algorithm.",
+        "explanation": "Maintain last-seen indices and a left boundary. Set left=max(left,lastSeen[c]+1), then record c's index. Update the best only for a strictly longer window. abba → (2,0), abcabcbb → (3,0), aaaa → (1,0). Never move left backwards. O(n) time, O(128) space."
+      }
+    },
+    {
+      "sourceRefs": ["COG-089"],
+      "reportedCompanies": ["cognizant"],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Editorial constraints, examples, solutions and duration require human review and timing calibration."
+      ],
+      "content": {
+        "slug": "reported-weak-peak-search",
+        "title": "Find a weak peak by binary search",
+        "subject": "dsa",
+        "topic": "searching",
+        "type": "question",
+        "difficulty": "medium",
+        "estimatedMinutes": 25,
+        "source": "Candidate-reported interview question, confirmed by the contributor; not an official company publication. References: COG-089.",
+        "attribution": "AI-assisted PrepPilot editorial adaptation; original source wording preserved separately. Not human-reviewed.",
+        "tags": ["company-batch-v1", "interview-adaptation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Editorial adaptation, not the exact interview specification.\n\nFor a nonempty array of 1–1000 integers, return any index whose value is at least each existing neighbor. Endpoints have one neighbor; duplicates allowed. Give an O(log n) algorithm, trace [1,3,2], [2,2], [1], and explain monotone inputs.",
+        "explanation": "With inclusive low/high, compare mid with mid+1. If the latter is greater, set low=mid+1; otherwise high=mid. An ascending edge leads toward a weak peak; the other half also retains a weak peak. Return low. Example indices 1,0,0. Increasing arrays return last; decreasing arrays return first. O(log n) time, O(1) space. Weak-peak semantics are an editorial clarification."
+      }
+    },
+    {
+      "sourceRefs": ["LTM-028"],
+      "reportedCompanies": ["ltm"],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Editorial constraints, examples, solutions and duration require human review and timing calibration."
+      ],
+      "content": {
+        "slug": "reported-duplicate-integer-values",
+        "title": "Repeated integer values in first-occurrence order",
+        "subject": "dsa",
+        "topic": "hashing",
+        "type": "question",
+        "difficulty": "easy",
+        "estimatedMinutes": 20,
+        "source": "Candidate-reported interview question, confirmed by the contributor; not an official company publication. References: LTM-028.",
+        "attribution": "AI-assisted PrepPilot editorial adaptation; original source wording preserved separately. Not human-reviewed.",
+        "tags": ["company-batch-v1", "interview-adaptation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Editorial adaptation, not the exact interview specification.\n\nReturn every integer occurring at least twice, once each, ordered by its FIRST occurrence in the original array. Length 0–1000; values −10000 through 10000. Trace [4,2,4,4,2,7], [], [3,3,3], [-1,0,-1].",
+        "explanation": "Count values, then scan the original array and emit an eligible value only if not already emitted. Outputs [4,2], [], [3], [-1]. Expected O(n) time and O(k) space with hash tables. Ordering by when a duplicate is detected would not in general satisfy first-occurrence ordering."
+      }
+    },
+    {
+      "sourceRefs": ["LTM-078", "LTM-079", "COG-077"],
+      "reportedCompanies": ["ltm", "cognizant"],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Editorial constraints, examples, solutions and duration require human review and timing calibration."
+      ],
+      "content": {
+        "slug": "reported-salary-ranking-lab",
+        "title": "Salary ranking, ties and NULL",
+        "subject": "cs",
+        "topic": "dbms",
+        "type": "question",
+        "difficulty": "medium",
+        "estimatedMinutes": 20,
+        "source": "Candidate-reported interview question, confirmed by the contributor; not an official company publication. References: LTM-078, LTM-079, COG-077.",
+        "attribution": "AI-assisted PrepPilot editorial adaptation; original source wording preserved separately. Not human-reviewed.",
+        "tags": ["company-batch-v1", "interview-adaptation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Editorial adaptation, not the exact interview specification.\n\nPostgreSQL 18: employees(id integer PRIMARY KEY,name text,salary integer NULL). Rows (1,A,100),(2,B,200),(3,C,200),(4,D,NULL),(5,E,150). Write queries for all highest-paid employees and all employees with the second DISTINCT salary. Compare RANK, DENSE_RANK and ROW_NUMBER. Explain all-NULL and single-distinct-salary cases.",
+        "explanation": "Highest: SELECT * FROM employees WHERE salary=(SELECT MAX(salary) FROM employees); IDs 2,3. Second: WITH ranked AS (SELECT *,DENSE_RANK() OVER (ORDER BY salary DESC) AS r FROM employees WHERE salary IS NOT NULL) SELECT id,name,salary FROM ranked WHERE r=2; ID 5. Non-NULL ranks are RANK 1,1,3,4; DENSE_RANK 1,1,2,3; ROW_NUMBER with id as an additional tie-breaker 1,2,3,4. All-NULL gives neither result; one distinct salary gives no second. Row order is unspecified unless ORDER BY is used."
+      }
+    },
+    {
+      "sourceRefs": ["LTM-062", "LTM-073"],
+      "reportedCompanies": ["ltm"],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Editorial constraints, examples, solutions and duration require human review and timing calibration."
+      ],
+      "content": {
+        "slug": "reported-dbms-index-workload",
+        "title": "Choose an index from a workload",
+        "subject": "cs",
+        "topic": "dbms",
+        "type": "question",
+        "difficulty": "medium",
+        "estimatedMinutes": 20,
+        "source": "Candidate-reported interview question, confirmed by the contributor; not an official company publication. References: LTM-062, LTM-073.",
+        "attribution": "AI-assisted PrepPilot editorial adaptation; original source wording preserved separately. Not human-reviewed.",
+        "tags": ["company-batch-v1", "interview-adaptation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Editorial adaptation, not the exact interview specification.\n\nPostgreSQL 18 orders(id integer PRIMARY KEY,customer_id integer NOT NULL,status text,created_at timestamp NOT NULL) receives frequent writes. Main query filters customer_id by equality, orders created_at descending and takes 20 rows. Propose one candidate index, discuss supported predicates, write cost and how to validate it.",
+        "explanation": "Candidate: CREATE INDEX ON orders(customer_id,created_at DESC). Its leading key supports customer equality and ordered timestamps within that customer. It does not guarantee efficient date-only or status-only access. The primary key already indexes id. Every maintained index costs writes and storage. Compare EXPLAIN plans and measured workload behavior on representative data before deployment; no speedup is promised. Avoid indexing every column by default."
+      }
+    },
+    {
+      "sourceRefs": [],
+      "reportedCompanies": [],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Proposed cohesive practice set; novice timing has not been measured. Hold if it takes less than 15 minutes rather than padding it."
+      ],
+      "content": {
+        "slug": "apt-original-work-rates-staged",
+        "title": "Work rates with a staged team",
+        "subject": "aptitude",
+        "topic": "quantitative",
+        "type": "question",
+        "difficulty": "medium",
+        "estimatedMinutes": 20,
+        "source": "Original PrepPilot practice material.",
+        "attribution": "AI-assisted original PrepPilot exercise and worked answer; pending human editorial review.",
+        "tags": ["company-batch-v1", "original-practice"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "A completes a job in 12 hours, B in 18 hours, at constant independent rates. They work together for 3 hours, then A leaves. Find fraction completed, remaining time for B and total elapsed time. Compare with both working throughout, then explain why averaging 12 and 18 is invalid.",
+        "explanation": "Combined rate 1/12+1/18=5/36 per hour. In 3 hours:5/12 done;7/12 remains. B takes (7/12)×18=10.5 more hours; total13.5 hours. Together throughout:36/5=7.2 hours. Completion times are reciprocals of rates, so their arithmetic mean is not a combined completion time."
+      }
+    },
+    {
+      "sourceRefs": [],
+      "reportedCompanies": [],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Proposed cohesive practice set; novice timing has not been measured. Hold if it takes less than 15 minutes rather than padding it."
+      ],
+      "content": {
+        "slug": "apt-original-capacity-feasible-batches",
+        "title": "Capacity planning with integer batches",
+        "subject": "aptitude",
+        "topic": "quantitative",
+        "type": "question",
+        "difficulty": "medium",
+        "estimatedMinutes": 20,
+        "source": "Original PrepPilot practice material.",
+        "attribution": "AI-assisted original PrepPilot exercise and worked answer; pending human editorial review.",
+        "tags": ["company-batch-v1", "original-practice"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "A workshop makes A batches using3 machine-hours and2 staff-hours each, and B batches using2 machine-hours and4 staff-hours. Daily limits18 machine-hours and24 staff-hours. Nonnegative integer counts, revenue₹40 per A and₹50 per B. Enumerate feasible B counts for each A and find maximum revenue; no fractional batches.",
+        "explanation": "Constraints3A+2B≤18 and2A+4B≤24. For A=0..6, maximum B is6,5,5,4,3,1,0 respectively. Revenue at those maxima300,290,330,320,310,250,240. Optimum A2,B5 gives₹330, machine16,staff24. Positive revenues mean only maximal feasible B per A need comparing."
+      }
+    }
+  ]
+}

@@ -1,12 +1,12 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { Types } from "mongoose";
 import { requireAdmin } from "@/modules/identity/service";
 import { lockAdminProfile } from "@/modules/identity/mutation-guard";
 import { appendAudit } from "@/modules/administration/audit";
 import { getDomainConnection } from "@/shared/server/db";
 import { HttpError } from "@/shared/server/http";
 import { catalogModels } from "./model";
+import { writeDraft } from "./write-draft";
 import {
   draftInputSchema,
   draftPatchSchema,
@@ -56,45 +56,16 @@ export async function createDraft(
     const values = parseCatalogInput(draftInputSchema, input);
     const connection = await getDomainConnection();
     await requireCatalogSetup(connection);
-    const models = catalogModels(connection);
-    const id = new Types.ObjectId();
-    const now = new Date();
     return await connection.transaction(async (session) => {
       await advanceCatalog(connection, session);
       await lockAdminProfile(connection, session, actor);
-      const attachments = await validateAttachments(
+      return writeDraft(
         connection,
-        values.assetIds,
-        false,
         session,
-      );
-      const document = new models.content({
-        ...values,
-        _id: id,
-        status: "draft",
-        revision: 1,
-        createdBy: actor.session.user.id,
-        updatedBy: actor.session.user.id,
-        createdAt: now,
-        updatedAt: now,
-      });
-      await document.save({ session });
-      const content = storedContentSchema.parse({
-        ...document.toObject(),
-        _id: id.toString(),
-        assetIds: document.assetIds.map(String),
-      });
-      await appendAudit(connection, session, {
-        actorUserId: actor.session.user.id,
-        action: "create_content",
-        entityType: "content",
-        entityId: id.toString(),
-        priorRevision: null,
-        newRevision: 1,
-        changedFields: Object.keys(values).sort(),
+        values,
+        actor.session.user.id,
         requestId,
-      });
-      return adminContentDto(content, attachments);
+      );
     }, transactionOptions);
   } catch (error) {
     throw catalogMutationError(error);

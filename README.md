@@ -5,6 +5,20 @@ Content estimates support 1–60 whole minutes, independently of the unchanged
 records in the shared database, deploy the compatible application to hosted and
 local runtimes. See [duration policy and rollout](docs/content/CONTENT_DURATION_POLICY.md).
 
+## Company content preparation and safe draft import
+
+The contributor-sourced LTM/Cognizant review pack and original aptitude additions
+retain historical proposal records. Selected items have since been published;
+see [the eight-item release receipt](docs/content/COVERAGE_RELEASE_EIGHT.md) and
+[current coverage](docs/CATALOG_COVERAGE.md). Unselected candidates are not live catalog data. See
+[the review/import guide](docs/content/COMPANY_BATCH.md) and
+[exact prompts and explanations](docs/content/COMPANY_BATCH_REVIEW.md).
+`npm.cmd run content:import -- ...` is dry-run by default, requires an explicit
+database and verified administrator, and never overwrites/publishes records.
+Company provenance requires a genuine separately recorded review time; content
+publication review stays pending. The guide contains the deliberate shared-target
+commands; do not run fixtures against `prep_pilot_dev`.
+
 ## Hosted checkpoint: temporarily shared database
 
 Hosted app: <https://prep-pilot-theta-tan.vercel.app>. The existing hosted database

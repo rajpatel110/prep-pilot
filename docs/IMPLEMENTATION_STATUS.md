@@ -2,6 +2,85 @@
 
 Updated: 28 October 2026 (Asia/Kolkata).
 
+## Content checkpoint scope — 29 October 2026
+
+The completed checkpoint groups the explicit-target dry-run-first importer,
+transactional draft/audit reuse, verified operator guard, focused tests, frozen
+source/review packs, eight-item release receipts and read-only schedule diagnosis.
+The previous successful build and isolated importer/resource-journey evidence
+are reused; no shared writes, new import or publication is part of checkpointing.
+Unreviewed `NEXT_RELEASE_REVIEW.md` and its validator, email/cleanup follow-ups,
+generated declarations and EPERM diagnostic scripts remain outside this commit.
+Push success and any resulting Vercel deployment require separate confirmation;
+a Git commit does not transfer or replay MongoDB content.
+
+Final checkpoint checks: scoped Prettier and ESLint, TypeScript `--noEmit`,
+staged whitespace and credential-pattern/excluded-path inspection passed.
+Historical Markdown hard breaks were converted to backslash hard breaks to
+preserve rendering without trailing whitespace. Only documentation changed in
+this finalization; previously verified application source/build and disposable
+integration evidence were reused without rerunning completed suites.
+
+## Sparse-schedule follow-up — explained read-only
+
+A unique saved preview and accepted active plan match the user's 27/20/20/20
+minute schedule. The 28 October preview used catalog revision 23: six eligible
+items totaling 87 minutes, with no deferred items. Cognizant selection and
+DSA confidence 1 excluded the remaining queue item. Current preferences match
+the snapshot. Today's 15-item catalog offers 10 company/difficulty-eligible
+items (114 estimated minutes) under those preferences, before personal history
+and carry-over rules; it cannot promise full daily coverage. Five exclusions
+and exact snapshot evidence are recorded in `content/COVERAGE_RELEASE_EIGHT.md`.
+No scheduling defect is demonstrated by these totals. Existing plans are not
+automatically rewritten after publication. Student can generate a fresh proposal
+at `/plans/review` without accepting it. This diagnostic performed reads only;
+no shared study data changed, no tests/build were repeated, and hosted
+performance remains unmeasured.
+
+## Coverage release — eight published, resource journey verified in isolation
+
+Fresh read-only inspection found seven published questions, no drafts/resources
+and catalog revision 23. The owner authorized a new maximum-eight batch. The exact
+selection `docs/content/coverage-release-eight.v1.json` combines four prepared
+company DSA adaptations, two original CS resources, and short original verbal/
+paging questions. No questions were relabelled as resources or padded for time.
+Independent checks include 3,280 integer-array cases, 21,845 string cases,
+arithmetic/interleaving checks and current technical references. All estimates
+are explicitly unmeasured; Codex checking and owner publication authorization are
+disclosed without claiming personal owner review.
+
+Supported duplicate checks/dry-run returned eight new items, and the identical
+hash-checked file imported exactly eight drafts. The existing authenticated admin
+editor recorded review dates and published all eight at revision 3. Read-only
+postchecks confirmed exact saved content/provenance, review-only 1→2 edits,
+2→3 publications and all 24 atomic create/edit/publish audits. The original seven
+records retain their revisions and published state. No unresolved draft remains
+in this batch; other prepared proposals remain unimported.
+
+Final catalog revision 47 has 15 eligible published items: 13 questions and two
+resources, 239 estimated minutes and 13/17 covered topics. Seven global gaps were
+filled: sorting, strings, searching, hashing, verbal ability, operating systems
+and networking. Linked lists, trees, graphs and dynamic programming remain absent;
+company-specific gaps are documented separately without invented associations.
+Hosted student list/detail endpoints returned the selected eight at revision 3
+with correct estimates and disclosures, using the existing eligible owner session
+for read-only endpoint checks. Owner student-page navigation routes to Administration.
+
+Using public copies of both resources plus running totals, a fresh disposable
+student verified preview → explicit acceptance → open → mark studied → Dashboard/
+Progress in the existing compiled build. Both resources completed; readingCompleted=2,
+task completion=2/3, zero attempts/revisions/solved questions and daily budgets ≤30.
+The passing database `pp_resource_release_3b8443f6632c` and owned server were cleaned
+up, with database absence confirmed. Two earlier isolated runs were cleaned after
+a test-harness query exceeded the documented 50-item list maximum; correcting only
+that test parameter produced the passing run. This was not an application defect.
+
+Focused validation, lint, TypeScript and formatting passed. No application source
+changed, unchanged source was not rebuilt, and unrelated suites were not repeated.
+No shared study records, real roles, providers or deployment configuration changed;
+no commit, push or deployment. Hosted performance remains unmeasured.
+See `docs/content/COVERAGE_RELEASE_EIGHT.md` and `docs/CATALOG_COVERAGE.md`.
+
 ## Independent student review — focused fixes and final compiled checks
 
 Reviewed the connected journey against current contracts and prior evidence, without
@@ -341,6 +420,91 @@ viewport reset. The user-started server remains theirs to stop with Ctrl+C;
 agent shutdown is not claimed. No commit, push, deployment or shared data writes.
 See `student/HOMEPAGE_POLISH.md` for preserved destinations, rationale and evidence.
 
+## Published-catalog planning verification — 27 October
+
+Read-only inspection found seven published questions across six of 17 canonical
+topics, totalling 112 estimated minutes; no published resources. Shared
+`prep_pilot_dev` received no fixture writes. Representative public content fields
+only were copied into an isolated database with fresh accounts and secrets.
+
+Using the existing user-built production output, HTTP preferences setup and the
+compiled browser journey verified preview → acceptance → independent practice →
+explicit task completion → Dashboard → Progress → Revisions. Both companies,
+all subjects at skill level 3, 30 minutes/day and a seven-day window produced
+seven unique tasks: 112/210 minutes, with no daily budget exceeded. The first
+day contained 15-, 7- and 5-minute questions (27/30 minutes). Estimates were not
+rounded up. Practice alone did not complete the task; subsequent explicit
+completion produced one solved question, one submission and 1/7 completed tasks
+(14.3%). Dashboard remaining time changed from 27 to 22 minutes. The future
+seven-day revision appeared when upcoming revisions were included.
+
+An easy-only preview honestly scheduled three eligible questions (55 minutes),
+zero aptitude tasks, and explicitly explained unused capacity and missing eligible
+work. This is insufficient content coverage, not a demonstrated planner defect.
+No application code correction was needed. Resource completion remains unverified
+in this catalog-backed journey because the published catalog contains no resources.
+
+Browser/API evidence used disposable `prep_pilot_plan_test_1f7eb40d038d` on port 3124. Its single practice attempt and all fixture records were removed by dropping
+only that explicitly checked database; the browser tab was closed and the port
+was no longer listening. No real identities, sessions or study history were copied.
+No shared publication checks, unrelated suites or compilation were repeated.
+
+See `content/NEXT_PREPARED_CONTENT_RECOMMENDATION.md` for the proposed eight-item
+coverage-first batch and reassessment of 15 historical duration holds. These are
+editorial proposals only: no import, publication, review timestamp or source JSON
+change. Missing topics remain content gaps, not permission to bypass prerequisites.
+The reusable focused regression is `tests/published-planning-journey.ts`.
+
+Focused formatting and Git whitespace checks passed. The follow-up standalone
+regression printed passing preview/shortage assertions, but was interrupted
+before a final success result; it is not recorded as a complete automated pass.
+Its separate database `prep_pilot_plan_test_81668dbab767` was explicitly checked
+and removed, and port 3124 had no listener. The follow-up lint/TypeScript command
+was also interrupted without a final result; no fresh pass is claimed. Earlier
+browser and API metric assertions above remain the connected-flow evidence.
+The existing production build was reused; no application source changed.
+
+## Hosted duration release and final two aptitude publications completed
+
+The user supplied Vercel evidence showing Production Ready for `feb902c`.
+Independent read-only checks confirmed remote dev at full commit
+feb902c17f86728382d9c9ef20b66bccc2640e36 and Vercel's GitHub commit status success
+("Deployment has completed"). The private deployment dashboard required login;
+Ready/Production is user-supplied screenshot evidence, not a new authenticated
+agent dashboard inspection. Before editing, the hosted editor's actual numeric
+minimum/maximum/step were confirmed as 1/60/1 with the new estimate guidance.
+
+Under explicit owner authorization, both current draft revision-2 records were
+re-read and compared with prior editorial evidence. Their question/explanation
+text was unchanged, including mixture's at-least-50 L capacity and initial 40 L.
+Through authenticated admin Save changes and Confirm publish controls:
+
+- apt-original-mixture-replacement: saved 7-minute estimate at revision 3,
+  published at revision 4 (2026-10-27T14:20:03.169Z).
+- apt-original-paths-in-small-dag: saved 5-minute estimate at revision 3,
+  published at revision 4 (2026-10-27T14:20:44.682Z).
+
+Attribution records Codex checking and owner publication authorization, not
+personal owner review or measured timing. Review times are actual Codex editorial
+review dates; no human-only attestation is required by the contract. Original
+PrepPilot source and empty company/attachment arrays remain unchanged. Only
+estimate, attribution and review date changed before the publication actions.
+
+Read-only postchecks confirmed four audit events with request IDs, exact revision
+transitions 2→3→4 per item, and catalog revision 19→23. Actual hosted student
+list/detail GET responses showed both available at revision 4 with exact 7/5
+minutes; list summaries omitted bodies and detail retained the capacity wording.
+These read checks used the eligible verified owner session, not another student
+login. No practice, plan, task, preference, role or unrelated content mutation
+occurred. Completed correctness suites/builds were reused, not repeated.
+See docs/content/APTITUDE_PUBLICATION.md for evidence and deployment limitations.
+
+The first six imported items are now all published; including running totals,
+seven questions offer 112 estimated minutes across six topics. This does not
+complete catalog coverage or add resources. No batch import, commit, push,
+deployment/settings change or EPERM investigation occurred in this checkpoint.
+Earlier pending release/publication statements below are historical.
+
 ## Honest short-content estimates: implemented, user-run production build passed
 
 Owner-approved duration contract now accepts 1–60 positive whole minutes per
@@ -423,6 +587,41 @@ changes, generated next-env.d.ts and diagnostics. The pure import-schema module
 is a required dependency of duration/import validation tests, not activation of
 the importer. README/status staging is limited to duration sections; unrelated
 working-tree documentation and content-review packs are preserved separately.
+
+## Authorized five-item editorial review: completed publication checkpoint
+
+The owner authorized Codex checking/correction and publication of the five
+remaining first-batch drafts. Initial catalog-only reads found all five draft
+revision 1, with null content-review dates. FIRST_FIVE_PUBLICATION_REVIEW.md records independent passing
+queue, SQL, OOP, mixture and directed-path checks, official technical references,
+and preserved candidate-reported/original provenance. SQL executable evidence is
+in-memory SQLite, not PostgreSQL engine execution. No practice records changed.
+
+The review-date contract is not a human-only attestation. Saved publication
+attribution explicitly identifies checking by Codex and authorization by the
+owner, not personal owner review/timing. Queue, SQL and OOP were saved at revision
+2 and published at revision 3 through the authenticated hosted admin workflow.
+The short mixture and DAG exercises remain on duration-suitability hold:
+correct solutions do not by themselves justify the 15-minute publication minimum.
+Do not pad them or weaken the schema. Mixture's capacity/prompt correction and
+both draft hold notes were saved at revision 2; their review dates remain null.
+Existing review/publication evidence for other items is unchanged.
+
+The initial unverified session correctly blocked admin access. After owner login
+authorization, the existing verified owner was used; no role change, manufactured
+session or database bypass occurred. Read-only postchecks confirmed all eight
+edit/publication audit events and exact revision sequences. Original company
+sources, student_reported labels and association review timestamps are unchanged.
+Actual hosted student list/detail GETs returned all three new publications;
+list summaries omitted bodies, and both draft detail GETs returned not found
+without bodies. These endpoint checks used the eligible owner session, not a
+new student login. No practice, preference, plan or task mutation was submitted.
+The catalog now has five published questions and two drafts; aptitude/resources
+remain coverage gaps. Focused executable checks and changed-document formatting
+passed. Git status still
+fails with "this operation must be run in a work tree"; no reset/discard was used.
+No application source, build, deployment or unrelated suite was changed/run.
+EPERM investigation remains paused.
 
 ## Navigation correction and single-inbox Brevo checkpoint
 
@@ -517,6 +716,114 @@ are user-reported. Brevo sending activation, real acceptance, actual inbox recei
 and hosted enforcement remain unverified. Earlier Resend owner-inbox results are
 preserved but do not verify Brevo. No real email, deployment, commit, push or
 billing activation was performed. Pending company-content/importer work is preserved.
+
+## Company first publication and next eight prepared
+
+User reports six imported into shared prep_pilot_dev; Find the missing range
+member published at revision 3 and its student practice passed. Interrupted-task
+agent read-only inspection confirmed seven records: running totals and missing
+range member published, five first-batch drafts at revision 1. Student practice
+was not repeated. Earlier preparation sections below are historical evidence.
+
+REVIEW_REMAINING_FIVE.md guides human review. Mixture wording needs clarification:
+the initially 40 L mixture needs capacity for 7.5 L additional syrup. No saved
+record was edited, approved or published. Timing remains unmeasured.
+
+company-next-eight.v1.json contains unchanged 4 DSA, 2 CS and 2 original aptitude
+candidates, excluding the first six and timing holds. Live read-only inspection
+found no selected slug/title/prompt match or likely semantic duplicate. Existing
+importer dry-run returned six provenance_review_required and two new, exit 2,
+without a fabricated timestamp or writes. It used the previously verified
+in-memory esbuild launcher. Exact selection and hash-pinned operator commands:
+NEXT_COMPANY_DRAFT_BATCH.md. All eight remain unimported. Human review, timing
+calibration and PostgreSQL engine verification remain pending. No completed suite,
+student journey or production build rerun; EPERM investigation remains paused.
+
+Continuation checks passed: strict import schema, eight unique unchanged master
+records, first-six exclusion, 4/2/2 distribution and empty original-company
+provenance. Updated Markdown was formatted; git diff --check passed. Selection
+SHA-256 remains 299ad4925f8ff3362f05b9e2ed145e213b282435c392240096291adf9457f033.
+
+## First six draft candidates: shared read-only check completed
+
+Prepared `docs/content/company-first-six.v1.json`, an unchanged exact subset of
+2 DSA, 2 CS and 2 original aptitude candidates; all content review dates remain
+null. No application changes. See `docs/content/FIRST_SIX_DRAFT_BATCH.md` for
+titles, source references, pending human/timing concerns, actual dry-run report,
+SHA-256-pinned six-only commands and the first-draft admin review walkthrough.
+
+Explicit read-only inspection of shared prep_pilot_dev found one published
+running-totals record. No selected slug/title/prompt match or likely semantic
+duplicate was found; shared array classification alone is not duplication.
+Selected existing account was read-verified as active verified owner. No roles,
+records, review dates, indexes or environment/deployment settings were changed.
+
+Actual importer dry-run used only the six-item file: 4 company items returned
+provenance_review_required, 2 original aptitude items returned new. No genuine
+provenance-review timestamp was supplied or invented. Apply remains blocked until
+the operator genuinely reviews that provenance and supplies its actual time;
+this does not approve content or set its publication-review date. The normal tsx
+launcher failed at uv_os_get_passwd ENOMEM before execution; agent ran unchanged
+importer code using the existing esbuild in-memory runner, as previously verified.
+
+Focused schema/count/uniqueness checks confirm 2/2/2, equality with the master
+pack, empty original aptitude associations and null review dates. New files pass
+formatting checks. No completed suite/build was repeated; no EPERM diagnosis.
+Agent did not execute shared apply, publish, commit, push or deploy. The operator
+must report import outcomes before the interactive first-draft review continues.
+
+## Company content preparation and safe draft import
+
+Prepared 246 contributor source entries (144 LTM, 102 Cognizant), with original
+wording and company provenance separate from editorial adaptations. A complete
+source ledger retains 38 duplicate references under 208 canonical intents and
+classifies supported, incomplete and out-of-taxonomy backlog without extending
+topics or planning rules. No official company syllabus/date/frequency is claimed.
+
+`docs/content/company-batch.v1.json` contains 39 pending-review question proposals:
+12 DSA and 7 CS interview adaptations, plus 20 original aptitude practice sets
+(7 quantitative, 7 logical, 6 verbal). Intended company associations cover LTM13
+and Cognizant10 with 4 overlaps. No extra original DSA filler was needed. All
+content review dates remain null; duration calibration, human editorial approval
+and live-catalog semantic duplicate checking remain pending. See COMPANY_BATCH.md,
+COMPANY_BATCH_REVIEW.md and COMPANY_BATCH_VALIDATION.md for fields and limitations.
+
+Added `content:import`: explicit target/admin, dry-run default, strict batch input,
+genuine provenance-review time before student_reported labels, no overwrite,
+draft-only writes and resumable per-item reporting. Shared HTTP/CLI draft writer
+reuses validation, attachment checks, catalog/profile lock order and transactional
+audit; current web authorization/CSRF and publishing rules remain unchanged.
+No migration, new dependency, UI, role promotion or provider integration added.
+
+Agent-run disposable integration passed in prep_pilot_import_test_8ec8d59ea297:
+dry-run 20 new +19 provenance gates, zero writes; synthetic apply39 drafts/audits
+and +39 catalog/profile revisions; idempotent retry, conflict preservation,
+audit rollback, concurrent one-create/one-identical, verified operator checks,
+CLI default dry-run and target safety. Database removed; no server started.
+Synthetic fixture dates do not constitute review of this pack. Five difficulty
+labels were refined afterward; final content checks validate those labels.
+Four focused content test groups pass, including algorithm edges, arithmetic,
+logical enumeration and SQLite SQL semantics (not PostgreSQL engine testing).
+Normal tsx initialization hit uv_os_get_passwd ENOMEM; agent tests used existing
+TypeScript/esbuild in-memory transpilation without security/dependency changes.
+The completed instrumented integration passed; an earlier attempt failed without
+sufficient stage output and is not represented as a pass.
+
+Agent-run focused ESLint and direct TypeScript checks passed, followed by full
+`npm.cmd run lint`, `npm.cmd run typecheck` (route generation plus tsc) and
+`npm.cmd run format:check`, all exit0; `git diff --check` also passed.
+Agent production
+build passed: Webpack compilation14.7s, TypeScript5.3s, 21 static pages767ms,
+all routes generated, exit0. This is a new agent-run result, separate from earlier
+user builds; it does not establish resolution of recurring Windows EPERM, whose
+investigation remains paused. No browser/UI changes were made in this milestone.
+
+Shared prep_pilot_dev was not read for duplicates, migrated, populated or cleaned
+as a fixture. No real import/publication, email/R2 configuration change, commit,
+push or deployment occurred. The review guide provides later explicit shared
+dry-run/apply commands with operator/review placeholders rather than guessed
+credentials, identities or review dates. Existing unrelated content/diagnostic
+files and next-env.d.ts changes are preserved.
 
 ## About portrait replacement
 

@@ -1,5 +1,13 @@
 # Honest content durations and rollout
 
+Completed hosted checkpoint: commit feb902c reached Vercel Production Ready by
+owner screenshot, corroborated by Vercel's successful commit status and live
+editor minimum 1. Under subsequent explicit authorization the mixture and DAG
+estimates below were saved as 7/5 minutes and both published at revision 4.
+See APTITUDE_PUBLICATION.md. Earlier proposed/not-saved statements below describe
+the implementation phase; neither value is measured timing. No study records or
+historical task snapshots were altered by publication.
+
 27 October 2026: owner-approved policy is **1–60 positive whole minutes** per
 content item, including fresh/revision tasks and deferred work. Zero, negative,
 fractional, nonnumeric and over-60 inputs are invalid. Daily-budget preferences

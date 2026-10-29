@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "candidates": [
+    {
+      "sourceRefs": ["COG-090"],
+      "reportedCompanies": ["cognizant"],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Editorial constraints, examples, solutions and duration require human review and timing calibration."
+      ],
+      "content": {
+        "slug": "reported-missing-range-member",
+        "title": "Find the missing range member",
+        "subject": "dsa",
+        "topic": "arrays",
+        "type": "question",
+        "difficulty": "easy",
+        "estimatedMinutes": 20,
+        "source": "Candidate-reported interview question, confirmed by the contributor; not an official company publication. References: COG-090.",
+        "attribution": "AI-assisted PrepPilot editorial adaptation; original source wording preserved separately. Not human-reviewed.",
+        "tags": ["company-batch-v1", "interview-adaptation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Editorial adaptation, not the exact interview specification.\n\nAn array contains N distinct integers from 0 through N, with exactly one missing; 0 ≤ N ≤ 10000. Find it without sorting or mutation. Trace [3,0,1], [], [0], [1]; explain why duplicate input is outside the contract.",
+        "explanation": "XOR every integer 0 through N and every array member. Pairs cancel, leaving the missing value: 2,0,1,0 respectively. O(n) time, O(1) space. The bounded values fit ordinary 32-bit XOR. Duplicate or out-of-range input violates the premise and is not silently repaired."
+      }
+    },
+    {
+      "sourceRefs": ["LTM-085", "LTM-134"],
+      "reportedCompanies": ["ltm"],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Editorial constraints, examples, solutions and duration require human review and timing calibration."
+      ],
+      "content": {
+        "slug": "reported-queue-via-two-stacks",
+        "title": "A FIFO queue from two stacks",
+        "subject": "dsa",
+        "topic": "stacks_queues",
+        "type": "question",
+        "difficulty": "medium",
+        "estimatedMinutes": 25,
+        "source": "Candidate-reported interview question, confirmed by the contributor; not an official company publication. References: LTM-085, LTM-134.",
+        "attribution": "AI-assisted PrepPilot editorial adaptation; original source wording preserved separately. Not human-reviewed.",
+        "tags": ["company-batch-v1", "interview-adaptation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Editorial adaptation, not the exact interview specification.\n\nImplement enqueue, dequeue and peek using two stacks, at most 1000 operations. Empty reads return null. Trace enqueue(4), enqueue(7), peek, dequeue, enqueue(9), dequeue, dequeue, dequeue; explain amortized and worst-case time.",
+        "explanation": "Push enqueues onto input. For a read, transfer all input elements to output only if output is empty. Read/pop output top, or null. Read results: 4,4,7,9,null. Each element crosses stacks at most once, so amortized O(1) per operation, worst-case O(n) for a transfer, O(n) space."
+      }
+    },
+    {
+      "sourceRefs": ["LTM-074", "LTM-077", "COG-075"],
+      "reportedCompanies": ["ltm", "cognizant"],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Editorial constraints, examples, solutions and duration require human review and timing calibration."
+      ],
+      "content": {
+        "slug": "reported-sql-sales-join-lab",
+        "title": "Sales totals without losing unsold products",
+        "subject": "cs",
+        "topic": "dbms",
+        "type": "question",
+        "difficulty": "medium",
+        "estimatedMinutes": 20,
+        "source": "Candidate-reported interview question, confirmed by the contributor; not an official company publication. References: LTM-074, LTM-077, COG-075.",
+        "attribution": "AI-assisted PrepPilot editorial adaptation; original source wording preserved separately. Not human-reviewed.",
+        "tags": ["company-batch-v1", "interview-adaptation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Editorial adaptation, not the exact interview specification.\n\nPostgreSQL 18: products(id integer PRIMARY KEY,name text): (1,Pen),(2,Book),(3,Bag). sales(id integer PRIMARY KEY,product_id integer NULL,amount integer NULL): (10,1,20),(11,1,30),(12,2,NULL),(13,NULL,40). Return every product's known total (zero when no known amount), sale-row count and known-amount count. Compare join types.",
+        "explanation": "SELECT p.id,p.name,COALESCE(SUM(s.amount),0) AS total,COUNT(s.id) AS sale_rows,COUNT(s.amount) AS known_amounts FROM products p LEFT JOIN sales s ON s.product_id=p.id GROUP BY p.id,p.name ORDER BY p.id; results (1,Pen,50,2,2),(2,Book,0,1,0),(3,Bag,0,0,0). COUNT(*) incorrectly counts Bag's placeholder row. INNER omits Bag; RIGHT retains unmatched sale 13 but omits Bag; FULL retains both. NULL amount is unknown, not literally zero; output-zero is the requested convention."
+      }
+    },
+    {
+      "sourceRefs": ["LTM-081", "COG-016"],
+      "reportedCompanies": ["ltm", "cognizant"],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Editorial constraints, examples, solutions and duration require human review and timing calibration."
+      ],
+      "content": {
+        "slug": "reported-oop-four-pillars-design",
+        "title": "Explain OOP through a payment test double",
+        "subject": "cs",
+        "topic": "oop",
+        "type": "question",
+        "difficulty": "easy",
+        "estimatedMinutes": 20,
+        "source": "Candidate-reported interview question, confirmed by the contributor; not an official company publication. References: LTM-081, COG-016.",
+        "attribution": "AI-assisted PrepPilot editorial adaptation; original source wording preserved separately. Not human-reviewed.",
+        "tags": ["company-batch-v1", "interview-adaptation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Editorial adaptation, not the exact interview specification.\n\nSketch a language-neutral PaymentMethod.pay(amountMinorUnits), CardPayment, TestPayment and Checkout design. Amounts are nonnegative integers, negatives rejected before effects; zero is a consistent no-op. Identify encapsulation, abstraction, inheritance/subtyping and polymorphism. Show how a test double records a 100-unit payment without charging anything.",
+        "explanation": "Hide mutable provider details behind methods (encapsulation); expose the PaymentMethod contract (abstraction). CardPayment and TestPayment implement the same type; inheritance of implementation is optional. Checkout holds a PaymentMethod (composition) and calls pay without knowing the implementation (polymorphism). TestPayment records [100]; zero adds nothing, negative raises a validation error before recording. Composition itself is not inheritance. This is a design exercise, not production payments code."
+      }
+    },
+    {
+      "sourceRefs": [],
+      "reportedCompanies": [],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Proposed cohesive practice set; novice timing has not been measured. Hold if it takes less than 15 minutes rather than padding it."
+      ],
+      "content": {
+        "slug": "apt-original-mixture-replacement",
+        "title": "Two replacements in a mixture",
+        "subject": "aptitude",
+        "topic": "quantitative",
+        "type": "question",
+        "difficulty": "medium",
+        "estimatedMinutes": 20,
+        "source": "Original PrepPilot practice material.",
+        "attribution": "AI-assisted original PrepPilot exercise and worked answer; pending human editorial review.",
+        "tags": ["company-batch-v1", "original-practice"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "A well-mixed 40 L tank contains 30% syrup. Remove 10 L and replace with water, mix, and repeat once. Find syrup remaining after each step and final concentration. How much pure syrup must be added afterward (no liquid removed) to reach 30%? Assume volumes add.",
+        "explanation": "Initially12 L syrup. Each removal retains3/4:9 L then6.75 L. Concentration6.75/40=16.875%. Solve (6.75+x)/(40+x)=0.30:0.7x=5.25, x=7.5 L. Final14.25/47.5=30%. The amount added changes the denominator; adding5.25 L alone is insufficient."
+      }
+    },
+    {
+      "sourceRefs": [],
+      "reportedCompanies": [],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Proposed cohesive practice set; novice timing has not been measured. Hold if it takes less than 15 minutes rather than padding it."
+      ],
+      "content": {
+        "slug": "apt-original-paths-in-small-dag",
+        "title": "Count routes through a directed graph",
+        "subject": "aptitude",
+        "topic": "logical_reasoning",
+        "type": "question",
+        "difficulty": "medium",
+        "estimatedMinutes": 20,
+        "source": "Original PrepPilot practice material.",
+        "attribution": "AI-assisted original PrepPilot exercise and worked answer; pending human editorial review.",
+        "tags": ["company-batch-v1", "original-practice"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Directed edges: S→A,S→B,A→C,A→D,B→D,C→T,D→T. Count S-to-T routes; list them. How many avoid D? How many visit A? What changes if C→D is added? Edges may be followed only in their direction.",
+        "explanation": "Original routes S-A-C-T,S-A-D-T,S-B-D-T:3. Avoid D:1; visit A:2. Adding C→D adds S-A-C-D-T, total4, A routes3, avoid D still1. Acyclic graph allows reverse route counts from T; no undirected backtracking or invented edges."
+      }
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+# Cognizant contributor source list
+
+Provenance: Candidate-reported interview question, confirmed by the contributor;
+not an official company publication.
+
+Original question wording below is preserved separately from editorial adaptations.
+Entry identifiers are local references, not interview dates. Interview date,
+year, hiring track and frequency are unknown. Messaging metadata/sender names
+are deliberately omitted. Contributor confirmation is not answer, duration or
+publication approval.
+
+- **COG-001** Introduce yourself / Tell me about yourself.
+- **COG-002** What are your hobbies, and how did you develop them?
+- **COG-003** Walk through your internship or prior work experience.
+- **COG-004** What is your academic specialization and technical background (specifically regarding AI/ML)?
+- **COG-005** Rate yourself out of 10 in Python, AI, or SQL.
+- **COG-006** Explain your final-year project in detail (problem statement, workflow, and system architecture).
+- **COG-007** Briefly explain your secondary projects.
+- **COG-008** What technology stack did you use in your projects, and why did you choose it?
+- **COG-009** Define the core technical terminologies associated with your project.
+- **COG-010** How are API calls implemented and handled in your project?
+- **COG-011** How do the client and server verify that data transmitted through APIs is accurate and uncorrupted?
+- **COG-012** Which database did you use, and what is the exact connection code to link your application to it?
+- **COG-013** How did you implement user authentication and authorization in your project?
+- **COG-014** What major technical roadblocks did you face during project development, and how did you resolve them?
+- **COG-015** What is Object-Oriented Programming (OOP)?
+- **COG-016** Explain the 4 pillars of OOPs (Encapsulation, Abstraction, Inheritance, Polymorphism) with real-world examples.
+- **COG-017** What is a Class, and what is a Constructor?
+- **COG-018** What is the difference between Abstraction and Encapsulation?
+- **COG-019** Define the different types of Inheritance.
+- **COG-020** What are the different types of Polymorphism?
+- **COG-021** What is the difference between Method Overloading and Method Overriding?
+- **COG-022** What is an Abstract Class?
+- **COG-023** What is an Interface, and how does it differ from an Abstract Class?
+- **COG-024** What is the difference between a list and a tuple?
+- **COG-025** What is the difference between Mutable and Immutable data types (with examples)?
+- **COG-026** What is the difference between append() and extend() in lists?
+- **COG-027** How do map(), filter(), and reduce() work?
+- **COG-028** What are the different types of function arguments in Python (positional, keyword, default, *args, **kwargs) with examples?
+- **COG-029** What is the difference between = (assignment) and == (value equality)?
+- **COG-030** What is the difference between the is operator (reference equality) and == / =?
+- **COG-031** How does Exception Handling work in Python (try, except, else, finally)?
+- **COG-032** What are Pandas and NumPy, and what are their primary use cases?
+- **COG-033** What is Java, and why is it platform-independent?
+- **COG-034** What are the similarities and differences between C++ and Java?
+- **COG-035** What are the Access Modifiers in Java (public, private, protected, default), and how do their scopes differ?
+- **COG-036** What is the static keyword in Java?
+- **COG-037** How do you access a static method of one class from another class?
+- **COG-038** What is the final keyword in Java (for variables, methods, and classes)?
+- **COG-039** Is String mutable or immutable in Java, and why was it designed that way?
+- **COG-040** What is the difference between String, StringBuffer, and StringBuilder?
+- **COG-041** How do == and .equals() differ in Java (including output prediction questions on String pools)?
+- **COG-042** What is the difference between Checked and Unchecked Exceptions?
+- **COG-043** What is Multithreading in Java, and how does the Thread lifecycle work?
+- **COG-044** What is Synchronization in Java, and why is it needed?
+- **COG-045** What is a Deadlock in multithreading, and how is it caused?
+- **COG-046** What are the key features introduced in Java 8?
+- **COG-047** What is a Functional Interface in Java 8?
+- **COG-048** What is the Java Collections Framework?
+- **COG-049** What is the difference between a standard Array and an ArrayList?
+- **COG-050** What is the difference between ArrayList and LinkedList?
+- **COG-051** What is the difference between Set, HashSet, and TreeSet?
+- **COG-052** Why are there multiple Set implementations, and when should you specifically choose a TreeSet?
+- **COG-053** How does a HashMap work internally (hashing, buckets, collision resolution)?
+- **COG-054** What is Spring Boot, and what are its core features?
+- **COG-055** What is the future scope of Spring Boot in enterprise development?
+- **COG-056** Which class or method executes first when a Spring Boot application starts?
+- **COG-057** What is the difference between @Controller and @RestController?
+- **COG-058** How do you change the default server port number in a Spring Boot application?
+- **COG-059** What is application.properties, and what is its purpose?
+- **COG-060** What are Spring Boot Profiles, and how are they used across environments?
+- **COG-061** What are Spring Boot Actuators?
+- **COG-062** What is JavaScript, and how is it used in web development?
+- **COG-063** What is React, and what are its core features?
+- **COG-064** What are the fundamentals of Artificial Intelligence (AI) and Machine Learning (ML)?
+- **COG-065** What is the exact difference between AI, ML, and Generative AI?
+- **COG-066** What is TF-IDF (Term Frequency–Inverse Document Frequency), and how is it calculated?
+- **COG-067** What is a Large Language Model (LLM)?
+- **COG-068** What is Fine-Tuning in Machine Learning and LLMs?
+- **COG-069** Which AI tools do you use in your development workflow, and how do you use them?
+- **COG-070** What is the difference between a DBMS and an RDBMS?
+- **COG-071** What is the difference between DROP, TRUNCATE, DELETE, and ALTER?
+- **COG-072** How does the DISTINCT keyword work?
+- **COG-073** What is the default sorting order of the ORDER BY clause?
+- **COG-074** How does the COUNT() aggregate function work (e.g., COUNT(*) vs. COUNT(column_name))?
+- **COG-075** Explain all SQL JOIN types (INNER, LEFT, RIGHT, FULL OUTER JOIN) and write queries connecting two tables.
+- **COG-076** What is the difference between UNION and UNION ALL, and how do they differ from JOIN?
+- **COG-077** Explain SQL Window Functions: what is the difference between RANK(), DENSE_RANK(), and ROW_NUMBER()?
+- **COG-078** Write an SQL query to find duplicate records in a table.
+- **COG-079** Check whether a number is Even or Odd.
+- **COG-080** Check whether a number is Prime.
+- **COG-081** Calculate the Factorial of a number.
+- **COG-082** Print the Fibonacci series up to N terms.
+- **COG-083** Check whether a string or number is a Palindrome.
+- **COG-084** Reverse a string without using built-in reverse functions.
+- **COG-085** Print all leap years between 2000 and 2050.
+- **COG-086** Swap two numbers without using a third variable.
+- **COG-087** Find the largest number in an array/list without using the built-in max() function.
+- **COG-088** Find the second-largest element in an array/list in a single pass.
+- **COG-089** Find a peak element in an array.
+- **COG-090** Find the missing number in a sequential array of size N.
+- **COG-091** Find and print all duplicate characters in a string.
+- **COG-092** Count the frequency of each character in a string.
+- **COG-093** Find the length of the longest substring without repeating characters.
+- **COG-094** Debug and fix syntax/logical errors in a provided piece of broken code.
+- **COG-095** Solve a basic quantitative aptitude word problem.
+- **COG-096** Find the next number in a logical number series.
+- **COG-097** Solve a situational or mathematical puzzle.
+- **COG-098** Describe Cognizant in one line.
+- **COG-099** Are you willing to relocate (including to Bangalore or any other assigned office), and what are your location preferences?
+- **COG-100** Are you comfortable working night shifts and rotational shifts?
+- **COG-101** Are you flexible with learning a new tech stack, and how will you react if assigned to a domain outside your interest?
+- **COG-102** Do you have any questions for the panel?

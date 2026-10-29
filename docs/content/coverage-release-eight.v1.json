@@ -1,0 +1,204 @@
+{
+  "version": 1,
+  "candidates": [
+    {
+      "sourceRefs": ["LTM-035"],
+      "reportedCompanies": ["ltm"],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Duration is an editorial estimate, not measured timing. Codex checking and owner publication authorization are documented separately; import retains a null review date."
+      ],
+      "content": {
+        "slug": "reported-bubble-sort-implementation",
+        "title": "Bubble sort with stable duplicates",
+        "subject": "dsa",
+        "topic": "sorting",
+        "type": "question",
+        "difficulty": "easy",
+        "estimatedMinutes": 25,
+        "source": "Candidate-reported interview question, confirmed by the contributor; not an official company publication. References: LTM-035.",
+        "attribution": "AI-assisted PrepPilot editorial adaptation; original source wording preserved separately. Editorial correctness, examples, classification and provenance checked by Codex on 29 October 2026; publication authorized by the owner. No personal owner review or measured timing is claimed. Duration is an editorial estimate.",
+        "tags": ["company-batch-v1", "interview-adaptation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Editorial adaptation, not the exact interview specification.\n\nReturn an ascending copy of an integer array using adjacent swaps and an early-stop flag. Length 0–1000; values −10000 through 10000. Trace [3,1,2,1], and explain empty, singleton and already sorted inputs. Do not mutate the input.",
+        "explanation": "Passes: [1,2,1,3], then [1,1,2,3], then no swaps. Swap only when the left value is greater; equal values do not cross, so the algorithm is stable. Empty/singleton need no comparisons. Best case O(n), worst O(n²); the copy uses O(n) space. The optimized pass can stop one position earlier each time because the largest remaining value has reached its final position. The no-swap flag applies to a whole pass; do not stop after just one ordered pair."
+      }
+    },
+    {
+      "sourceRefs": ["COG-093"],
+      "reportedCompanies": ["cognizant"],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Duration is an unmeasured editorial estimate; ASCII and earliest-start semantics are editorial constraints, not a claim about the original interview specification."
+      ],
+      "content": {
+        "slug": "reported-longest-unique-window",
+        "title": "Longest substring without repeated ASCII characters",
+        "subject": "dsa",
+        "topic": "strings",
+        "type": "question",
+        "difficulty": "medium",
+        "estimatedMinutes": 30,
+        "source": "Candidate-reported interview question, confirmed by the contributor; not an official company publication. References: COG-093.",
+        "attribution": "AI-assisted PrepPilot editorial adaptation; original source wording preserved separately. Editorial correctness, examples, classification and provenance checked by Codex on 29 October 2026; publication authorized by the owner. No personal owner review or measured timing is claimed. Duration is an editorial estimate.",
+        "tags": ["company-batch-v1", "interview-adaptation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Editorial adaptation, not the exact interview specification.\n\nReturn (length,start) of the longest contiguous substring with no repeated characters; choose earliest start on ties. ASCII length 0–2000; spaces and case matter. Empty input returns (0,0). Trace abba, abcabcbb and aaaa; give a linear-time algorithm.",
+        "explanation": "Maintain last-seen indices, initialized as absent (equivalent to −1), and a left boundary initially zero. At right index r for character c, set left=max(left,lastSeen[c]+1), then record r as c's last-seen index. The current window has length r-left+1. Update the best length/start only for a strictly longer window, so an equally long later window does not replace the earliest. abba → (2,0), abcabcbb → (3,0), aaaa → (1,0). Never move left backwards: the final a in abba must not include both b characters. Initialize the answer to (0,0) for empty input. O(n) time and O(128) space under the ASCII contract."
+      }
+    },
+    {
+      "sourceRefs": ["COG-089"],
+      "reportedCompanies": ["cognizant"],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Duration is an unmeasured editorial estimate. Weak-peak and duplicate semantics are an explicit editorial adaptation."
+      ],
+      "content": {
+        "slug": "reported-weak-peak-search",
+        "title": "Find a weak peak by binary search",
+        "subject": "dsa",
+        "topic": "searching",
+        "type": "question",
+        "difficulty": "medium",
+        "estimatedMinutes": 25,
+        "source": "Candidate-reported interview question, confirmed by the contributor; not an official company publication. References: COG-089.",
+        "attribution": "AI-assisted PrepPilot editorial adaptation; original source wording preserved separately. Editorial correctness, examples, classification and provenance checked by Codex on 29 October 2026; publication authorized by the owner. No personal owner review or measured timing is claimed. Duration is an editorial estimate.",
+        "tags": ["company-batch-v1", "interview-adaptation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Editorial adaptation, not the exact interview specification.\n\nFor a nonempty array of 1–1000 integers, return any index whose value is at least each existing neighbor. Endpoints have one neighbor; duplicates allowed. Give an O(log n) algorithm, trace [1,3,2], [2,2], [1], and explain monotone inputs.",
+        "explanation": "Start with inclusive low=0, high=n-1. While low is less than high, set mid=low+floor((high-low)/2), so mid+1 exists. If a[mid+1] is greater than a[mid], keep the right interval with low=mid+1; otherwise keep the left interval with high=mid. The kept interval always contains a weak peak: each retained boundary is at least its adjacent excluded neighbor when that neighbor exists, so a maximum within the interval is a weak peak of the original array. This does not assert both discarded and retained halves always contain peaks. Return low when the interval has one index. Example indices are 1,0,0. Strictly increasing arrays return the last index; strictly decreasing arrays return the first. All-equal arrays also qualify. O(log n) time, O(1) space. Weak-peak semantics are an editorial clarification."
+      }
+    },
+    {
+      "sourceRefs": ["LTM-028"],
+      "reportedCompanies": ["ltm"],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Duration is an unmeasured editorial estimate. First-occurrence order is an editorial constraint and differs from duplicate-detection order."
+      ],
+      "content": {
+        "slug": "reported-duplicate-integer-values",
+        "title": "Repeated integer values in first-occurrence order",
+        "subject": "dsa",
+        "topic": "hashing",
+        "type": "question",
+        "difficulty": "easy",
+        "estimatedMinutes": 20,
+        "source": "Candidate-reported interview question, confirmed by the contributor; not an official company publication. References: LTM-028.",
+        "attribution": "AI-assisted PrepPilot editorial adaptation; original source wording preserved separately. Editorial correctness, examples, classification and provenance checked by Codex on 29 October 2026; publication authorized by the owner. No personal owner review or measured timing is claimed. Duration is an editorial estimate.",
+        "tags": ["company-batch-v1", "interview-adaptation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "prompt": "Editorial adaptation, not the exact interview specification.\n\nReturn every integer occurring at least twice, once each, ordered by its FIRST occurrence in the original array. Length 0–1000; values −10000 through 10000. Trace [4,2,4,4,2,7], [], [3,3,3], [-1,0,-1].",
+        "explanation": "Count values, then scan the original array and emit an eligible value only if not already emitted. Outputs [4,2], [], [3], [-1]. Expected O(n) time and O(k) space with hash tables, for k distinct values. Ordering by when a duplicate is detected does not in general satisfy first-occurrence ordering: [2,1,1,2] must produce [2,1], not [1,2]. An all-distinct input produces an empty result."
+      }
+    },
+    {
+      "sourceRefs": [],
+      "reportedCompanies": [],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Ten minutes is an unmeasured estimate for reading, drawing shared/per-thread state and explaining the synchronization exercise."
+      ],
+      "content": {
+        "slug": "cs-os-process-thread-boundaries",
+        "title": "Compare processes, threads and shared state",
+        "subject": "cs",
+        "topic": "operating_systems",
+        "type": "resource",
+        "difficulty": "easy",
+        "estimatedMinutes": 10,
+        "tags": ["starter-v1", "foundation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "source": "Original PrepPilot learning note, prepared for editorial review; not company-specific.",
+        "attribution": "AI-assisted original PrepPilot wording and exercise. Technical claims checked by Codex against Linux man-pages pthreads(7) and POSIX mutex documentation on 29 October 2026; publication authorized by the owner. No company association, personal owner review or measured timing is claimed. Duration is an editorial estimate.",
+        "body": "## Goal\nDistinguish an execution context from an isolation boundary.\n\nIn a conventional operating-system model, a process has an address space and owned resources; threads in that process share its address space but have their own execution state, including registers and stack. Per-thread stacks are not security-isolated from other threads in the same address space. Separate processes can explicitly share memory, so isolation is not an absolute claim that sharing never happens.\n\n## Exercise\nTwo threads both read shared counter 0, both compute 1, then both store 1. The final counter is 1 despite two intended increments. Identify the lost update and propose a mutex around the read-modify-write sequence or a suitable atomic increment. Making a second thread does not by itself make the operation atomic.\n\n## Self-check\nExplain why sharing data can be convenient but requires coordination. Draw per-thread stacks and a shared heap, trace the interleaving, then explain where synchronization belongs. Do not confuse a per-thread stack with protected memory.\n\nWith a mutex used by both threads, one whole increment finishes before the other reads the counter, producing 2. Locking only each store is insufficient: both threads could still read 0 first. This is a conceptual interleaving exercise, not permission to rely on unsynchronized data races in languages such as C or C++."
+      }
+    },
+    {
+      "sourceRefs": [],
+      "reportedCompanies": [],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Twelve minutes is an unmeasured estimate for the relevant MDN message/state sections and the original sketch/explanation exercise; it is not a requirement to read every linked page."
+      ],
+      "content": {
+        "slug": "cs-net-http-request-response",
+        "title": "Read HTTP as messages, not a persistent login guarantee",
+        "subject": "cs",
+        "topic": "networking",
+        "type": "resource",
+        "difficulty": "easy",
+        "estimatedMinutes": 12,
+        "tags": ["starter-v1", "foundation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "source": "Original PrepPilot learning note with reference: MDN Web Docs, Overview of HTTP (https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview).",
+        "attribution": "AI-assisted original note and exercises; MDN Web Docs, Overview of HTTP is the linked reference, not a source of copied exercises. No endorsement. Link and technical claims checked by Codex on 29 October 2026; publication authorized by the owner. No personal owner review or measured timing is claimed. Duration is an editorial estimate.",
+        "body": "## Goal\nRecognize request/response messages and distinguish transport from application state.\n\nRead the linked MDN HTTP overview. A request names a method and target and may carry headers/body; a response supplies a status and headers and may carry a body. HTTP's stateless semantics do not prevent an application from relating requests using cookies and server-side session records.\n\n## Exercise\nSketch GET /notes followed by a 200 response and a short text body. Then explain a 404 response: the requested resource was not found, not necessarily that the network is offline. Explain why a cookie alone should not be assumed to prove current server-side permission.\n\n## Boundary\nHTTPS adds transport protection; it does not make every application action authorized. Read the relevant message/state sections, sketch the exchange and explain state in your own words; do not stretch the activity merely to fill a time allowance. Reading this note does not record an attempt or complete a task.",
+        "externalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"
+      }
+    },
+    {
+      "sourceRefs": [],
+      "reportedCompanies": [],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Two minutes is an editorial estimate for this one-sentence grammar micro-drill, not measured timing."
+      ],
+      "content": {
+        "slug": "apt-verbal-subject-agreement",
+        "title": "Choose the verb that agrees with the grammatical subject",
+        "subject": "aptitude",
+        "topic": "verbal_ability",
+        "type": "question",
+        "difficulty": "easy",
+        "estimatedMinutes": 2,
+        "tags": ["starter-v1", "foundation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "source": "Original PrepPilot practice material, prepared for editorial review; not company-specific.",
+        "attribution": "AI-assisted original PrepPilot wording, example and explanation. Editorial correctness checked by Codex on 29 October 2026, including the subject/verb agreement rule in Purdue OWL; publication authorized by the owner. No company association, personal owner review or measured timing is claimed. Duration is an editorial estimate.",
+        "prompt": "Choose the correct verb in standard edited English: 'The list of practice topics (is/are) on the desk.' Identify the grammatical subject, not just the nearest noun, and explain why the other option fails.",
+        "explanation": "Use 'is'. The subject head is the singular noun 'list'; 'of practice topics' modifies that noun and does not change its number. 'Are' incorrectly agrees with the plural noun inside the modifying phrase. The corrected sentence is 'The list of practice topics is on the desk.'"
+      }
+    },
+    {
+      "sourceRefs": [],
+      "reportedCompanies": [],
+      "editorialStatus": "pending_human_review",
+      "concerns": [
+        "Three minutes is an editorial estimate for arithmetic and the address-translation explanation, not measured timing."
+      ],
+      "content": {
+        "slug": "cs-os-page-offset",
+        "title": "Split a logical address into page and offset",
+        "subject": "cs",
+        "topic": "operating_systems",
+        "type": "question",
+        "difficulty": "easy",
+        "estimatedMinutes": 3,
+        "tags": ["starter-v1", "foundation"],
+        "companies": [],
+        "assetIds": [],
+        "reviewedAt": null,
+        "source": "Original PrepPilot practice material, prepared for editorial review; not company-specific.",
+        "attribution": "AI-assisted original PrepPilot wording, example and worked solution. Editorial correctness and paging arithmetic checked by Codex on 29 October 2026; publication authorized by the owner. OSTEP Paging: Introduction was consulted for the translation model. No company association, personal owner review or measured timing is claimed. Duration is an editorial estimate.",
+        "prompt": "Pages contain 1024 bytes and logical addresses are nonnegative byte offsets starting at zero. For logical address 2500, find page number and offset. The page table maps that page to physical frame 7; give the physical address. Assume the mapping is present and permissions allow access.",
+        "explanation": "2500=2×1024+452, so page number is 2 and offset 452. Frame 7 starts at 7×1024=7168; the physical address is 7168+452=7620. Offset is unchanged by page translation and is between 0 and 1023. An absent mapping would require fault handling rather than blindly forming an address, but presence is guaranteed here."
+      }
+    }
+  ]
+}

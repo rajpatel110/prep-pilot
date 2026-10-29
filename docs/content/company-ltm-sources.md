@@ -1,0 +1,155 @@
+# LTM contributor source list
+
+Provenance: Candidate-reported interview question, confirmed by the contributor;
+not an official company publication.
+
+Original question wording below is preserved separately from editorial adaptations.
+Entry identifiers are local references, not interview dates. Interview date,
+year, hiring track and frequency are unknown. Messaging metadata/sender names
+are deliberately omitted. Contributor confirmation is not answer, duration or
+publication approval.
+
+- **LTM-001** Tell me about yourself.
+- **LTM-002** Introduce yourself and your technical skills.
+- **LTM-003** Are you giving this interview from home or college?
+- **LTM-004** Walk me through your resume, learnings, experience, and one thing not on your resume.
+- **LTM-005** What are your hobbies? What type of songs do you like? (Asked to sing a rap.)
+- **LTM-006** How do you manage time and pressure?
+- **LTM-007** What would you do if you found a critical bug just before delivery?
+- **LTM-008** What would you do if assigned a technology you don’t know?
+- **LTM-009** Why computer science?
+- **LTM-010** Why have you chosen this project?
+- **LTM-011** Why did you choose Python over other languages?
+- **LTM-012** Why should I hire you and what will you provide to the company?
+- **LTM-013** Where do you see yourself in 5 years?
+- **LTM-014** What are your strengths and weaknesses?
+- **LTM-015** Are you comfortable with reallocation and night shifts?
+- **LTM-016** Are you comfortable working in any shift?
+- **LTM-017** Are you comfortable relocating anywhere in India?
+- **LTM-018** Are you comfortable working in software testing?
+- **LTM-019** Are you comfortable working in a 24/7 environment and different kinds of shifts?
+- **LTM-020** Do you like working solo or in a group?
+- **LTM-021** What is your greatest strength and weakness?
+- **LTM-022** Tell me about a time you failed and received criticism. How do you handle it and what have you done to change it?
+- **LTM-023** Tell me about a time where you have set a goal for yourself and how you could achieve it.
+- **LTM-024** How would you handle a task that you couldn’t complete on time because of a technical blocker?
+- **LTM-025** How would you learn a new technology if you had no prior experience with it?
+- **LTM-026** Write a program to find factorial using function.
+- **LTM-027** Write a program to print Fibonacci numbers (10 terms / first N).
+- **LTM-028** Write a program to find duplicate in an array.
+- **LTM-029** Write a program to find odd/even.
+- **LTM-030** Write a program to find highest number in array.
+- **LTM-031** Write a program to count frequency of elements.
+- **LTM-032** Write a program to swap two variables without using third variable.
+- **LTM-033** Write a program for valid palindrome.
+- **LTM-034** Write a program to identify numbers, characters, and special characters in a string.
+- **LTM-035** Write a program to implement Bubble Sort.
+- **LTM-036** Write a program to reverse the order of words in a string.
+- **LTM-037** Write a program to sort the characters of a name alphabetically.
+- **LTM-038** Write a program to find the largest of three numbers.
+- **LTM-039** Write a program to find the number of words in a String.
+- **LTM-040** Write a program to print palindrome numbers within a given range.
+- **LTM-041** Write a program to print the first N palindrome numbers.
+- **LTM-042** Write a program to print an inverted Fibonacci pyramid.
+- **LTM-043** Write a program to print the first N Fibonacci numbers in a pyramid pattern.
+- **LTM-044** Write a program implementing any two pillars of OOPs.
+- **LTM-045** Write a program to explain any 2 OOPs concepts of Java.
+- **LTM-046** Difference between StringBuilder and StringBuffer.
+- **LTM-047** Difference between array vs vector.
+- **LTM-048** Difference between hashing.
+- **LTM-049** Difference between BFS vs DFS.
+- **LTM-050** Difference between stack vs queue.
+- **LTM-051** Difference between set vs dict in Python.
+- **LTM-052** Difference between delete vs truncate vs drop in SQL.
+- **LTM-053** Difference between primary key and foreign key.
+- **LTM-054** Difference between interface and abstract class.
+- **LTM-055** Difference between compiler vs interpreter.
+- **LTM-056** Difference between HTTP and HTTPS.
+- **LTM-057** Difference between Node.js and Express.js.
+- **LTM-058** Difference between TCP and UDP.
+- **LTM-059** Difference between data structures and algorithms.
+- **LTM-060** What is a hash table?
+- **LTM-061** What is normalization in DBMS?
+- **LTM-062** What is indexing in DBMS? What are the advantages and disadvantages?
+- **LTM-063** What is deadlock in an operating system?
+- **LTM-064** What is the difference between Git and GitHub?
+- **LTM-065** What is the difference between Machine Learning and Deep Learning?
+- **LTM-066** What is NLP, and how have you used it in your project?
+- **LTM-067** What is the difference between stemming and lemmatization?
+- **LTM-068** How many types of Machine Learning are there?
+- **LTM-069** What are overfitting and underfitting?
+- **LTM-070** What is the difference between AI, machine learning, and deep learning?
+- **LTM-071** What is an embedding in AI?
+- **LTM-072** What is the difference between Traditional Machine Learning and Generative AI?
+- **LTM-073** What is a database index? Can we create indexes on every column?
+- **LTM-074** What are SQL joins, and what are their types?
+- **LTM-075** Write an SQL query to find records present in Table A but absent from Table B.
+- **LTM-076** Write an SQL query to update the shirt colour of a student using their ID.
+- **LTM-077** Write an SQL query to return the total sales from 2 tables using join and group by.
+- **LTM-078** Write an SQL query to find the second-highest salary.
+- **LTM-079** Write an SQL query to find details of employee having highest salary.
+- **LTM-080** Write an SQL query to fetch the name where candidate scored more than 60 marks.
+- **LTM-081** Explain the four pillars of OOPs.
+- **LTM-082** What are access modifiers in Java?
+- **LTM-083** What is an interface?
+- **LTM-084** What is stack.
+- **LTM-085** What is a queue using two stacks?
+- **LTM-086** What is modulation, and why is it important in communication systems?
+- **LTM-087** What are the common modulation techniques?
+- **LTM-088** Explain Phase Modulation (PM).
+- **LTM-089** Have you worked with neural networks?
+- **LTM-090** What are neural networks used for?
+- **LTM-091** How does a neural network map input data to output data?
+- **LTM-092** What is the role of hidden layers in a neural network?
+- **LTM-093** How does a neural network learn?
+- **LTM-094** What is the difference between supervised and unsupervised learning?
+- **LTM-095** What is Whisper AI?
+- **LTM-096** What is TensorFlow, and where have you used it?
+- **LTM-097** Which is your favourite programming language among C, C++, and Python?
+- **LTM-098** What are the advantages of Python over Java?
+- **LTM-099** Explain your project, including its objective, your role, and the technologies used.
+- **LTM-100** What challenges did you face in your project and how did you solve them?
+- **LTM-101** What was your role in the project?
+- **LTM-102** How did your project differ from already existing options in the market?
+- **LTM-103** If you have a team mate who does not know anything about the project that you are doing, how would you guide them to finish the project on time?
+- **LTM-104** How would you get data from an organization if it's not easily available?
+- **LTM-105** How do you ensure the authenticity of data that you used in your project?
+- **LTM-106** If a machine learning model after all the training is still not giving the right prediction, how will you approach that situation step by step?
+- **LTM-107** If a program works fine for 100 records but becomes very slow when handling millions of records, how would you optimize it?
+- **LTM-108** If you are working in production and the system suddenly gets slow, what will you do?
+- **LTM-109** What is the most challenging coding work you’ve done?
+- **LTM-110** What is the most stressful situation you’ve faced and how did you handle it?
+- **LTM-111** How would you handle conflicts within a team?
+- **LTM-112** What will you do if you have to learn a new skill ASAP?
+- **LTM-113** How do you manage time and pressure?
+- **LTM-114** How would you handle a task that you couldn’t complete on time because of a technical blocker?
+- **LTM-115** Do you have any questions for us?
+- **LTM-116** What would success look like in the first six months for a fresher?
+- **LTM-117** How are projects assigned?
+- **LTM-118** What is your greatest strength and weakness?
+- **LTM-119** What will you do if assigned a technology you are not interested in or unrelated to your current skills?
+- **LTM-120** What are your goals after joining the company?
+- **LTM-121** What new technologies have you explored recently?
+- **LTM-122** What is the difference between data structures and algorithms?
+- **LTM-123** What is computer networking?
+- **LTM-124** What is the difference between TCP and UDP?
+- **LTM-125** What is the difference between a primary key and a foreign key?
+- **LTM-126** What is the difference between HTTP and HTTPS?
+- **LTM-127** What is the difference between Node.js and Express.js?
+- **LTM-128** What is the difference between Machine Learning and Deep Learning?
+- **LTM-129** What is NLP, and how have you used it in your project?
+- **LTM-130** What is the difference between stemming and lemmatization?
+- **LTM-131** How many types of Machine Learning are there?
+- **LTM-132** What are overfitting and underfitting?
+- **LTM-133** What is the difference between a stack and a queue?
+- **LTM-134** How do you implement a queue using two stacks?
+- **LTM-135** What is a hash table?
+- **LTM-136** What are the OOP concepts?
+- **LTM-137** What is the difference between Git and GitHub?
+- **LTM-138** What is the difference between Machine Learning and Deep Learning?
+- **LTM-139** What is NLP, and how have you used it in your project?
+- **LTM-140** What is the difference between stemming and lemmatization?
+- **LTM-141** How many types of Machine Learning are there?
+- **LTM-142** What are overfitting and underfitting?
+- **LTM-143** Which is your favourite programming language among C, C++, and Python?
+- **LTM-144** What are the advantages of Python over Java?

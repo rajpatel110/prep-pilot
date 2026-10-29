@@ -1,0 +1,1728 @@
+{
+  "version": 1,
+  "notes": "Canonical references consolidate equivalent interview intents, not missing specifications. Distinct variants and related practice-set parts retain separate source identities.",
+  "entries": [
+    {
+      "sourceRef": "LTM-001",
+      "category": "hr_project",
+      "canonicalSource": "LTM-001",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-002",
+      "category": "hr_project",
+      "canonicalSource": "LTM-002",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-003",
+      "category": "hr_project",
+      "canonicalSource": "LTM-003",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-004",
+      "category": "hr_project",
+      "canonicalSource": "LTM-004",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-005",
+      "category": "hr_project",
+      "canonicalSource": "LTM-005",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-006",
+      "category": "hr_project",
+      "canonicalSource": "LTM-006",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-007",
+      "category": "hr_project",
+      "canonicalSource": "LTM-007",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-008",
+      "category": "hr_project",
+      "canonicalSource": "LTM-008",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-009",
+      "category": "hr_project",
+      "canonicalSource": "LTM-009",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-010",
+      "category": "hr_project",
+      "canonicalSource": "LTM-010",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-011",
+      "category": "hr_project",
+      "canonicalSource": "LTM-011",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-012",
+      "category": "hr_project",
+      "canonicalSource": "LTM-012",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-013",
+      "category": "hr_project",
+      "canonicalSource": "LTM-013",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-014",
+      "category": "hr_project",
+      "canonicalSource": "LTM-014",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-015",
+      "category": "hr_project",
+      "canonicalSource": "LTM-015",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-016",
+      "category": "hr_project",
+      "canonicalSource": "LTM-016",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-017",
+      "category": "hr_project",
+      "canonicalSource": "LTM-017",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-018",
+      "category": "hr_project",
+      "canonicalSource": "LTM-018",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-019",
+      "category": "hr_project",
+      "canonicalSource": "LTM-016",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-020",
+      "category": "hr_project",
+      "canonicalSource": "LTM-020",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-021",
+      "category": "hr_project",
+      "canonicalSource": "LTM-014",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-022",
+      "category": "hr_project",
+      "canonicalSource": "LTM-022",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-023",
+      "category": "hr_project",
+      "canonicalSource": "LTM-023",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-024",
+      "category": "hr_project",
+      "canonicalSource": "LTM-024",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-025",
+      "category": "hr_project",
+      "canonicalSource": "LTM-025",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-026",
+      "category": "dsa",
+      "canonicalSource": "LTM-026",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-027",
+      "category": "dsa",
+      "canonicalSource": "LTM-027",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-028",
+      "category": "dsa",
+      "canonicalSource": "LTM-028",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-029",
+      "category": "dsa",
+      "canonicalSource": "LTM-029",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-030",
+      "category": "dsa",
+      "canonicalSource": "LTM-030",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-031",
+      "category": "dsa",
+      "canonicalSource": "LTM-031",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-032",
+      "category": "dsa",
+      "canonicalSource": "LTM-032",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-033",
+      "category": "incomplete_or_ambiguous",
+      "canonicalSource": "LTM-033",
+      "disposition": "editorial_backlog",
+      "reason": "Missing contract, pattern, code or concrete question; obtain clarification."
+    },
+    {
+      "sourceRef": "LTM-034",
+      "category": "dsa",
+      "canonicalSource": "LTM-034",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-035",
+      "category": "dsa",
+      "canonicalSource": "LTM-035",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-036",
+      "category": "dsa",
+      "canonicalSource": "LTM-036",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-037",
+      "category": "dsa",
+      "canonicalSource": "LTM-037",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-038",
+      "category": "dsa",
+      "canonicalSource": "LTM-038",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-039",
+      "category": "dsa",
+      "canonicalSource": "LTM-039",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-040",
+      "category": "dsa",
+      "canonicalSource": "LTM-040",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-041",
+      "category": "dsa",
+      "canonicalSource": "LTM-041",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-042",
+      "category": "incomplete_or_ambiguous",
+      "canonicalSource": "LTM-042",
+      "disposition": "editorial_backlog",
+      "reason": "Missing contract, pattern, code or concrete question; obtain clarification."
+    },
+    {
+      "sourceRef": "LTM-043",
+      "category": "incomplete_or_ambiguous",
+      "canonicalSource": "LTM-043",
+      "disposition": "editorial_backlog",
+      "reason": "Missing contract, pattern, code or concrete question; obtain clarification."
+    },
+    {
+      "sourceRef": "LTM-044",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-044",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-045",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-045",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-046",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-046",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-047",
+      "category": "incomplete_or_ambiguous",
+      "canonicalSource": "LTM-047",
+      "disposition": "editorial_backlog",
+      "reason": "Missing contract, pattern, code or concrete question; obtain clarification."
+    },
+    {
+      "sourceRef": "LTM-048",
+      "category": "incomplete_or_ambiguous",
+      "canonicalSource": "LTM-048",
+      "disposition": "editorial_backlog",
+      "reason": "Missing contract, pattern, code or concrete question; obtain clarification."
+    },
+    {
+      "sourceRef": "LTM-049",
+      "category": "dsa",
+      "canonicalSource": "LTM-049",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-050",
+      "category": "dsa",
+      "canonicalSource": "LTM-050",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-051",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-051",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-052",
+      "category": "cs",
+      "canonicalSource": "LTM-052",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-053",
+      "category": "cs",
+      "canonicalSource": "LTM-053",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-054",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-054",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-055",
+      "category": "cs",
+      "canonicalSource": "LTM-055",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-056",
+      "category": "cs",
+      "canonicalSource": "LTM-056",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-057",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-057",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-058",
+      "category": "cs",
+      "canonicalSource": "LTM-058",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-059",
+      "category": "dsa",
+      "canonicalSource": "LTM-059",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-060",
+      "category": "dsa",
+      "canonicalSource": "LTM-060",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-061",
+      "category": "cs",
+      "canonicalSource": "LTM-061",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-062",
+      "category": "cs",
+      "canonicalSource": "LTM-062",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-063",
+      "category": "cs",
+      "canonicalSource": "LTM-063",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-064",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-064",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-065",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-065",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-066",
+      "category": "hr_project",
+      "canonicalSource": "LTM-066",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-067",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-067",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-068",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-068",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-069",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-069",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-070",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-070",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-071",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-071",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-072",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-072",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-073",
+      "category": "cs",
+      "canonicalSource": "LTM-073",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-074",
+      "category": "cs",
+      "canonicalSource": "LTM-074",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-075",
+      "category": "cs",
+      "canonicalSource": "LTM-075",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-076",
+      "category": "cs",
+      "canonicalSource": "LTM-076",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-077",
+      "category": "cs",
+      "canonicalSource": "LTM-077",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-078",
+      "category": "cs",
+      "canonicalSource": "LTM-078",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-079",
+      "category": "cs",
+      "canonicalSource": "LTM-079",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-080",
+      "category": "cs",
+      "canonicalSource": "LTM-080",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-081",
+      "category": "cs",
+      "canonicalSource": "LTM-081",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-082",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-082",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-083",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-083",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-084",
+      "category": "dsa",
+      "canonicalSource": "LTM-084",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-085",
+      "category": "dsa",
+      "canonicalSource": "LTM-085",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-086",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-086",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-087",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-087",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-088",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-088",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-089",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-089",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-090",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-090",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-091",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-091",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-092",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-092",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-093",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-093",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-094",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-094",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-095",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-095",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-096",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-096",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-097",
+      "category": "hr_project",
+      "canonicalSource": "LTM-097",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-098",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-098",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-099",
+      "category": "hr_project",
+      "canonicalSource": "LTM-099",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-100",
+      "category": "hr_project",
+      "canonicalSource": "LTM-100",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-101",
+      "category": "hr_project",
+      "canonicalSource": "LTM-101",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-102",
+      "category": "hr_project",
+      "canonicalSource": "LTM-102",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-103",
+      "category": "hr_project",
+      "canonicalSource": "LTM-103",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-104",
+      "category": "hr_project",
+      "canonicalSource": "LTM-104",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-105",
+      "category": "hr_project",
+      "canonicalSource": "LTM-105",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-106",
+      "category": "hr_project",
+      "canonicalSource": "LTM-106",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-107",
+      "category": "hr_project",
+      "canonicalSource": "LTM-107",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-108",
+      "category": "hr_project",
+      "canonicalSource": "LTM-108",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-109",
+      "category": "hr_project",
+      "canonicalSource": "LTM-109",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-110",
+      "category": "hr_project",
+      "canonicalSource": "LTM-110",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-111",
+      "category": "hr_project",
+      "canonicalSource": "LTM-111",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-112",
+      "category": "hr_project",
+      "canonicalSource": "LTM-112",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-113",
+      "category": "hr_project",
+      "canonicalSource": "LTM-006",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-114",
+      "category": "hr_project",
+      "canonicalSource": "LTM-024",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-115",
+      "category": "hr_project",
+      "canonicalSource": "LTM-115",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-116",
+      "category": "hr_project",
+      "canonicalSource": "LTM-116",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-117",
+      "category": "hr_project",
+      "canonicalSource": "LTM-117",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-118",
+      "category": "hr_project",
+      "canonicalSource": "LTM-014",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-119",
+      "category": "hr_project",
+      "canonicalSource": "LTM-119",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-120",
+      "category": "hr_project",
+      "canonicalSource": "LTM-120",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-121",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-121",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-122",
+      "category": "dsa",
+      "canonicalSource": "LTM-059",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-123",
+      "category": "cs",
+      "canonicalSource": "LTM-123",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-124",
+      "category": "cs",
+      "canonicalSource": "LTM-058",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-125",
+      "category": "cs",
+      "canonicalSource": "LTM-053",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-126",
+      "category": "cs",
+      "canonicalSource": "LTM-056",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-127",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-057",
+      "disposition": "duplicate_reference_retained",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-128",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-065",
+      "disposition": "duplicate_reference_retained",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-129",
+      "category": "hr_project",
+      "canonicalSource": "LTM-066",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-130",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-067",
+      "disposition": "duplicate_reference_retained",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-131",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-068",
+      "disposition": "duplicate_reference_retained",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-132",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-069",
+      "disposition": "duplicate_reference_retained",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-133",
+      "category": "dsa",
+      "canonicalSource": "LTM-050",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-134",
+      "category": "dsa",
+      "canonicalSource": "LTM-085",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "LTM-135",
+      "category": "dsa",
+      "canonicalSource": "LTM-060",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-136",
+      "category": "cs",
+      "canonicalSource": "LTM-136",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "LTM-137",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-064",
+      "disposition": "duplicate_reference_retained",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-138",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-065",
+      "disposition": "duplicate_reference_retained",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-139",
+      "category": "hr_project",
+      "canonicalSource": "LTM-066",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-140",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-067",
+      "disposition": "duplicate_reference_retained",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-141",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-068",
+      "disposition": "duplicate_reference_retained",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-142",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-069",
+      "disposition": "duplicate_reference_retained",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "LTM-143",
+      "category": "hr_project",
+      "canonicalSource": "LTM-097",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "LTM-144",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-098",
+      "disposition": "duplicate_reference_retained",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-001",
+      "category": "hr_project",
+      "canonicalSource": "LTM-001",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-002",
+      "category": "hr_project",
+      "canonicalSource": "COG-002",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-003",
+      "category": "hr_project",
+      "canonicalSource": "COG-003",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-004",
+      "category": "hr_project",
+      "canonicalSource": "COG-004",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-005",
+      "category": "hr_project",
+      "canonicalSource": "COG-005",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-006",
+      "category": "hr_project",
+      "canonicalSource": "LTM-099",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-007",
+      "category": "hr_project",
+      "canonicalSource": "COG-007",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-008",
+      "category": "hr_project",
+      "canonicalSource": "COG-008",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-009",
+      "category": "hr_project",
+      "canonicalSource": "COG-009",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-010",
+      "category": "hr_project",
+      "canonicalSource": "COG-010",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-011",
+      "category": "hr_project",
+      "canonicalSource": "COG-011",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-012",
+      "category": "hr_project",
+      "canonicalSource": "COG-012",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-013",
+      "category": "hr_project",
+      "canonicalSource": "COG-013",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-014",
+      "category": "hr_project",
+      "canonicalSource": "LTM-100",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-015",
+      "category": "cs",
+      "canonicalSource": "COG-015",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-016",
+      "category": "cs",
+      "canonicalSource": "LTM-081",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "COG-017",
+      "category": "cs",
+      "canonicalSource": "COG-017",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-018",
+      "category": "cs",
+      "canonicalSource": "COG-018",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-019",
+      "category": "cs",
+      "canonicalSource": "COG-019",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-020",
+      "category": "cs",
+      "canonicalSource": "COG-020",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-021",
+      "category": "cs",
+      "canonicalSource": "COG-021",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-022",
+      "category": "cs",
+      "canonicalSource": "COG-022",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-023",
+      "category": "cs",
+      "canonicalSource": "COG-023",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-024",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-024",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-025",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-025",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-026",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-026",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-027",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-027",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-028",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-028",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-029",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-029",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-030",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-030",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-031",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-031",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-032",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-032",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-033",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-033",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-034",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-034",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-035",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "LTM-082",
+      "disposition": "duplicate_reference_retained",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-036",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-036",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-037",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-037",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-038",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-038",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-039",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-039",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-040",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-040",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-041",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-041",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-042",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-042",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-043",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-043",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-044",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-044",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-045",
+      "category": "cs",
+      "canonicalSource": "COG-045",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "COG-046",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-046",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-047",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-047",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-048",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-048",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-049",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-049",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-050",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-050",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-051",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-051",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-052",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-052",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-053",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-053",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-054",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-054",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-055",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-055",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-056",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-056",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-057",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-057",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-058",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-058",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-059",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-059",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-060",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-060",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-061",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-061",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-062",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-062",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-063",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-063",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-064",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-064",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-065",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-065",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-066",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-066",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-067",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-067",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-068",
+      "category": "language_framework_or_outside_taxonomy",
+      "canonicalSource": "COG-068",
+      "disposition": "editorial_backlog",
+      "reason": "No matching canonical language/framework/AI/tooling/communications topic."
+    },
+    {
+      "sourceRef": "COG-069",
+      "category": "hr_project",
+      "canonicalSource": "COG-069",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-070",
+      "category": "cs",
+      "canonicalSource": "COG-070",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-071",
+      "category": "cs",
+      "canonicalSource": "COG-071",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-072",
+      "category": "cs",
+      "canonicalSource": "COG-072",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "COG-073",
+      "category": "cs",
+      "canonicalSource": "COG-073",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-074",
+      "category": "cs",
+      "canonicalSource": "COG-074",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "COG-075",
+      "category": "cs",
+      "canonicalSource": "COG-075",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "COG-076",
+      "category": "cs",
+      "canonicalSource": "COG-076",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-077",
+      "category": "cs",
+      "canonicalSource": "COG-077",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "COG-078",
+      "category": "cs",
+      "canonicalSource": "COG-078",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "COG-079",
+      "category": "dsa",
+      "canonicalSource": "LTM-029",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-080",
+      "category": "dsa",
+      "canonicalSource": "COG-080",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-081",
+      "category": "dsa",
+      "canonicalSource": "LTM-026",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-082",
+      "category": "dsa",
+      "canonicalSource": "LTM-027",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-083",
+      "category": "incomplete_or_ambiguous",
+      "canonicalSource": "COG-083",
+      "disposition": "editorial_backlog",
+      "reason": "Missing contract, pattern, code or concrete question; obtain clarification."
+    },
+    {
+      "sourceRef": "COG-084",
+      "category": "dsa",
+      "canonicalSource": "COG-084",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-085",
+      "category": "dsa",
+      "canonicalSource": "COG-085",
+      "disposition": "editorial_backlog",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-086",
+      "category": "dsa",
+      "canonicalSource": "LTM-032",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-087",
+      "category": "dsa",
+      "canonicalSource": "LTM-030",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Supported topic or algorithm family, but complete adaptation and honest standalone timing remain to be reviewed."
+    },
+    {
+      "sourceRef": "COG-088",
+      "category": "dsa",
+      "canonicalSource": "COG-088",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "COG-089",
+      "category": "dsa",
+      "canonicalSource": "COG-089",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "COG-090",
+      "category": "dsa",
+      "canonicalSource": "COG-090",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "COG-091",
+      "category": "dsa",
+      "canonicalSource": "COG-091",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "COG-092",
+      "category": "dsa",
+      "canonicalSource": "COG-092",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "COG-093",
+      "category": "dsa",
+      "canonicalSource": "COG-093",
+      "disposition": "adapted_in_batch",
+      "reason": "See candidate sourceRefs; editorial specifications are not original wording."
+    },
+    {
+      "sourceRef": "COG-094",
+      "category": "incomplete_or_ambiguous",
+      "canonicalSource": "COG-094",
+      "disposition": "editorial_backlog",
+      "reason": "Missing contract, pattern, code or concrete question; obtain clarification."
+    },
+    {
+      "sourceRef": "COG-095",
+      "category": "incomplete_or_ambiguous",
+      "canonicalSource": "COG-095",
+      "disposition": "editorial_backlog",
+      "reason": "Missing contract, pattern, code or concrete question; obtain clarification."
+    },
+    {
+      "sourceRef": "COG-096",
+      "category": "incomplete_or_ambiguous",
+      "canonicalSource": "COG-096",
+      "disposition": "editorial_backlog",
+      "reason": "Missing contract, pattern, code or concrete question; obtain clarification."
+    },
+    {
+      "sourceRef": "COG-097",
+      "category": "incomplete_or_ambiguous",
+      "canonicalSource": "COG-097",
+      "disposition": "editorial_backlog",
+      "reason": "Missing contract, pattern, code or concrete question; obtain clarification."
+    },
+    {
+      "sourceRef": "COG-098",
+      "category": "hr_project",
+      "canonicalSource": "COG-098",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-099",
+      "category": "hr_project",
+      "canonicalSource": "COG-099",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-100",
+      "category": "hr_project",
+      "canonicalSource": "LTM-016",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-101",
+      "category": "hr_project",
+      "canonicalSource": "COG-101",
+      "disposition": "editorial_backlog",
+      "reason": "Needs personal context; no supported HR/project topic."
+    },
+    {
+      "sourceRef": "COG-102",
+      "category": "hr_project",
+      "canonicalSource": "LTM-115",
+      "disposition": "duplicate_reference_retained",
+      "reason": "Needs personal context; no supported HR/project topic."
+    }
+  ]
+}
