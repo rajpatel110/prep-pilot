@@ -7,12 +7,13 @@ reviewed record file, clarified explanations, retained candidate provenance,
 estimated durations and audit/read evidence. The original proposal text below is
 unchanged and does not represent these saved revisions or personal owner review.
 
-Latest live state: FIRST_FIVE_PUBLICATION_REVIEW.md records the authorized
-27 October publication of queue/SQL/OOP at revision 3 and mixture/DAG draft holds
-at revision 2. The source proposals below are unchanged historical candidates,
+Historical first-five receipt: FIRST_FIVE_PUBLICATION_REVIEW.md records the
+27 October queue/SQL/OOP publications and the then-current mixture/DAG holds.
+APTITUDE_PUBLICATION.md records their subsequent publication at revision 4.
+The source proposals below are unchanged historical candidates,
 not current saved attribution, review dates or publication state.
 
-**Original source proposals, not a live catalog snapshot.** User reports six imported, missing-range-member published at revision 3 and student practice passed. Five drafts await review: see REVIEW_REMAINING_FIVE.md. NEXT_COMPANY_DRAFT_BATCH.md covers eight further candidates not imported. Exact admin fields are in `company-batch.v1.json` → `candidates[].content`; this sheet reproduces proposed prompts/answers. Estimates are unmeasured; hold short items rather than padding time. Proposals retain null content review dates. Company labels are intended `student_reported`, not official or `verified`.
+**Original source proposals, not a live catalog snapshot.** Publication and correction receipts are in FIRST_FIVE_PUBLICATION_REVIEW.md, APTITUDE_PUBLICATION.md and COVERAGE_RELEASE_EIGHT.md. Exact proposed admin fields are in `company-batch.v1.json` → `candidates[].content`; this sheet preserves source prompts/answers rather than overwriting them with live revisions. Estimates are unmeasured; current rules support 1–60 whole minutes without padding. Proposals retain null content review dates. Company labels are intended `student_reported`, not official or `verified`.
 
 Source wording lives in the two source lists. Cohesive multi-part adaptations combine related references without asserting those original questions were identical. Provenance-review time must be supplied honestly at import, separately from later content publication review. Contributor confirmation is not approval of the solutions or editorial constraints.
 

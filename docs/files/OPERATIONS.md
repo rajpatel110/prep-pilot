@@ -1,191 +1,94 @@
-# Private attachments: implementation and external acceptance
+# Optional private-file module
 
-This is the single operational setup checklist. Product/API/database/system-design
-documents remain the contract, not additional activation instructions. Files are
-disabled by default. No subscription, bucket, provider credentials, billing or
-real-provider transfer has been activated or verified by implementation tests.
-Explicit test fixtures inject mocked storage; application configuration never
-falls back to a mock.
+Files are **disabled in the hosted demo**. This document describes existing
+server code for maintenance, not an available product capability.
+No real bucket privacy, credentials, CORS, transfer or billing activation is
+established by mocked tests. Do not activate cloud services implicitly.
 
-## Before external setup
+## Configuration and storage boundary
 
-- `npm.cmd run test:files` uses the configured MongoDB connection with a generated
-  disposable `pp_files_<12 hex>` database, migrates it, injects mock storage and
-  removes that database afterward. It never selects the normal database name.
-- Unit tests include offline SDK URL signing with synthetic credentials. This
-  performs no R2 request and cannot prove that real credentials/CORS work.
-- Use README's sequential verification procedure: no competing development,
-  build, type-generation or production-test processes. EPERM diagnosis remains
-  paused; user-run builds and agent checks are reported separately.
-- AWS SDK v3 client/presigner are runtime dependencies for supported S3 signing
-  and object operations. Only the server imports them.
+The module requires authentication plus R2_ACCOUNT_ID, R2_BUCKET,
+R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY when FILES_ENABLED=true.
+Incomplete enabled configuration fails closed; the runtime never falls back
+to mock storage. Keep FILES_ENABLED=false without separately authorized setup.
 
-## One external setup checklist (requires separate owner approval)
+The adapter derives the ordinary/global R2 S3 endpoint. Use a private Standard
+bucket with no public r2.dev/custom domain, and Object Read & Write credentials
+restricted to that bucket. Configure bucket settings with operator access, not
+bucket-admin privileges in the application's credential. These provider settings
+need real acceptance before enabling files.
 
-1. Review R2 activation/subscription and billing in your Cloudflare account.
-   Activation is an owner action, not performed by these scripts. Do not supply
-   credentials in chat. Do not assume free allowances are a spending stop.
-2. Create a dedicated development bucket, proposed name `prep-pilot-dev`, using
-   **Standard** storage and the ordinary/global jurisdiction. Keep `r2.dev` public
-   access disabled and attach no public/custom domain. Separate production/test
-   buckets and credentials later; never point disposable tests at the real catalog.
-   This adapter derives the global endpoint; jurisdiction-specific buckets require
-   an explicit endpoint/configuration change, not a guessed host.
-3. R2 Overview → Manage API Tokens → create an R2 API token → **Object Read &
-   Write** → **Apply to specific buckets only** → select only the development
-   bucket. Object reads, writes, listing and deletion are required. Do not grant
-   bucket-administration permissions to the application. Configure CORS/lifecycle
-   in the dashboard with your operator access. Store both S3 Access Key ID and
-   Secret Access Key privately; the secret is shown only on creation.
-4. Add these exact server-only values to ignored `.env.local` locally:
+The browser uploads raw bytes by signed PUT with only Content-Type, credentials
+omitted. Signed GETs do not carry application cookies/CSRF headers. One CORS policy
+for the actual local test origin is:
 
-   ```dotenv
-   FILES_ENABLED=false
-   R2_ACCOUNT_ID=<your-32-character-account-id>
-   R2_BUCKET=prep-pilot-dev
-   R2_ACCESS_KEY_ID=<private-access-key-id>
-   R2_SECRET_ACCESS_KEY=<private-secret-access-key>
-   ```
+```json
+[
+  {
+    "AllowedOrigins": ["http://localhost:3000"],
+    "AllowedMethods": ["PUT", "GET"],
+    "AllowedHeaders": ["Content-Type"],
+    "MaxAgeSeconds": 600
+  }
+]
+```
 
-   Preserve existing `AUTH_ENABLED`, `APP_URL`, `MONGODB_URI`, `MONGODB_DB_NAME`
-   and independent auth/CSRF/rate-limit secrets. No `NEXT_PUBLIC_` credentials,
-   public object base URL or separate R2 endpoint variable is used. Incomplete
-   configuration with `FILES_ENABLED=true` fails closed. Restart after changing
-   configuration; credentials alone do not enable files.
+Use the exact APP_URL origin, not a wildcard. CORS is not authorization.
+Lifecycle expiration applies **only** to `staging/` after one day;
+never expire `final/`. Lifecycle expiry does not release database reservations.
 
-5. With the test application's `APP_URL=http://localhost:3000`, configure bucket
-   Settings → CORS Policy → JSON with this **one** policy:
+## Implemented lifecycle
 
-   ```json
-   [
-     {
-       "AllowedOrigins": ["http://localhost:3000"],
-       "AllowedMethods": ["PUT", "GET"],
-       "AllowedHeaders": ["Content-Type"],
-       "MaxAgeSeconds": 600
-     }
-   ]
-   ```
+PDF, PNG, JPEG and WebP are accepted, at most 10 MiB/file. Grants reserve a full
+10 MiB and return a five-minute staging PUT capability. Finalization must begin
+within fifteen minutes. It reads at most 10 MiB plus one byte, validates size,
+MIME/signature and SHA-256, writes the inspected bytes to an immutable candidate,
+then conditionally commits ready metadata under the finalizer's lease.
 
-   The browser sends a direct PUT with only the grant's Content-Type header and
-   raw file bytes, `credentials: omit`, no application CSRF/cookie/Authorization
-   headers. Downloads open signed GET links without application credentials.
-   No ETag response header is required or treated as SHA-256. HEAD/list/delete
-   are server-side operations, so browser HEAD/DELETE permissions are unnecessary.
-   Use the actual APP_URL origin if different; `127.0.0.1`, another port and
-   `localhost` are distinct origins. Do not add wildcard preview origins.
+Validation leases last 90 seconds; provider work has a bounded 45-second budget
+inside the route's 60-second maximum. Provider calls are outside retryable
+transactions. Browser clients never receive final-key PUT URLs.
+This validates file structure, not malware safety.
 
-6. Add an expiration lifecycle rule **only** for exact prefix `staging/`, deleting
-   objects after one day. Keys are `staging/<assetId>/<uuid>`. Never expire
-   `final/`: final keys are `final/<assetId>/<leaseId>`. Lifecycle expiration is a
-   delayed safety net, not MongoDB reservation cleanup. Do not enable storage
-   transitions to Infrequent Access.
-7. Select an isolated development/test database and explicitly run the existing
-   additive setup command before enabling the application:
+A ready finalization retry is idempotent. An active lease reports in progress;
+expired leases may be retried within their allowed window. Stale finalizers cannot
+commit. Rejected files release reserved quota once. Uncertain provider/database
+failures retain retryable reservation/candidate metadata, not false success.
 
-   ```bash
-   cd /c/PROJECTS/prep-pilot
-   export PATH="$PWD/.tools/node_modules/node/bin:$PATH"
-   npm.cmd run db:setup -- --database YOUR_EXPLICIT_TEST_DATABASE --environment test
-   ```
+Admin listing/status/preview and cleanup use existing authorization/CSRF/audits.
+Cleanup checks authoritative catalog references under its guard, skips referenced
+or live assets, leases deletion, removes provider objects and atomically releases
+usage once. Candidate-prefix listing recovers orphan objects. Do not TTL-delete
+metadata or reset quota counters. A failed step remains retryable.
 
-   The running server must use that same explicit MONGODB_DB_NAME and a trusted
-   APP_URL. Migration 005 creates file indexes and insert-if-absent quota state;
-   it preserves records and existing singleton values, rejects invalid/conflicting
-   data/indexes, and never drops indexes. There is no automatic startup index sync.
-   Enable `FILES_ENABLED=true` only in this controlled test server once setup is
-   complete. Do not enable it on ordinary development/production implicitly.
+Student grants require a published parent and attachment membership, not just
+possession of a file ID. Five attachments per content item are allowed.
 
-## Real-provider acceptance and cleanup
+## Limits and recovery
 
-Use a disposable admin/student pair, disposable draft and the private development
-bucket. Do not reuse normal accounts as mutation fixtures. Keep email sending
-disabled for this test. Reuse a successful build and start just one test server.
+Application limits: 100 ready+reserved objects and 500 MiB ready+reserved bytes;
+20 grants/admin/hour, six cleanup calls/admin/minute and 60 signing/download
+requests/actor/minute. These are logical controls, not a provider spending cap.
+Repeated PUTs, staging/orphan copies, signed-link reuse and other account usage
+can incur charges. Disabling files does not revoke already issued capabilities.
 
-1. Check an unsigned object URL cannot read an uploaded object and public bucket
-   access is disabled. Inspect actual token scope privately in Cloudflare.
-2. In `/admin/files`, upload a tiny original PDF and a small PNG through the browser.
-   Confirm actual preflight and PUT succeed from the configured origin, status
-   becomes ready only after server finalization, and another origin is not allowed.
-   Do not paste signed URLs or export token-bearing network logs/screenshots.
-3. Attach a ready file in the editor, save, review provenance/review date, preview
-   as admin and publish only the disposable resource. Sign in as the disposable
-   student: request and open a short-lived download, verify exact file bytes/name.
-4. Verify unsupported/mismatched content fails finalization; anonymous/student
-   upload attempts and draft/unrelated student download grants fail. Reuse a
-   staging PUT after finalization and confirm the final download remains unchanged.
-   Confirm five-minute PUT and 60-second GET expiry without logging the URLs.
-5. Archive the disposable content and verify no new student grant is issued;
-   already-issued links may work until expiry. Reopen and detach the files, save,
-   then use explicit admin cleanup. Referenced files must be skipped. Wait for
-   active leases/grant deadlines before cleaning pending uploads. Inspect per-item
-   outcomes; retry only failed/eligible items, not the entire operation blindly.
-6. Confirm objects disappear, ready/reserved counters reconcile and repeat cleanup
-   does not decrement usage twice. Account for any staging URL still usable until
-   expiry and verify the one-day lifecycle safety net separately. Stop the test
-   server, disable files locally, revoke disposable provider credentials, and
-   remove only explicitly identified test data/resources after owner approval.
-   Database deletion alone does not delete provider objects. Content has no
-   hard-delete endpoint: archive disposable content unless removing its entire
-   confirmed isolated database. Never delete a shared development bucket wholesale.
+Read-only accounting:
 
-## Recovery and accounting
+```bash
+npm.cmd run files:accounting -- --database YOUR_EXPLICIT_DATABASE --environment development
+```
 
-- Grant creation is not generally idempotent. After an ambiguous response, inspect
-  the file list for the pending grant; never automatically allocate another one.
-- PUT success is not finalization success. After timeout, GET status; ready is
-  idempotent, a live lease returns UPLOAD_IN_PROGRESS/Retry-After, and an eligible
-  expired lease can be retried before finalizeBy. A missing object permits another
-  transfer within the original five-minute URL lifetime. A new grant is explicit.
-- Finalization reads at most 10 MiB + one byte, checks signatures/MIME/size and
-  SHA-256, writes exactly those inspected bytes to a fresh immutable candidate,
-  then commits ready metadata and quota conversion with the lease. This is not a
-  malware scanner or a guarantee against malicious PDF contents. PDFs download;
-  permitted images can open inline. A browser never receives a final-key PUT URL.
-- Finalization external work has a 45-second abort budget, leaving transaction
-  time within the route's 60-second configured maximum. Leases last 90 seconds;
-  cleanup waits an additional 60 seconds after an abandoned validating lease.
-  Provider calls remain outside retryable database callbacks. Hosting duration
-  support and actual transfer timing remain real-provider/deployment checks.
-- Invalid files retain rejected metadata and release reserved usage once. Provider
-  or uncertain database failures retain a retryable lease/reservation and candidate
-  prefix. Cleanup lists the asset's final prefix to discover old candidate orphans.
-- Cleanup checks authoritative content references under the catalog guard, marks
-  deleting with a lease, performs provider deletes, then atomically releases usage,
-  marks deleted and writes audit. A failed provider/DB step remains retryable.
-  Partial batch results are explicit; live/referenced uploads are skipped.
-- The readonly accounting command is:
+Compare reservations/committed metadata to counters. A mismatch requires reviewed
+repair; no automatic reset is provided. The shared target needs its explicit
+operator confirmation, never test cleanup.
 
-  ```bash
-  npm.cmd run files:accounting -- --database YOUR_EXPLICIT_TEST_DATABASE --environment test
-  ```
+`npm run test:files` uses a generated disposable database and mocked storage.
+For separately authorized real acceptance, use an isolated database/bucket:
+grant → signed upload → finalize → attach/publish → authorized download, with
+wrong-role/parent/member rejection checks. Inspect counters, detach through
+supported revision-guarded workflows and run cleanup; confirm provider objects
+and disposable fixtures are removed. Mock evidence cannot replace these checks.
 
-  It compares counters with reserved/committed file records and exits nonzero on
-  mismatch. It changes no records, keys or indexes. A discrepancy requires stopping
-  grants and an explicitly reviewed guarded repair; there is intentionally no
-  automatic repair or counter-reset command. Metadata is not TTL-deleted.
-
-## Quotas and billing are different controls
-
-The application permits at most 100 ready + reserved objects and 500 MiB ready +
-reserved bytes; every grant reserves a full 10 MiB. Durable limits: 20 grants per
-admin/hour, six cleanup calls per admin/minute, 60 signing/download requests per
-actor/minute. Five attachments per content item. These logical caps do not bound
-all physical staging/candidate copies, oversized rejected objects, repeated PUTs,
-download reuse, orphan storage or other account usage. CORS is not authorization.
-Turning files off stops new grants, not existing signed capabilities.
-
-Standard's currently documented monthly free allowances are 10 GB-month storage,
-one million Class A and ten million Class B operations; excess is billable. Free
-egress is not free storage/operations. Infrequent Access does not share that free
-tier. Monitor account-wide usage and billing; an alert is not a hard spending cap.
-
-Official references checked during preparation:
-
-- [S3 setup and bucket-scoped credentials](https://developers.cloudflare.com/r2/get-started/s3/)
-- [Token permissions](https://developers.cloudflare.com/r2/api/tokens/)
-- [Private/public bucket settings](https://developers.cloudflare.com/r2/buckets/public-buckets/)
-- [Browser CORS](https://developers.cloudflare.com/r2/buckets/cors/)
-- [Presigned URL behavior](https://developers.cloudflare.com/r2/api/s3/presigned-urls/)
-- [Prefix lifecycle expiration](https://developers.cloudflare.com/r2/buckets/object-lifecycles/)
-- [Pricing](https://developers.cloudflare.com/r2/pricing/)
+Provider references: [R2 S3 API](https://developers.cloudflare.com/r2/get-started/s3/),
+[CORS](https://developers.cloudflare.com/r2/buckets/cors/),
+[lifecycle](https://developers.cloudflare.com/r2/buckets/object-lifecycles/).

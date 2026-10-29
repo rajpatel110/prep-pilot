@@ -452,6 +452,5 @@ No step above has been performed automatically. No migrations, imports, account 
 
 The historical timing holds below are not current 15-minute requirements.
 Content now supports whole-minute estimates from 1–60. See
-`NEXT_PREPARED_CONTENT_RECOMMENDATION.md` for proposed honest estimates and the
-coverage-first next batch. This does not grant editorial approval or change
+`README.md` for current editorial rules. This does not grant editorial approval or change
 review timestamps, source records or publication state.
